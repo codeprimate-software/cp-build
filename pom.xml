@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.codeprimate</groupId>
+  <artifactId>cp-core</artifactId>
+  <version>1.0.0.BUILD-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>../cp-elements</module>
+  </modules>
+
+  <name>cp-core</name>
+  <description>
+    Codeprimate Core parent module and umbrealla project for all Codeprimate projects that include APIs, Frameworks
+    and Java Class Libraries.
+  </description>
+  <url>http://www.codeprimate.org/products/cp-core</url>
+
+  <organization>
+    <name>Codeprimate, LLC</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate, LLC.</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <licenses>
+ 		<license>
+ 			<name>Apache License, Version 2.0</name>
+ 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+ 			<comments>
+ 			Copyright 2011-present the original author or authors.
+
+ 			Licensed under the Apache License, Version 2.0 (the "License");
+ 			you may not use this file except in compliance with the License.
+ 			You may obtain a copy of the License at
+
+ 				 http://www.apache.org/licenses/LICENSE-2.0
+
+ 			Unless required by applicable law or agreed to in writing, software
+ 			distributed under the License is distributed on an "AS IS" BASIS,
+ 			WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ 			implied.
+ 			See the License for the specific language governing permissions and
+ 			limitations under the License.
+ 			</comments>
+ 		</license>
+ 	</licenses>
+
+  <properties>
+    <easymock.version>3.0</easymock.version>
+    <jmock.version>2.6.0</jmock.version>
+    <junit.version>4.12</junit.version>
+    <mockito.version>1.10.19</mockito.version>
+    <multithreadedtc.version>1.01</multithreadedtc.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>${easymock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jmock</groupId>
+      <artifactId>jmock</artifactId>
+      <version>${jmock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jmock</groupId>
+      <artifactId>jmock-junit4</artifactId>
+      <version>${jmock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jmock</groupId>
+      <artifactId>jmock-legacy</artifactId>
+      <version>${jmock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>edu.umd.cs.mtc</groupId>
+      <artifactId>multithreadedtc</artifactId>
+      <version>${multithreadedtc.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>
