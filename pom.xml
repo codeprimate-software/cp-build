@@ -16,24 +16,9 @@
 
   <name>cp-core</name>
   <description>
-    Codeprimate Core is the parent module and umbrealla project for all Codeprimate software projects.
+    Codeprimate Core is the parent project for all Codeprimate software projects.
   </description>
   <url>http://www.codeprimate.org/products/cp-core</url>
-
-  <organization>
-    <name>Codeprimate, LLC</name>
-    <url>http://www.codeprimate.org/</url>
-  </organization>
-
-  <developers>
-    <developer>
-      <id>jblum</id>
-      <name>John J. Blum</name>
-      <email>john dot blum at codeprimate dot org</email>
-      <organization>Codeprimate, LLC.</organization>
-      <organizationUrl>http://www.codeprimate.org</organizationUrl>
-    </developer>
-  </developers>
 
   <licenses>
  		<license>
@@ -82,12 +67,34 @@
   		</license>
  	</licenses>
 
+  <organization>
+    <name>Codeprimate, LLC</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate, LLC.</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-core.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-core.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-core</url>
+  </scm>
+
   <properties>
     <easymock.version>3.0</easymock.version>
     <java.version>1.8</java.version>
     <jmock.version>2.8.1</jmock.version>
     <junit.version>4.12</junit.version>
     <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
     <mockito.version>1.10.19</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -152,6 +159,17 @@
           </compilerArgs>
           <source>${java.version}</source>
           <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
         </configuration>
       </plugin>
       <plugin>
