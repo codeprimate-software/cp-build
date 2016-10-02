@@ -89,6 +89,7 @@
   </scm>
 
   <properties>
+    <assertj.version>3.5.2</assertj.version>
     <easymock.version>3.0</easymock.version>
     <java.version>1.8</java.version>
     <jmock.version>2.8.1</jmock.version>
@@ -136,6 +137,12 @@
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
       <version>${easymock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
