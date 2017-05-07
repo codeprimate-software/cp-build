@@ -90,6 +90,7 @@
 
   <properties>
     <assertj.version>3.6.2</assertj.version>
+    <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>3.4</easymock.version>
     <java.version>1.8</java.version>
     <jmock.version>2.8.2</jmock.version>
@@ -171,6 +172,7 @@
             <arg>-Xlint:unchecked</arg>
             <!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
           </compilerArgs>
+          <debug>true</debug>
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
@@ -180,7 +182,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-          <argLine>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</argLine>
+           <argLine>${debugger.configuration}</argLine>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
