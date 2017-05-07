@@ -11,7 +11,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>../cp-elements</module>
+    <!--<module>../cp-elements</module>-->
   </modules>
 
   <name>cp-core</name>
@@ -182,7 +182,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-           <argLine>${debugger.configuration}</argLine>
+          <argLine>${debugger.configuration}</argLine>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
@@ -196,5 +196,29 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>sign</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
