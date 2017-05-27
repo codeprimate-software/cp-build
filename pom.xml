@@ -12,13 +12,14 @@
 
   <modules>
     <!--<module>../cp-elements</module>-->
+    <!--<module>../cp-domain</module>-->
   </modules>
 
   <name>cp-core</name>
   <description>
     Codeprimate Core is the parent project for all Codeprimate software projects.
   </description>
-  <url>http://www.codeprimate.org/products/cp-core</url>
+  <url>http://www.codeprimate.org/projects/cp-core</url>
 
   <licenses>
  		<license>
