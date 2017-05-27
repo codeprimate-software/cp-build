@@ -94,6 +94,7 @@
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>3.4</easymock.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
+    <hamcrest.version>1.3</hamcrest.version>
     <java.version>1.8</java.version>
     <jmock.version>2.8.2</jmock.version>
     <junit.version>4.12</junit.version>
@@ -143,6 +144,11 @@
       <artifactId>assertj-core</artifactId>
       <version>${assertj.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>${hamcrest.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
