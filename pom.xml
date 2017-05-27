@@ -93,16 +93,24 @@
     <assertj.version>3.6.2</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>3.4</easymock.version>
+    <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <hamcrest.version>1.3</hamcrest.version>
+    <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <java.version>1.8</java.version>
     <jmock.version>2.8.2</jmock.version>
     <junit.version>4.12</junit.version>
     <lombok.version>1.16.16</lombok.version>
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.20</maven-surefire-report-plugin.version>
     <mockito.version>2.7.22</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -213,6 +221,159 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>code-analysis</id>
+      <!-- $ mvn -P code-analysis install site -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>custom-report</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>custom-check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <!--  implementation is needed only for Maven 2  -->
+                    <rule implementation="org.jacoco.maven.RuleConfiguration">
+                      <element>BUNDLE</element>
+                      <limits>
+                        <!--  implementation is needed only for Maven 2  -->
+                        <limit implementation="org.jacoco.report.check.Limit">
+                          <counter>COMPLEXITY</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.60</minimum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <debugger.configuration> </debugger.configuration>
+      </properties>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>${maven-surefire-report-plugin.version}</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>${maven-jxr-plugin.version}</version>
+            <configuration>
+              <javadocDir>${project.build.directory}/apidocs</javadocDir>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${maven-checkstyle-plugin.version}</version>
+            <configuration>
+              <configLocation>${basedir}/etc/checkstyle/config/codeprimate_checks.xml</configLocation>
+              <failsOnError>true</failsOnError>
+              <headerLocation>${basedir}/etc/checkstyle/config/java.header</headerLocation>
+              <suppressionsLocation>${basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
+              <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>${findbugs-maven-plugin.version}</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>${maven-pmd-plugin.version}</version>
+            <configuration>
+              <rulesets>
+                <ruleset>/rulesets/java/basic.xml</ruleset>
+                <ruleset>/rulesets/java/braces.xml</ruleset>
+                <ruleset>/rulesets/java/clone.xml</ruleset>
+                <ruleset>/rulesets/java/codesize.xml</ruleset>
+                <ruleset>/rulesets/java/comments.xml</ruleset>
+                <ruleset>/rulesets/java/coupling.xml</ruleset>
+                <ruleset>/rulesets/java/design.xml</ruleset>
+                <ruleset>/rulesets/java/empty.xml</ruleset>
+                <ruleset>/rulesets/java/finalizers.xml</ruleset>
+                <ruleset>/rulesets/java/imports.xml</ruleset>
+                <ruleset>/rulesets/java/javabeans.xml</ruleset>
+                <ruleset>/rulesets/java/junit.xml</ruleset>
+                <ruleset>/rulesets/java/naming.xml</ruleset>
+                <ruleset>/rulesets/java/optimizations.xml</ruleset>
+                <ruleset>/rulesets/java/strictexception.xml</ruleset>
+                <ruleset>/rulesets/java/strings.xml</ruleset>
+                <ruleset>/rulesets/java/sunsecure.xml</ruleset>
+                <ruleset>/rulesets/java/typeresolution.xml</ruleset>
+                <ruleset>/rulesets/java/unnecessary.xml</ruleset>
+                <ruleset>/rulesets/java/unusedcode.xml</ruleset>
+              </rulesets>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>prepare-release</id>
+      <!-- $ mvn -P prepare-release install site -->
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>release</id>
       <build>
