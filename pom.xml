@@ -342,6 +342,14 @@
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>${maven-jxr-plugin.version}</version>
+            <configuration>
+              <javadocDir>${project.build.directory}/apidocs</javadocDir>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
             <version>${maven-checkstyle-plugin.version}</version>
             <configuration>
@@ -350,14 +358,6 @@
               <headerLocation>${basedir}/etc/checkstyle/config/java.header</headerLocation>
               <suppressionsLocation>${basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
               <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jxr-plugin</artifactId>
-            <version>${maven-jxr-plugin.version}</version>
-            <configuration>
-              <javadocDir>${project.build.directory}/apidocs</javadocDir>
             </configuration>
           </plugin>
           <plugin>
