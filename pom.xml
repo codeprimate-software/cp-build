@@ -90,34 +90,34 @@
   </scm>
 
   <properties>
-    <asciidoctor-maven-plugin.version>1.5.5</asciidoctor-maven-plugin.version>
-    <asciidoctorj-pdf.version>1.5.0-alpha.15</asciidoctorj-pdf.version>
-    <assertj.version>3.10.0</assertj.version>
+    <asciidoctor-maven-plugin.version>1.5.6</asciidoctor-maven-plugin.version>
+    <asciidoctorj-pdf.version>1.5.0-alpha.16</asciidoctorj-pdf.version>
+    <assertj.version>3.11.1</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
-    <easymock.version>3.6.0</easymock.version>
+    <easymock.version>4.0.2</easymock.version>
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <hamcrest.version>1.3</hamcrest.version>
-    <jacoco-maven-plugin.version>0.8.1</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
     <java.version>1.8</java.version>
-    <jmock.version>2.8.4</jmock.version>
+    <jmock.version>2.9.0</jmock.version>
     <junit.version>4.12</junit.version>
-    <lombok.version>1.18.0</lombok.version>
-    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+    <lombok.version>1.18.6</lombok.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.20</maven-surefire-report-plugin.version>
-    <mockito.version>2.13.0</mockito.version>
+    <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
+    <mockito.version>2.25.0</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spotbugs-maven-plugin.version>3.1.5</spotbugs-maven-plugin.version>
-    <versions-maven-plugin.version>2.2</versions-maven-plugin.version>
+    <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
+    <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
