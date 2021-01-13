@@ -97,7 +97,7 @@
     <easymock.version>4.2</easymock.version>
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
-    <hamcrest.version>1.3</hamcrest.version>
+    <hamcrest.version>2.2</hamcrest.version>
     <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
     <java.version>1.8</java.version>
     <jmock.version>2.9.0</jmock.version>
@@ -158,7 +158,7 @@
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
+      <artifactId>hamcrest</artifactId>
       <version>${hamcrest.version}</version>
     </dependency>
     <dependency>
