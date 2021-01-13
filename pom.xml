@@ -100,7 +100,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
     <java.version>1.8</java.version>
-    <jmock.version>2.9.0</jmock.version>
+    <jmock.version>2.12.0</jmock.version>
     <junit.version>4.12</junit.version>
     <lombok.version>1.18.6</lombok.version>
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
