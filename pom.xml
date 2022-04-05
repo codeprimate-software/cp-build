@@ -89,7 +89,7 @@
   </scm>
 
   <properties>
-    <asciidoctor-maven-plugin.version>1.5.6</asciidoctor-maven-plugin.version>
+    <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
     <asciidoctorj-pdf.version>1.5.3</asciidoctorj-pdf.version>
     <assertj.version>3.22.0</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
