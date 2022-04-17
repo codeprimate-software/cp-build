@@ -97,7 +97,7 @@
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <hamcrest.version>2.2</hamcrest.version>
-    <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <java.version>1.8</java.version>
     <jmock.version>2.12.0</jmock.version>
     <junit.version>4.13.2</junit.version>
