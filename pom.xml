@@ -10,7 +10,7 @@
   <version>1.8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>cp-core</name>
+  <name>Codeprimate Core</name>
   <description>
     Codeprimate Core is the parent project for all Codeprimate software projects.
   </description>
