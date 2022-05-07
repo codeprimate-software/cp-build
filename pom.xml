@@ -16,15 +16,10 @@
   </description>
   <url>http://www.codeprimate.org/projects/cp-core</url>
 
-  <modules>
-    <!--<module>../cp-elements</module>-->
-    <!--<module>../cp-domain</module>-->
-  </modules>
-
   <licenses>
- 		<license>
- 			<name>Apache License, Version 2.0</name>
- 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
       <comments>
         Copyright 2011-present the original author or authors.
 
@@ -65,7 +60,7 @@
         the EULA @ ...
       </comments>
     </license>
- 	</licenses>
+  </licenses>
 
   <organization>
     <name>Codeprimate, LLC</name>
@@ -87,6 +82,11 @@
     <developerConnection>scm:git:git@github.com:codeprimate-software/cp-core.git</developerConnection>
     <url>https://github.com/codeprimate-software/cp-core</url>
   </scm>
+
+  <modules>
+    <!--<module>../cp-elements</module>-->
+    <!--<module>../cp-domain</module>-->
+  </modules>
 
   <properties>
     <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
