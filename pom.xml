@@ -388,10 +388,10 @@
             <artifactId>maven-checkstyle-plugin</artifactId>
             <version>${maven-checkstyle-plugin.version}</version>
             <configuration>
-              <configLocation>${basedir}/etc/checkstyle/config/codeprimate_checks.xml</configLocation>
+              <configLocation>${project.basedir}/etc/checkstyle/config/codeprimate_checks.xml</configLocation>
               <failsOnError>true</failsOnError>
-              <headerLocation>${basedir}/etc/checkstyle/config/java.header</headerLocation>
-              <suppressionsLocation>${basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
+              <headerLocation>${project.basedir}/etc/checkstyle/config/java.header</headerLocation>
+              <suppressionsLocation>${project.basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
               <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
             </configuration>
           </plugin>
