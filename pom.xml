@@ -437,6 +437,9 @@
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
             <version>${spotbugs-maven-plugin.version}</version>
+            <configuration>
+              <excludeFilterFile>${project.basedir}/etc/spotbugs/config/codeprimate_spotbugs_excludes.xml</excludeFilterFile>
+            </configuration>
           </plugin>
         </plugins>
       </reporting>
