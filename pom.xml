@@ -394,7 +394,7 @@
               <excludes>**\/package-info.*</excludes>
               <failsOnError>true</failsOnError>
               <headerLocation>${project.basedir}/etc/checkstyle/config/java.header</headerLocation>
-              <suppressionsLocation>${project.basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
+              <suppressionsLocation>${project.basedir}/etc/checkstyle/config/codeprimate_checkstyle_suppressions.xml</suppressionsLocation>
               <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
             </configuration>
           </plugin>
