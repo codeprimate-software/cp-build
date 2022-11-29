@@ -390,7 +390,7 @@
             <artifactId>maven-checkstyle-plugin</artifactId>
             <version>${maven-checkstyle-plugin.version}</version>
             <configuration>
-              <configLocation>${project.basedir}/etc/checkstyle/config/codeprimate_checks.xml</configLocation>
+              <configLocation>${project.basedir}/etc/checkstyle/config/codeprimate_checkstyle_checks.xml</configLocation>
               <excludes>**\/package-info.*</excludes>
               <failsOnError>true</failsOnError>
               <headerLocation>${project.basedir}/etc/checkstyle/config/java.header</headerLocation>
