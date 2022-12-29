@@ -206,7 +206,7 @@
           <version>${asciidoctor-maven-plugin.version}</version>
           <configuration>
             <attributes>
-              <basedocdir>${project.basedir}/src/main/asciidoc</basedocdir>
+              <basedocdir>${project.basedir}/src/docs/asciidoc</basedocdir>
               <doctype>book</doctype>
               <numbered>true</numbered>
               <sectnums>true</sectnums>
