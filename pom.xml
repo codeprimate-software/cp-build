@@ -96,7 +96,7 @@
     <asciidoctorj-pdf.version>2.3.4</asciidoctorj-pdf.version>
     <assertj.version>3.23.1</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
-    <easymock.version>5.0.1</easymock.version>
+    <easymock.version>5.1.0</easymock.version>
     <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
     <findsecbugs-maven-plugin.version>1.12.0</findsecbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
