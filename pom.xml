@@ -7,7 +7,7 @@
 
   <groupId>org.codeprimate</groupId>
   <artifactId>cp-core</artifactId>
-  <version>1.13.0-SNAPSHOT</version>
+  <version>1.13.0</version>
   <packaging>pom</packaging>
 
   <name>Codeprimate Core</name>
