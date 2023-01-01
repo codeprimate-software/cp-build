@@ -258,7 +258,6 @@
                   <icons>font</icons>
                   <linkcss>true</linkcss>
                   <sectanchors>true</sectanchors>
-                  <stylesheet>spring.css</stylesheet>
                 </attributes>
               </configuration>
             </execution>
