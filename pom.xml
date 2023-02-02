@@ -114,7 +114,7 @@
     <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.20.0</maven-pmd-plugin.version>
     <maven-release-plugin.version>3.0.0-M7</maven-release-plugin.version>
     <maven-site-plugin.version>4.0.0-M4</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
