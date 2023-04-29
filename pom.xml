@@ -101,7 +101,7 @@
     <findsecbugs-maven-plugin.version>1.12.0</findsecbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <hamcrest.version>2.2</hamcrest.version>
-    <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
     <java.version>1.8</java.version>
     <java-module-name/>
     <jmock.version>2.12.0</jmock.version>
