@@ -335,6 +335,15 @@
 
   <profiles>
     <profile>
+      <id>java-8</id>
+      <activation>
+        <jdk>(, 8]</jdk>
+      </activation>
+      <properties>
+        <mockito.version>4.11.0</mockito.version>
+      </properties>
+    </profile>
+    <profile>
       <id>code-analysis</id>
       <!-- $ mvn -P code-analysis install site -->
       <build>
