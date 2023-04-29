@@ -93,7 +93,7 @@
 
   <properties>
     <asciidoctor-maven-plugin.version>2.2.3</asciidoctor-maven-plugin.version>
-    <asciidoctorj-pdf.version>2.3.4</asciidoctorj-pdf.version>
+    <asciidoctorj-pdf.version>2.3.7</asciidoctorj-pdf.version>
     <assertj.version>3.24.2</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>5.1.0</easymock.version>
