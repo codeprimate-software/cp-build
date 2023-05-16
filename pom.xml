@@ -253,7 +253,6 @@
               <configuration>
                 <backend>html5</backend>
                 <outputDirectory>${project.basedir}/target/site/reference/html</outputDirectory>
-                <sourceHighlighter>prettify</sourceHighlighter>
                 <attributes>
                   <icons>font</icons>
                   <linkcss>true</linkcss>
@@ -269,7 +268,6 @@
               </goals>
               <configuration>
                 <backend>pdf</backend>
-                <sourceHighlighter>coderay</sourceHighlighter>
               </configuration>
             </execution>
           </executions>
