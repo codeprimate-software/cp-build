@@ -1,6 +1,6 @@
 [[codeprimate-build]]
 = Codeprimate Build
-:version: 2.0.0-M1
+:version: 2.0.0-SNAPSHOT
 
 
 The Codeprimate Build project (or simply, "The Build"; `org.codeprimate:cp-build`) is a Maven project
