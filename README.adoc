@@ -1,0 +1,51 @@
+[[codeprimate-build]]
+= Codeprimate Build
+:version: 2.0.0-SNAPSHOT
+
+
+The Codeprimate Build project (or simply, "The Build"; `org.codeprimate:cp-build`) is a Maven project
+used to build and release all Codeprimate software.
+
+[[requirements]]
+== Requirements
+
+1. Baseline is Java SE (JDK/JRE) 17.
+2. Built with Oracle JDK 17.0.7 2023-04-18 LTS
+
+[[license]]
+== License
+
+*Build* is licensed under the **Apache 2.0 Software License Agreement**.
+
+[[download]]
+== Download / Include
+
+.Maven
+====
+[source,xml]
+[subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>org.codeprimate</groupId>
+  <artifactId>cp-build</artifactId>
+  <version>{version}</version>
+</dependency>
+----
+====
+
+[[issues]]
+== Issues
+
+Please use https://github.com/codeprimate-software/cp-elements/issues[GitHub Issues] to report any bugs, improvements
+or feature requests.
+
+[[contributions]]
+== Contributions
+
+Thank you for your interests in contributing to the *Codeprimate Build* project.  A full *contributor license agreement*
+(CLA) along with details on how to contribute to this project will be provided shortly.
+
+In the meantime, please submit tickets using https://github.com/codeprimate-software/cp-build/issues[GitHub Issues]
+or PRs using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
+
+**Thank you!**
