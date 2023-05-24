@@ -36,7 +36,7 @@ used to build and release all Codeprimate software.
 [[issues]]
 == Issues
 
-Please use https://github.com/codeprimate-software/cp-elements/issues[GitHub Issues] to report any bugs, improvements
+Please use https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] to report any bugs, improvements
 or feature requests.
 
 [[contributions]]
