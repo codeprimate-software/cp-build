@@ -121,6 +121,7 @@
     <mockito.version>5.3.1</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-boot.version>3.1.0</spring-boot.version>
     <spotbugs-maven-plugin.version>4.7.3.4</spotbugs-maven-plugin.version>
     <testcontainers.version>1.18.3</testcontainers.version>
     <versions-maven-plugin.version>2.16.0</versions-maven-plugin.version>
@@ -174,6 +175,13 @@
         <artifactId>multithreadedtc</artifactId>
         <version>${multithreadedtc.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.testcontainers</groupId>
