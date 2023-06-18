@@ -78,9 +78,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:codeprimate-software/cp-core.git</connection>
-    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-core.git</developerConnection>
-    <url>https://github.com/codeprimate-software/cp-core</url>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-build.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-build</url>
   </scm>
 
   <modules>
