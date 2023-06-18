@@ -124,7 +124,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spotbugs-maven-plugin.version>4.7.3.4</spotbugs-maven-plugin.version>
     <testcontainers.version>1.18.3</testcontainers.version>
-    <versions-maven-plugin.version>2.15.0</versions-maven-plugin.version>
+    <versions-maven-plugin.version>2.16.0</versions-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
