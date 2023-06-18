@@ -105,7 +105,7 @@
     <java-module-name/>
     <junit.version>4.13.2</junit.version>
     <junit-bom.version>5.9.3</junit-bom.version>
-    <lombok.version>1.18.26</lombok.version>
+    <lombok.version>1.18.28</lombok.version>
     <maven-checkstyle-plugin.version>3.2.2</maven-checkstyle-plugin.version>
     <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
