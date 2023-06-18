@@ -86,9 +86,10 @@
   <modules>
     <!--<module>../cp-elements</module>-->
     <!--<module>../cp-domain</module>-->
-    <!--<module>../cp-desktop</module>-->
     <!--<module>../cp-extensions</module>-->
+    <!--<module>../cp-desktop</module>-->
     <!--<module>../cp-labs</module>-->
+    <!--<module>cp-build-tools</module>-->
   </modules>
 
   <properties>
