@@ -97,8 +97,6 @@
     <assertj.version>3.24.2</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>5.1.0</easymock.version>
-    <findbugs-maven-plugin.version>3.0.5</findbugs-maven-plugin.version>
-    <findsecbugs-maven-plugin.version>1.12.0</findsecbugs-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
     <java.version>17</java.version>
@@ -443,28 +441,12 @@
               </rulesets>
             </configuration>
           </plugin>
-<!--
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>${findbugs-maven-plugin.version}</version>
-          </plugin>
--->
           <plugin>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
             <version>${spotbugs-maven-plugin.version}</version>
             <configuration>
               <excludeFilterFile>${project.basedir}/etc/spotbugs/config/codeprimate_spotbugs_excludes.xml</excludeFilterFile>
-<!--
-              <plugins>
-                <plugin>
-                  <groupId>com.h3xstream.findsecbugs</groupId>
-                  <artifactId>findsecbugs-plugin</artifactId>
-                  <version>${findsecbugs-maven-plugin.version}</version>
-                </plugin>
-              </plugins>
--->
             </configuration>
           </plugin>
         </plugins>
