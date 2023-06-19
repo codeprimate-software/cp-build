@@ -44,6 +44,7 @@
 
   <properties>
     <java-module-name>cp.build.tools</java-module-name>
+    <maven.version>3.9.2</maven.version>
     <spring-shell.version>3.1.1</spring-shell.version>
   </properties>
 
@@ -60,6 +61,11 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>${maven.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
