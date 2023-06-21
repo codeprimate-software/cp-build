@@ -77,6 +77,18 @@ public class MavenProject extends Project {
   }
 
   /**
+   * Determines whether the given {@link File} is a {@literal Maven pom.xml file}.
+   *
+   * @param pom {@link File} to evaluate as a {@literal Maven pom.xml file}.
+   * @return a boolean value indicating whether the given {@link File} is a {@literal Maven pom.xml file}.
+   * @see #isPomXml(File)
+   * @see java.io.File
+   */
+  public static boolean isMavenPom(@Nullable File pom) {
+    return isPomXml(pom);
+  }
+
+  /**
    * Determine whether the given {@link File} refers to a {@link File#isDirectory() directory} containing a
    * {@link File#isFile() Maven POM file} or is a {@link File#isFile() Maven POM file}.
    *
