@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import jakarta.validation.constraints.NotNull;
+
 /**
  * Abstract utility class containing common functions.
  *
@@ -62,6 +64,20 @@ public abstract class Utils {
 
   public static @NonNull <T> Predicate<T> nullSafePredicate(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> false;
+  }
+
+  @SuppressWarnings("all")
+  public static @NotNull String nullSafeFormatStringToLength(@Nullable String target, int length) {
+
+    String nonNullTarget = nullSafeTrimmedString(target);
+
+    if (nonNullTarget.length() < length) {
+      for (int size = nonNullTarget.length(); size < length; size++) {
+        nonNullTarget += EMPTY_STRING;
+      }
+    }
+
+    return nonNullTarget.substring(0, length);
   }
 
   public static @NonNull String nullSafeTrimmedString(@Nullable String target) {
