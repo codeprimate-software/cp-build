@@ -85,7 +85,7 @@ public abstract class Utils {
   }
 
   public static @NonNull <T> T requireObject(T object, String message, Object... arguments) {
-    return requireObject(object, () -> String.format(message, arguments));
+    return requireObject(object, toSupplier(String.format(message, arguments)));
   }
 
   public static @NonNull <T> T requireObject(T object, Supplier<String> message) {
@@ -98,7 +98,7 @@ public abstract class Utils {
   }
 
   public static @NonNull <T> T requireState(T object, String message, Object... arguments) {
-    return requireState(object, () -> String.format(message, arguments));
+    return requireState(object, toSupplier(String.format(message, arguments)));
   }
 
   public static @NonNull <T> T requireState(T object, Supplier<String> message) {
@@ -108,5 +108,9 @@ public abstract class Utils {
     }
 
     return object;
+  }
+
+  public static @NonNull <T> Supplier<T> toSupplier(@Nullable T target) {
+    return () -> target;
   }
 }
