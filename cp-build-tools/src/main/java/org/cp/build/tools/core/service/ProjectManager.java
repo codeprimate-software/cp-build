@@ -66,6 +66,14 @@ public class ProjectManager implements Iterable<Project> {
     return Optional.ofNullable(getSession().getCurrentProject());
   }
 
+  @SuppressWarnings("all")
+  public @NonNull Project setCurrentProject(@NonNull Project project) {
+
+    return getSession()
+      .setProject(Utils.requireObject(project, "Project to activate is required"))
+      .getCurrentProject();
+  }
+
   @Override
   public Iterator<Project> iterator() {
     return list().iterator();
