@@ -152,10 +152,10 @@ public class MavenProject extends Project {
   @Override
   public Artifact getArtifact() {
 
-    org.apache.maven.artifact.Artifact artifact = getMavenProject().getArtifact();
+    org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
-    return Artifact.from(this, artifact.getId())
-      .withGroupId(artifact.getGroupId());
+    return Artifact.from(this, mavenProject.getArtifactId())
+      .withGroupId(mavenProject.getGroupId());
   }
 
   @Override
