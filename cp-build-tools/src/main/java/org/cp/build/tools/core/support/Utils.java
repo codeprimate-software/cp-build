@@ -26,9 +26,16 @@ import java.io.File;
 @SuppressWarnings("unused")
 public abstract class Utils {
 
+  public static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
+
   public static final File[] EMPTY_FILE_ARRAY = new File[0];
 
   public static final String EMPTY_STRING = "";
+  public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+  public static String newLine() {
+    return LINE_SEPARATOR;
+  }
 
   public static File[] nullSafeFileArray(File[] fileArray) {
     return fileArray != null ? fileArray : EMPTY_FILE_ARRAY;
