@@ -115,11 +115,14 @@ public class MavenProject extends Project {
 
     pom = resolvePomXml(assertMavenPomIsPresent(pom));
 
-    MavenXpp3Reader reader = new MavenXpp3Reader();
+    try (FileReader pomFileReader = new FileReader(pom)) {
 
-    try (FileReader pomReader = new FileReader(pom)) {
-      Model model = reader.read(pomReader);
-      return new MavenProject(new org.apache.maven.project.MavenProject(model));
+      Model model = new MavenXpp3Reader().read(pomFileReader);
+
+      org.apache.maven.project.MavenProject mavenProject = new org.apache.maven.project.MavenProject(model);
+
+      return new MavenProject(mavenProject)
+        .inWorkingDirectory(pom.getParentFile());
     }
     catch (Exception cause) {
       String message = String.format("Failed to read Maven POM from file [%s]", pom);
