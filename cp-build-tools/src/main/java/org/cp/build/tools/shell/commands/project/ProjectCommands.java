@@ -18,9 +18,12 @@ package org.cp.build.tools.shell.commands.project;
 import java.io.File;
 
 import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.support.Utils;
 import org.cp.build.tools.core.model.Session;
+import org.cp.build.tools.core.support.Utils;
+import org.springframework.lang.NonNull;
+import org.springframework.shell.Availability;
 import org.springframework.shell.command.annotation.Command;
+import org.springframework.shell.command.annotation.CommandAvailability;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -48,12 +51,14 @@ public class ProjectCommands {
   }
 
   @Command(command = "current")
+  @CommandAvailability(provider = "projectCommandsAvailability")
   public String current() {
     return String.format("Current Project [%s]", getSession().getCurrentProject());
   }
 
-  @Command(command = "describe")
   @SuppressWarnings("all")
+  @Command(command = "describe")
+  @CommandAvailability(provider = "projectCommandsAvailability")
   public String describe() {
 
     Project project = getCurrentProject();
@@ -66,12 +71,19 @@ public class ProjectCommands {
   }
 
   @Command(command = "set", description = "Sets the current Project")
-  public String set(File location) {
+  public String set(@NonNull File location) {
 
     Project project = Project.from(location);
 
     getSession().setProject(project);
 
     return String.format("Project set to [%s]", project);
+  }
+
+  public Availability projectCommandsAvailability() {
+
+    return getSession().isProjectSet()
+      ? Availability.available()
+      : Availability.unavailable("the current Project is not set");
   }
 }
