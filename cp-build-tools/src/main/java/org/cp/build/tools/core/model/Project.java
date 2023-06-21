@@ -112,20 +112,23 @@ public class Project implements Comparable<Project> {
     return getName().compareTo(project.getName());
   }
 
-  public Project buildsArtifact(Artifact artifact) {
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T buildsArtifact(@Nullable Artifact artifact) {
     setArtifact(artifact);
-    return this;
+    return (T) this;
   }
 
-  public Project describedAs(String description) {
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T describedAs(@Nullable String description) {
     setDescription(description);
-    return this;
+    return (T) this;
   }
 
-  public Project inWorkingDirectory(File directory) {
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T inWorkingDirectory(File directory) {
     assertThat(directory).describedAs("File [%s] must be a directory", directory).isDirectory();
     setDirectory(directory);
-    return this;
+    return (T) this;
   }
 
   @Override
@@ -193,15 +196,15 @@ public class Project implements Comparable<Project> {
     protected static final String VERSION_NUMBER_SEPARATOR = "\\.";
     protected static final String VERSION_QUALIFIER_SEPARATOR = "-";
 
-    public static Version of(int major, int minor) {
+    public static @NonNull Version of(int major, int minor) {
       return new Version(major, minor, DEFAULT_MAINTENANCE_VERSION);
     }
 
-    public static Version of(int major, int minor, int maintenance) {
+    public static @NonNull Version of(int major, int minor, int maintenance) {
       return new Version(major, minor, maintenance);
     }
 
-    public static Version parse(String version) {
+    public static @NonNull Version parse(@NonNull String version) {
 
       assertThat(version)
         .describedAs("Version string [%s] to parse is required")
@@ -229,7 +232,7 @@ public class Project implements Comparable<Project> {
         }
         case 3 -> {
           return new Version(Integer.parseInt(versionNumbers[0]), Integer.parseInt(versionNumbers[1]),
-            Integer.parseInt(versionNumbers[2]));
+            Integer.parseInt(versionNumbers[2])).withQualifier(versionQualifier);
         }
       }
 
@@ -267,7 +270,7 @@ public class Project implements Comparable<Project> {
       return SNAPSHOT.equalsIgnoreCase(getQualifier());
     }
 
-    public Version withQualifier(String qualifier) {
+    public @NonNull Version withQualifier(@Nullable String qualifier) {
       setQualifier(qualifier);
       return this;
     }
