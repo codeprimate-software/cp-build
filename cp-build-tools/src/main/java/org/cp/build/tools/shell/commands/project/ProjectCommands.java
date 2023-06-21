@@ -22,9 +22,11 @@ import java.util.Optional;
 import org.cp.build.tools.core.model.Project;
 import org.cp.build.tools.core.service.ProjectManager;
 import org.cp.build.tools.core.support.Utils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.shell.Availability;
+import org.springframework.shell.AvailabilityProvider;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.CommandAvailability;
 
@@ -121,10 +123,11 @@ public class ProjectCommands {
     return String.format("Project set to [%s]", project);
   }
 
-  public @NonNull Availability projectCommandsAvailability() {
+  @NonNull @Bean
+  AvailabilityProvider projectCommandsAvailability() {
 
     return getCurrentProject().isPresent()
-      ? Availability.available()
-      : Availability.unavailable("the current Project is not set; call 'project set <location>'");
+      ? Availability::available
+      : () -> Availability.unavailable("the current Project is not set; call 'project set <location>'");
   }
 }
