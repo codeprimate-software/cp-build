@@ -22,6 +22,8 @@ import java.net.URI;
 
 import org.cp.build.tools.core.model.maven.MavenProject;
 import org.cp.build.tools.core.support.Utils;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -33,6 +35,8 @@ import lombok.Setter;
  * Abstract Data Type (ADT) used to model a [Codeprimate] software project.
  *
  * @author John Blum
+ * @see java.io.File
+ * @see java.net.URL
  * @since 2.0.0
  */
 @Getter
@@ -42,11 +46,19 @@ import lombok.Setter;
 @SuppressWarnings("unused")
 public class Project {
 
-  public static Project from(File file) {
-
-    assertThat(file)
-      .describedAs("[%s] must be a file", file)
-      .isFile();
+  /**
+   * Factory method used to construct a new {@link Project} from the given {@link File}.
+   * <p/>
+   * In this case, the {@link File} may either refer to the {@link File working directory} of the {@link Project}
+   * or a {@literal Maven POM} specifying the metadata for the {@link Project}.
+   *
+   * @param file {@link File} referring to the {@link File working directory} containing {@link File source files}
+   * for the {@link Project} or a {@literal Maven POM} specifying the {@link Project} makeup and metadata.
+   * @return a new {@link Project}.
+   * @throws IllegalArgumentException if a {@link Project} cannot be created from the given {@link File}.
+   * @see java.io.File
+   */
+  public static @NonNull Project from(@NonNull File file) {
 
     if (MavenProject.isMavenPomPresent(file)) {
       return MavenProject.fromMavenPom(file);
@@ -55,7 +67,14 @@ public class Project {
     throw new IllegalArgumentException(String.format("Cannot create Project from file [%s]", file));
   }
 
-  public static Project from(String name) {
+  /**
+   * Factory method used to construct a new {@link Project} with the given, required {@link String name}.
+   *
+   * @param name {@link String} specifying the {@literal name} of the new {@link Project}.
+   * @return a new {@link Project} with the given {@link String name}.
+   * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
+   */
+  public static @NonNull Project from(@NonNull String name) {
 
     assertThat(name)
       .describedAs("Name [%s] of Project is required", name)
@@ -86,6 +105,11 @@ public class Project {
     return false;
   }
 
+  public Project buildsArtifact(Artifact artifact) {
+    setArtifact(artifact);
+    return this;
+  }
+
   public Project describedAs(String description) {
     setDescription(description);
     return this;
@@ -94,11 +118,6 @@ public class Project {
   public Project inWorkingDirectory(File directory) {
     assertThat(directory).describedAs("File [%s] must be a directory", directory).isDirectory();
     setDirectory(directory);
-    return this;
-  }
-
-  public Project producingArtifact(Artifact artifact) {
-    setArtifact(artifact);
     return this;
   }
 
@@ -113,7 +132,7 @@ public class Project {
 
     protected static final String ARTIFACT_COMPONENT_SEPARATOR = ":";
 
-    public static Artifact from(Project project, String id) {
+    public static @NonNull Artifact from(@NonNull Project project, @NonNull String id) {
 
       assertThat(project).describedAs("Project is required").isNotNull();
       assertThat(id).describedAs("Artifact ID [%s] is required", id).isNotBlank();
@@ -139,7 +158,7 @@ public class Project {
       return getProject().getVersion();
     }
 
-    public Artifact withGroupId(String groupId) {
+    public @NonNull Artifact withGroupId(@Nullable String groupId) {
       setGroupId(groupId);
       return this;
     }
