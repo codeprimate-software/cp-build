@@ -77,7 +77,7 @@ public abstract class Utils {
       }
     }
 
-    return nonNullTarget.substring(0, length);
+    return nonNullTarget.substring(0, Math.min(nonNullTarget.length(), length));
   }
 
   public static @NonNull String nullSafeTrimmedString(@Nullable String target) {
