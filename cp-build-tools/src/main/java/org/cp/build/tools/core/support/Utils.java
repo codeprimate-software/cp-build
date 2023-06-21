@@ -46,16 +46,16 @@ public abstract class Utils {
     return LINE_SEPARATOR;
   }
 
-  public static @NonNull File[] nullSafeFileArray(@Nullable File[] fileArray) {
-    return fileArray != null ? fileArray : EMPTY_FILE_ARRAY;
-  }
-
   public static boolean nullSafeIsDirectory(@Nullable Object target) {
     return (target instanceof File file) && file.isDirectory();
   }
 
   public static boolean nullSafeIsFile(@Nullable Object target) {
     return (target instanceof File file) && file.isFile();
+  }
+
+  public static @NonNull File[] nullSafeFileArray(@Nullable File[] fileArray) {
+    return fileArray != null ? fileArray : EMPTY_FILE_ARRAY;
   }
 
   public static @NonNull <T> Iterable<T> nullSafeIterable(@Nullable Iterable<T> iterable) {
@@ -67,17 +67,17 @@ public abstract class Utils {
   }
 
   @SuppressWarnings("all")
-  public static @NotNull String nullSafeFormatStringToLength(@Nullable String target, int length) {
+  public static @NotNull String nullSafeFormatString(@Nullable String target, int length) {
 
-    String nonNullTarget = nullSafeTrimmedString(target);
+    String nonNullString = nullSafeTrimmedString(target);
 
-    if (nonNullTarget.length() < length) {
-      for (int size = nonNullTarget.length(); size < length; size++) {
-        nonNullTarget += EMPTY_STRING;
+    if (nonNullString.length() < length) {
+      for (int size = nonNullString.length(); size < length; size++) {
+        nonNullString += EMPTY_STRING;
       }
     }
 
-    return nonNullTarget.substring(0, Math.min(nonNullTarget.length(), length));
+    return nonNullString.substring(0, Math.min(nonNullString.length(), length));
   }
 
   public static @NonNull String nullSafeTrimmedString(@Nullable String target) {
