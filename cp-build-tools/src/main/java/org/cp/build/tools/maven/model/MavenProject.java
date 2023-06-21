@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.model.maven;
+package org.cp.build.tools.maven.model;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -39,6 +39,7 @@ import lombok.Getter;
  * @see java.io.File
  * @see java.net.URI
  * @see org.cp.build.tools.core.model.Project
+ * @see org.apache.maven.model.Model
  * @see org.apache.maven.project.MavenProject
  * @since 2.0.0
  */

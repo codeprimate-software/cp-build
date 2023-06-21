@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.net.URI;
 
-import org.cp.build.tools.core.model.maven.MavenProject;
+import org.cp.build.tools.maven.model.MavenProject;
 import org.cp.build.tools.core.support.Utils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -56,6 +56,7 @@ public class Project {
    * for the {@link Project} or a {@literal Maven POM} specifying the {@link Project} makeup and metadata.
    * @return a new {@link Project}.
    * @throws IllegalArgumentException if a {@link Project} cannot be created from the given {@link File}.
+   * @see org.cp.build.tools.maven.model.MavenProject
    * @see java.io.File
    */
   public static @NonNull Project from(@NonNull File file) {
