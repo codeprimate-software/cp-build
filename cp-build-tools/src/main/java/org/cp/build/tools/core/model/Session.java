@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.shell.session;
+package org.cp.build.tools.core.model;
 
 import java.util.Objects;
 
-import org.cp.build.tools.core.model.Project;
 import org.cp.build.tools.core.support.Utils;
 import org.slf4j.Logger;
 import org.springframework.lang.NonNull;
@@ -29,7 +28,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Spring {@link Service} bean modeling a user's current shell session.
+ * Abstract Data Type (ADT) and Spring {@link Service} bean modeling a user's current, interactive, shell session.
  *
  * @author John Blum
  * @see org.cp.build.tools.core.model.Project
@@ -40,12 +39,12 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Service
 @SuppressWarnings("unused")
-public class ShellSession {
+public class Session {
 
   @Nullable
   private volatile Project currentProject;
 
-  public ShellSession() {
+  public Session() {
 
     try {
       this.currentProject = Project.from(Utils.WORKING_DIRECTORY);
@@ -71,7 +70,7 @@ public class ShellSession {
     return Objects.nonNull(getCurrentProject());
   }
 
-  public @NonNull ShellSession setProject(@Nullable Project project) {
+  public @NonNull Session setProject(@Nullable Project project) {
     this.currentProject = project;
     return this;
   }

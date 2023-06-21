@@ -19,7 +19,7 @@ import java.io.File;
 
 import org.cp.build.tools.core.model.Project;
 import org.cp.build.tools.core.support.Utils;
-import org.cp.build.tools.shell.session.ShellSession;
+import org.cp.build.tools.core.model.Session;
 import org.springframework.shell.command.annotation.Command;
 
 import lombok.AccessLevel;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author John Blum
  * @see org.cp.build.tools.core.model.Project
- * @see org.cp.build.tools.shell.session.ShellSession
+ * @see org.cp.build.tools.core.model.Session
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
@@ -41,15 +41,15 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class ProjectCommands {
 
-  private final ShellSession shellSession;
+  private final Session session;
 
   protected Project getCurrentProject() {
-    return getShellSession().getCurrentProject();
+    return getSession().getCurrentProject();
   }
 
   @Command(command = "current")
   public String current() {
-    return String.format("Current Project [%s]", getShellSession().getCurrentProject());
+    return String.format("Current Project [%s]", getSession().getCurrentProject());
   }
 
   @Command(command = "describe")
@@ -70,7 +70,7 @@ public class ProjectCommands {
 
     Project project = Project.from(location);
 
-    getShellSession().setProject(project);
+    getSession().setProject(project);
 
     return String.format("Project set to [%s]", project);
   }
