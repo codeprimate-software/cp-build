@@ -16,11 +16,14 @@
 package org.cp.build.tools.shell.commands.project;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
 
 import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.model.Session;
+import org.cp.build.tools.core.service.ProjectManager;
 import org.cp.build.tools.core.support.Utils;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.shell.Availability;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.CommandAvailability;
@@ -38,22 +41,36 @@ import lombok.RequiredArgsConstructor;
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
-@RequiredArgsConstructor
-@Getter(AccessLevel.PROTECTED)
 @Command(command = "project")
+@Getter(AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class ProjectCommands {
 
-  private final Session session;
+  private final ProjectManager projectManager;
 
-  protected Project getCurrentProject() {
-    return getSession().getCurrentProject();
+  protected boolean isCurrentProject(@Nullable Project project) {
+    return getCurrentProject().filter(currentProject -> currentProject.equals(project)).isPresent();
+  }
+
+  protected Optional<Project> getCurrentProject() {
+    return getProjectManager().getCurrentProject();
+  }
+
+  protected @NonNull Project setCurrentProject(@NonNull Project project) {
+    return getProjectManager().setCurrentProject(project);
+  }
+
+  protected List<Project> projects() {
+    return getProjectManager().list();
   }
 
   @Command(command = "current")
-  @CommandAvailability(provider = "projectCommandsAvailability")
   public String current() {
-    return String.format("Current Project [%s]", getSession().getCurrentProject());
+
+    return getCurrentProject()
+      .map(project -> String.format("Current Project is [%s]", project))
+      .orElseGet(() -> "Project not set");
   }
 
   @SuppressWarnings("all")
@@ -61,29 +78,53 @@ public class ProjectCommands {
   @CommandAvailability(provider = "projectCommandsAvailability")
   public String describe() {
 
-    Project project = getCurrentProject();
-
-    return "Project Name: ".concat(project.getName()).concat(Utils.newLine())
-      .concat("Description: ").concat(project.getDescription()).concat(Utils.newLine())
-      .concat("Version: ").concat(project.getVersion().toString()).concat(Utils.newLine())
-      .concat("Source Repository: ").concat(project.getSourceRepository().toString()).concat(Utils.newLine())
-      .concat("Artifact: ").concat(project.getArtifact().toString()).concat(Utils.newLine());
+    return getCurrentProject()
+      .map(project -> "Project Name: ".concat(project.getName()).concat(Utils.newLine())
+        .concat("Description: ").concat(project.getDescription()).concat(Utils.newLine())
+        .concat("Version: ").concat(project.getVersion().toString()).concat(Utils.newLine())
+        .concat("Source Repository: ").concat(project.getSourceRepository().toString()).concat(Utils.newLine())
+        .concat("Artifact: ").concat(project.getArtifact().toString()).concat(Utils.newLine()))
+      .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
 
-  @Command(command = "set", description = "Sets the current Project")
+  @Command(command = "list")
+  public String list() {
+
+    int length = projects().stream()
+      .map(Project::getName)
+      .map(String::length)
+      .reduce(Math::max)
+      .orElse(25);
+
+    StringBuilder output = new StringBuilder();
+
+    for (Project project : projects()) {
+
+      String projectName = project.getName();
+
+      String paddedProjectName = Utils.nullSafeFormatStringToLength(projectName, length);
+
+      String resolvedProjectName = isCurrentProject(project) ? "[*] ".concat(paddedProjectName)
+        : "[ ] ".concat(paddedProjectName);
+
+      output.append(resolvedProjectName).append(" - ").append(project.getDirectory()).append(Utils.newLine());
+    }
+
+    return output.toString();
+  }
+
+  @Command(command = "set", description = "Sets the current Project to the given location")
   public String set(@NonNull File location) {
 
-    Project project = Project.from(location);
-
-    getSession().setProject(project);
+    Project project = setCurrentProject(getProjectManager().resolveByLocation(location));
 
     return String.format("Project set to [%s]", project);
   }
 
-  public Availability projectCommandsAvailability() {
+  public @NonNull Availability projectCommandsAvailability() {
 
-    return getSession().isProjectSet()
+    return getCurrentProject().isPresent()
       ? Availability.available()
-      : Availability.unavailable("the current Project is not set");
+      : Availability.unavailable("the current Project is not set; call 'project set <location>'");
   }
 }
