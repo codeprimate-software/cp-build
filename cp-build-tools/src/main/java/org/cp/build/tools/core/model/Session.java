@@ -28,7 +28,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Abstract Data Type (ADT) and Spring {@link Service} bean modeling a user's current, interactive, shell session.
+ * Abstract Data Type (ADT) and Spring {@link Service} bean modeling a user's current, interactive session
+ * with the Codeprimate Build Tools shell.
  *
  * @author John Blum
  * @see org.cp.build.tools.core.model.Project
@@ -44,22 +45,10 @@ public class Session {
   @Nullable
   private volatile Project currentProject;
 
-  public Session() {
-
-    try {
-      this.currentProject = Project.from(Utils.WORKING_DIRECTORY);
-    }
-    catch (IllegalArgumentException cause) {
-      getLogger().warn("Failed to set current Project [{}]", cause.getMessage());
-      this.currentProject = null;
-
-    }
-  }
-
   @PostConstruct
-  public void afterInitialization() {
+  public void onInitialization() {
     getLogger().info("User is [{}]", getUsername());
-    getLogger().info("Current working directory [{}]", getWorkingDirectory());
+    getLogger().info("Current working directory is [{}]", getWorkingDirectory());
   }
 
   protected Logger getLogger() {

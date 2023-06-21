@@ -28,13 +28,15 @@ import java.util.stream.StreamSupport;
 import org.cp.build.tools.core.model.Project;
 import org.cp.build.tools.core.model.Session;
 import org.cp.build.tools.core.support.Utils;
+import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Spring {@link Service} bean used to manage {@link Project Projects}
@@ -45,15 +47,44 @@ import lombok.RequiredArgsConstructor;
  * @see org.springframework.stereotype.Service
  * @since 2.0.0
  */
+@Slf4j
 @Service
 @Getter(AccessLevel.PROTECTED)
-@RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class ProjectManager implements Iterable<Project> {
 
   private final Session session;
 
   private final Set<Project> projects = new ConcurrentSkipListSet<>();
+
+  /**
+   * Constructs a new {@link ProjectManager} initialized with the given, required {@link Session}.
+   *
+   * @param session {@link Session object} managing the current state of the user's interactive session
+   * with the shell.
+   * @throws IllegalArgumentException if the given {@link Session} is {@literal null}.
+   * @see org.cp.build.tools.core.model.Session
+   */
+  public ProjectManager(@NonNull Session session) {
+    this.session = Utils.requireObject(session, "Session is required");
+  }
+
+  @PostConstruct
+  public void afterInitialization() {
+
+    try {
+      Project project = Project.from(Utils.WORKING_DIRECTORY);
+      this.projects.add(project);
+      getSession().setProject(project);
+    }
+    catch (IllegalArgumentException cause) {
+      getLogger().warn("Failed to set current Project [{}]", cause.getMessage());
+    }
+  }
+
+  protected Logger getLogger() {
+    return log;
+  }
 
   public Optional<Project> findByName(String projectName) {
 
