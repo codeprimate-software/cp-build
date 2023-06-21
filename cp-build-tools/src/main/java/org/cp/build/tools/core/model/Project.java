@@ -20,8 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.net.URI;
 
-import org.cp.build.tools.maven.model.MavenProject;
 import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.maven.model.MavenProject;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -36,6 +36,7 @@ import lombok.Setter;
  *
  * @author John Blum
  * @see java.io.File
+ * @see java.lang.Comparable
  * @see java.net.URL
  * @since 2.0.0
  */
@@ -44,7 +45,7 @@ import lombok.Setter;
 @EqualsAndHashCode(of = { "directory", "name" })
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class Project {
+public class Project implements Comparable<Project> {
 
   /**
    * Factory method used to construct a new {@link Project} from the given {@link File}.
@@ -104,6 +105,11 @@ public class Project {
 
   public boolean isMaven() {
     return false;
+  }
+
+  @Override
+  public int compareTo(@NonNull Project project) {
+    return getName().compareTo(project.getName());
   }
 
   public Project buildsArtifact(Artifact artifact) {
