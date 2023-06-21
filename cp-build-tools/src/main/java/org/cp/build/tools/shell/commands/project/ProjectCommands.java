@@ -16,19 +16,27 @@
 package org.cp.build.tools.shell.commands.project;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.cp.build.tools.core.model.Project;
 import org.cp.build.tools.core.service.ProjectManager;
 import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.maven.model.MavenProject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.shell.Availability;
 import org.springframework.shell.AvailabilityProvider;
+import org.springframework.shell.CompletionProposal;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.CommandAvailability;
+import org.springframework.shell.command.annotation.OptionValues;
+import org.springframework.shell.completion.CompletionProvider;
+import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -52,7 +60,10 @@ public class ProjectCommands {
   private final ProjectManager projectManager;
 
   protected boolean isCurrentProject(@Nullable Project project) {
-    return getCurrentProject().filter(currentProject -> currentProject.equals(project)).isPresent();
+
+    return getCurrentProject()
+      .filter(currentProject -> currentProject.equals(project))
+      .isPresent();
   }
 
   protected Optional<Project> getCurrentProject() {
@@ -67,17 +78,17 @@ public class ProjectCommands {
     return getProjectManager().list();
   }
 
-  @Command(command = "current")
+  @Command(command = "current", description = "Displays the current project")
   public String current() {
 
     return getCurrentProject()
-      .map(project -> String.format("Current Project is [%s]", project))
+      .map(project -> String.format("Current project is [%s] located in [%s]", project, project.getDirectory()))
       .orElseGet(() -> "Project not set");
   }
 
   @SuppressWarnings("all")
-  @Command(command = "describe")
-  @CommandAvailability(provider = "projectCommandsAvailability")
+  @Command(command = "describe", description = "Describes the current project with metadata about the project")
+  @CommandAvailability(provider = "projectCommandsAvailabilityProvider")
   public String describe() {
 
     return getCurrentProject()
@@ -89,7 +100,7 @@ public class ProjectCommands {
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
 
-  @Command(command = "list")
+  @Command(command = "list", description = "List all available projects")
   public String list() {
 
     int length = projects().stream()
@@ -104,30 +115,57 @@ public class ProjectCommands {
 
       String projectName = project.getName();
 
-      String paddedProjectName = Utils.nullSafeFormatStringToLength(projectName, length);
+      String formattedProjectName = Utils.nullSafeFormatString(projectName, length);
 
-      String resolvedProjectName = isCurrentProject(project) ? "[*] ".concat(paddedProjectName)
-        : "[ ] ".concat(paddedProjectName);
+      String resolvedProjectName = isCurrentProject(project) ? "[*] ".concat(formattedProjectName)
+        : "[ ] ".concat(formattedProjectName);
 
-      output.append(resolvedProjectName).append(" - ").append(project.getDirectory()).append(Utils.newLine());
+      output.append(resolvedProjectName).append(" | ").append(project.getDirectory()).append(Utils.newLine());
     }
 
     return output.toString();
   }
 
   @Command(command = "set", description = "Sets the current Project to the given location")
-  public String set(@NonNull File location) {
+  public String set(@NonNull @OptionValues(provider = "projectSetCompletionProvider") File location) {
 
     Project project = setCurrentProject(getProjectManager().resolveByLocation(location));
 
     return String.format("Project set to [%s]", project);
   }
 
+  @Command(command = "use", description = "Sets the current project based on name")
+  public String use(@NonNull String projectName) {
+
+    return getProjectManager().findByName(projectName)
+      .map(getProjectManager()::setCurrentProject)
+      .map(project -> String.format("Project set to [%s]", project))
+      .orElseGet(() -> String.format("Project with name [%s] not found", projectName));
+  }
+
   @NonNull @Bean
-  AvailabilityProvider projectCommandsAvailability() {
+  AvailabilityProvider projectCommandsAvailabilityProvider() {
 
     return getCurrentProject().isPresent()
       ? Availability::available
-      : () -> Availability.unavailable("the current Project is not set; call 'project set <location>'");
+      : () -> Availability.unavailable("the current project is not set; please call 'project set <location>'");
+  }
+
+  @NonNull @Bean
+  CompletionProvider projectSetCompletionProvider() {
+
+    return completionContext -> {
+
+      String currentWord = completionContext.currentWord();
+
+      File currentFile = StringUtils.hasText(currentWord) ? new File(currentWord) : Utils.WORKING_DIRECTORY;
+
+      FileFilter fileFilter = file -> Utils.nullSafeIsDirectory(file) || MavenProject.isMavenPom(file);
+
+      return Arrays.stream(Utils.nullSafeFileArray(currentFile.listFiles(fileFilter)))
+        .map(File::getName)
+        .map(CompletionProposal::new)
+        .collect(Collectors.toList());
+    };
   }
 }
