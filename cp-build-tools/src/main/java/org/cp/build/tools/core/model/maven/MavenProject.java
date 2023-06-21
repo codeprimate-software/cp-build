@@ -17,14 +17,15 @@ package org.cp.build.tools.core.model.maven;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileReader;
 import java.net.URI;
 import java.util.Arrays;
 
-import org.apache.maven.project.DefaultProjectBuilder;
-import org.apache.maven.project.DefaultProjectBuildingRequest;
-import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.cp.build.tools.core.model.Project;
 import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.maven.support.MavenPomNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -49,6 +50,30 @@ public class MavenProject extends Project {
 
   protected static final FileFilter POM_XML_FILE_FILTER = file ->
     Utils.nullSafeIsFile(file) && file.getAbsolutePath().endsWith(POM_XML);
+
+  /**
+   * Assertion used to require the presence of a {@literal Maven POM} relative to the given {@link File} reference.
+   *
+   * @param location {@link File} used to locate and resolve the {@literal Maven POM}
+   * from which a {@link MavenProject} can be constructed.
+   * @return the given {@link File}.
+   * @throws MavenPomNotFoundException if a {@literal Maven POM} {@link File} cannot be found
+   * relative to the given {@link File}.
+   * @see #isMavenPomPresent(File)
+   * @see java.io.File
+   */
+  public static @NonNull File assertMavenPomIsPresent(@NonNull File location) {
+
+    if (!isMavenPomPresent(location)) {
+
+      String message =
+        String.format("File [%s] must refer to a Maven POM file or directory containing a Maven POM file", location);
+
+      throw new MavenPomNotFoundException(message);
+    }
+
+    return location;
+  }
 
   /**
    * Determine whether the given {@link File} refers to a {@link File#isDirectory() directory} containing a
@@ -82,33 +107,27 @@ public class MavenProject extends Project {
    *
    * @param pom {@link File} referring to a {@literal Maven POM}.
    * @return a new {@link MavenProject} initialized from the given {@link File Maven POM}.
-   * @see #assertPomXml(File)
+   * @see #assertMavenPomIsPresent(File)
    * @see java.io.File
    */
   public static @NonNull MavenProject fromMavenPom(@NonNull File pom) {
 
-    assertPomXml(pom);
+    pom = resolvePomXml(assertMavenPomIsPresent(pom));
 
-    try {
-      org.apache.maven.project.MavenProject mavenProject = new DefaultProjectBuilder()
-        .build(pom, new DefaultProjectBuildingRequest())
-        .getProject();
+    MavenXpp3Reader reader = new MavenXpp3Reader();
 
-      return (MavenProject) new MavenProject(mavenProject).inWorkingDirectory(pom);
+    try (FileReader pomReader = new FileReader(pom)) {
+      Model model = reader.read(pomReader);
+      return new MavenProject(new org.apache.maven.project.MavenProject(model));
     }
-    catch (ProjectBuildingException cause) {
-      String message = String.format("Failed to build Project from Maven POM [%s]", pom);
-      throw new RuntimeException(message, cause);
+    catch (Exception cause) {
+      String message = String.format("Failed to read Maven POM from file [%s]", pom);
+      throw new IllegalStateException(message, cause);
     }
   }
 
-  private static @NonNull File assertPomXml(@NonNull File pom) {
-
-    if (!isPomXml(pom)) {
-      throw new IllegalArgumentException(String.format("File [%s] must refer to a Maven POM", pom));
-    }
-
-    return pom;
+  private static @NonNull File resolvePomXml(@NonNull File file) {
+    return Utils.nullSafeIsDirectory(file) ? new File(file, POM_XML) : file;
   }
 
   private final org.apache.maven.project.MavenProject mavenProject;
