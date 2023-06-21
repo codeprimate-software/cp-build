@@ -42,6 +42,32 @@
     </license>
   </licenses>
 
+  <organization>
+    <name>Codeprimate.org</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate.org</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codeprimate-software/cp-build/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-build/cp-build-tools.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build/cp-build-tools.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-build/cp-build-tools</url>
+  </scm>
+
   <properties>
     <java-module-name>cp.build.tools</java-module-name>
     <google-code-findbugs-jsr305.version>3.0.2</google-code-findbugs-jsr305.version>
