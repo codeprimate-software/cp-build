@@ -77,7 +77,7 @@ public abstract class Utils {
 
     if (nonNullString.length() < length) {
       for (int size = nonNullString.length(); size < length; size++) {
-        nonNullString += EMPTY_STRING;
+        nonNullString += SINGLE_SPACE;
       }
     }
 
