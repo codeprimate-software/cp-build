@@ -46,6 +46,10 @@ public abstract class Utils {
     return value != null ? value : defaultValue.get();
   }
 
+  public static int invert(int compareResult) {
+    return Integer.compare(0, compareResult);
+  }
+
   public static String newLine() {
     return LINE_SEPARATOR;
   }
