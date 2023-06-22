@@ -68,6 +68,33 @@ public class UtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void getIntReturnsValue() {
+
+    Supplier<Integer> mockSupplier = mock(Supplier.class);
+
+    assertThat(Utils.getInt(1, mockSupplier)).isOne();
+    assertThat(Utils.getInt(-1, mockSupplier)).isEqualTo(-1);
+    assertThat(Utils.getInt(10, mockSupplier)).isEqualTo(10);
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getIntReturnsSuppliedInt() {
+
+    Supplier<Integer> mockSupplier = mock(Supplier.class);
+
+    doReturn(101).when(mockSupplier).get();
+
+    assertThat(Utils.getInt(0, mockSupplier)).isEqualTo(101);
+
+    verify(mockSupplier, times(1)).get();
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
   public void invertIsCorrect() {
 
     assertThat(Utils.invert(1)).isLessThan(0);

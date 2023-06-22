@@ -46,6 +46,10 @@ public abstract class Utils {
     return value != null ? value : defaultValue.get();
   }
 
+  public static int getInt(int value, @NonNull Supplier<Integer> intSupplier) {
+    return value != 0 ? value : intSupplier.get();
+  }
+
   public static int invert(int compareResult) {
     return Integer.compare(0, compareResult);
   }
