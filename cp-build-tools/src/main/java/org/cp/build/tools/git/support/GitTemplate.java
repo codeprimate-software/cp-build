@@ -43,11 +43,9 @@ import lombok.RequiredArgsConstructor;
  * Data Access Object (DAO) and Template for {@link Git}.
  *
  * @author John Blum
- * @see org.eclipse.jgit.api.Git
- * @see org.eclipse.jgit.lib.Repository
- * @see org.cp.build.tools.core.model.Project
  * @see org.cp.build.tools.git.model.CommitHistory
  * @see org.cp.build.tools.git.model.CommitRecord
+ * @see org.eclipse.jgit.api.Git
  * @since 2.0.0
  */
 @Getter(AccessLevel.PROTECTED)
