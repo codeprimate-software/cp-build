@@ -43,6 +43,31 @@ import org.junit.jupiter.api.Test;
 public class UtilsUnitTests {
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void getReturnsNonNullValue() {
+
+    Supplier<Object> mockSupplier = mock(Supplier.class);
+
+    assertThat(Utils.get("test", mockSupplier)).isEqualTo("test");
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getReturnsSuppliedValue() {
+
+    Supplier<Object> mockSupplier = mock(Supplier.class);
+
+    doReturn("mock").when(mockSupplier).get();
+
+    assertThat(Utils.get(null, mockSupplier)).isEqualTo("mock");
+
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+  }
+
+  @Test
   public void nullSafeIsDirectoryWithDirectory() {
 
     File mockDirectory = mock(File.class);

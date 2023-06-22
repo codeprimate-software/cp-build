@@ -42,6 +42,10 @@ public abstract class Utils {
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
   public static final String SINGLE_SPACE = " ";
 
+  public static <T> T get(@Nullable T value, @NonNull Supplier<T> defaultValue) {
+    return value != null ? value : defaultValue.get();
+  }
+
   public static String newLine() {
     return LINE_SEPARATOR;
   }
