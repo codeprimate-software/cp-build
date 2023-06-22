@@ -70,12 +70,10 @@ public class ProjectManager implements Iterable<Project> {
   }
 
   @PostConstruct
-  public void afterInitialization() {
+  public void onInitialization() {
 
     try {
-      Project project = Project.from(Utils.WORKING_DIRECTORY);
-      this.projects.add(project);
-      getSession().setProject(project);
+      getSession().setProject(resolveByLocation(Utils.WORKING_DIRECTORY));
     }
     catch (IllegalArgumentException cause) {
       getLogger().warn("Failed to set current Project [{}]", cause.getMessage());
