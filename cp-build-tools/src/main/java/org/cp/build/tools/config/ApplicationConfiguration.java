@@ -28,6 +28,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
 
 /**
  * Spring {@link Configuration} class used to configure and enable additional application services.
@@ -58,14 +59,20 @@ public class ApplicationConfiguration {
 
     return (target, method, arguments) -> {
 
-      if (arguments[0] instanceof File file) {
+      Assert.isTrue(arguments.length > 0,
+        () -> String.format("Expected @Cacheable method [%1$s] on target [%2$s] to have at least 1 argument",
+          method.getName(), target.getClass().getName()));
+
+      Object firstArgument = arguments[0];
+
+      if (firstArgument instanceof File file) {
         return ProjectManager.CacheKey.of(file);
       }
-      else if (arguments[0] instanceof String name) {
+      else if (firstArgument instanceof String name) {
         return ProjectManager.CacheKey.of(name);
       }
 
-      throw new IllegalArgumentException(String.format("Cannot create Project CacheKey from arguments [%s]",
+      throw new IllegalArgumentException(String.format("Cannot generate project cache key from arguments [%s]",
         Arrays.toString(arguments)));
     };
   }
