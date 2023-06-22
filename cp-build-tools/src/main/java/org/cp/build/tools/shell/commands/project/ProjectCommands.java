@@ -74,7 +74,7 @@ public class ProjectCommands {
     return getProjectManager().list();
   }
 
-  @Command(command = "current", description = "Displays the current project")
+  @Command(command = "current", description = "Shows the current project")
   public String current() {
 
     return getCurrentProject()
@@ -83,7 +83,7 @@ public class ProjectCommands {
   }
 
   @SuppressWarnings("all")
-  @Command(command = "describe", description = "Describes the current project with metadata about the project")
+  @Command(command = "describe", description = "Describes the current project")
   @CommandAvailability(provider = "projectCommandsAvailabilityProvider")
   public String describe() {
 
@@ -132,7 +132,7 @@ public class ProjectCommands {
     return String.format("Project set to [%s]", project);
   }
 
-  @Command(command = "use", description = "Sets the current project based on name")
+  @Command(command = "use", description = "Sets current project to the given name")
   public String use(@NonNull String projectName) {
 
     return getProjectManager().findByName(projectName)
