@@ -17,7 +17,12 @@ package org.cp.build.tools.api.model;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import org.cp.build.tools.api.support.ComparableComparator;
 import org.cp.build.tools.api.support.Utils;
@@ -90,7 +95,8 @@ public class Project implements Comparable<Project> {
 
   private File directory;
 
-  @lombok.NonNull
+  private final Licenses licenses = new Licenses();
+
   private final String name;
 
   private String description;
@@ -185,6 +191,21 @@ public class Project implements Comparable<Project> {
   }
 
   /**
+   * Builder method used to configure a {@link License} used by this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param license {@link License} used to enforce the copyright of this {@link Project Project's} source files.
+   * @return this {@link Project}.
+   * @see org.cp.build.tools.api.model.Project.Licenses
+   * @see org.cp.build.tools.api.model.Project.License
+   */
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T withLicense(@NonNull License license) {
+    getLicenses().add(license);
+    return (T) this;
+  }
+
+  /**
    * Compares and sorts a collection of {@link Project Projects} by {@link #getName() name} in ascending order.
    *
    * @param project {@link Project} compared for order with this {@link Project}; must not be null.
@@ -209,27 +230,28 @@ public class Project implements Comparable<Project> {
   }
 
   @Getter
-  @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
   public static class Artifact implements Comparable<Artifact> {
 
     protected static final String ARTIFACT_COMPONENT_SEPARATOR = ":";
 
     public static @NonNull Artifact from(@NonNull Project project, @NonNull String id) {
-
-      Assert.notNull(project, "Project is required");
-      Assert.hasText(id, () -> String.format("Artifact ID [%s] is required", id));
-
       return new Artifact(project, id);
     }
 
     @Setter(AccessLevel.PROTECTED)
     private String groupId;
 
-    @lombok.NonNull
     private final Project project;
 
-    @lombok.NonNull
     private final String id;
+
+    protected Artifact(@NonNull Project project, @NonNull String id) {
+
+      Assert.hasText(id, () -> String.format("Artifact ID [%s] is required", id));
+
+      this.project = Utils.requireObject(project, "Project is required");
+      this.id = id;
+    }
 
     public boolean isGroupIdSet() {
       String groupId = getGroupId();
@@ -293,6 +315,49 @@ public class Project implements Comparable<Project> {
   }
 
   @Getter
+  @EqualsAndHashCode(of = "name")
+  @RequiredArgsConstructor(staticName = "from")
+  public static class License {
+
+    private final String name;
+
+    @Setter(AccessLevel.PROTECTED)
+    private URI uri;
+
+    public License withUri(@Nullable URI uri) {
+      setUri(uri);
+      return this;
+    }
+
+    @Override
+    public String toString() {
+
+      String uriString = Optional.ofNullable(getUri())
+        .map(Object::toString)
+        .map(it -> String.format(" [%s]", it))
+        .orElse(Utils.EMPTY_STRING);
+
+      return String.valueOf(getName()).concat(uriString);
+    }
+  }
+
+  @Getter(AccessLevel.PROTECTED)
+  public static class Licenses implements Iterable<License> {
+
+    private final Set<License> licenses = new HashSet<>();
+
+    @SuppressWarnings("all")
+    public boolean add(@NonNull License license) {
+      return license != null && getLicenses().add(license);
+    }
+
+    @Override
+    public Iterator<License> iterator() {
+      return Collections.unmodifiableSet(this.licenses).iterator();
+    }
+  }
+
+  @Getter
   public static class Version implements Comparable<Version> {
 
     protected static final int DEFAULT_MAJOR_VERSION = 0;
@@ -304,6 +369,8 @@ public class Project implements Comparable<Project> {
     protected static final String SNAPSHOT = "snapshot";
     protected static final String VERSION_NUMBER_SEPARATOR = "\\.";
     protected static final String VERSION_QUALIFIER_SEPARATOR = "-";
+
+    private static final String VERSION_TO_STRING = "%1$d.%2$d.%3$d";
 
     public static @NonNull Version of(int major, int minor) {
       return new Version(major, minor, DEFAULT_MAINTENANCE_VERSION);
@@ -355,7 +422,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private String qualifier;
 
-    private Version(int major, int minor, int maintenance) {
+    protected Version(int major, int minor, int maintenance) {
 
       this.major = Math.max(major, DEFAULT_MAJOR_VERSION);
       this.minor = Math.max(minor, DEFAULT_MINOR_VERSION);
@@ -461,7 +528,7 @@ public class Project implements Comparable<Project> {
     @Override
     public String toString() {
 
-      String versionString = String.format("%1$d.%2$d.%3$d", getMajor(), getMinor(), getMaintenance());
+      String versionString = String.format(VERSION_TO_STRING, getMajor(), getMinor(), getMaintenance());
 
       return isQualifierPresent()
         ? versionString.concat(VERSION_QUALIFIER_SEPARATOR).concat(getQualifier())
