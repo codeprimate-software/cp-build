@@ -62,11 +62,11 @@ public abstract class Utils {
     return iterable != null ? iterable : Collections::emptyIterator;
   }
 
-  public static @NonNull <T> Predicate<T> nullSafePredicateMatchingPredicate(@Nullable Predicate<T> predicate) {
+  public static @NonNull <T> Predicate<T> nullSafeMatchingPredicate(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> true;
   }
 
-  public static @NonNull <T> Predicate<T> nullSafePredicateNonMatchingPredicate(@Nullable Predicate<T> predicate) {
+  public static @NonNull <T> Predicate<T> nullSafeNonMatchingPredicate(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> false;
   }
 

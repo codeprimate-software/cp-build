@@ -16,6 +16,18 @@
 package org.cp.build.tools.core.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.io.File;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,10 +36,149 @@ import org.junit.jupiter.api.Test;
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
+ * @see org.mockito.Mockito
  * @see org.cp.build.tools.core.support.Utils
  * @since 2.0.0
  */
 public class UtilsUnitTests {
+
+  @Test
+  public void nullSafeIsDirectoryWithDirectory() {
+
+    File mockDirectory = mock(File.class);
+
+    doReturn(true).when(mockDirectory).isDirectory();
+
+    assertThat(Utils.nullSafeIsDirectory(mockDirectory)).isTrue();
+
+    verify(mockDirectory, times(1)).isDirectory();
+    verifyNoMoreInteractions(mockDirectory);
+  }
+
+  @Test
+  public void nullSafeIsDirectoryWithFile() {
+
+    File mockDirectory = mock(File.class);
+
+    doReturn(false).when(mockDirectory).isDirectory();
+
+    assertThat(Utils.nullSafeIsDirectory(mockDirectory)).isFalse();
+
+    verify(mockDirectory, times(1)).isDirectory();
+    verifyNoMoreInteractions(mockDirectory);
+  }
+
+  @Test
+  public void nullSafeIsDirectoryWithNull() {
+    assertThat(Utils.nullSafeIsDirectory("/path/to//directory")).isFalse();
+  }
+
+  @Test
+  public void nullSafeIsDirectoryWithObject() {
+    assertThat(Utils.nullSafeIsDirectory("/path/to//directory")).isFalse();
+  }
+
+  @Test
+  public void nullSafeIsFileWithFile() {
+
+    File mockFile = mock(File.class);
+
+    doReturn(true).when(mockFile).isFile();
+
+    assertThat(Utils.nullSafeIsFile(mockFile)).isTrue();
+
+    verify(mockFile, times(1)).isFile();
+    verifyNoMoreInteractions(mockFile);
+  }
+
+  @Test
+  public void nullSafeIsFileWithNonFile() {
+
+    File mockFile = mock(File.class);
+
+    doReturn(false).when(mockFile).isFile();
+
+    assertThat(Utils.nullSafeIsFile(mockFile)).isFalse();
+
+    verify(mockFile, times(1)).isFile();
+    verifyNoMoreInteractions(mockFile);
+  }
+
+  @Test
+  public void nullSafeFileArrayWithFileArray() {
+
+    File[] array = new File[0];
+
+    assertThat(Utils.nullSafeFileArray(array)).isSameAs(array);
+  }
+
+  @Test
+  public void nullSafeFileArrayWithNullFileArray() {
+    assertThat(Utils.nullSafeFileArray(null)).isNotNull().isEmpty();
+  }
+
+  @Test
+  public void nullSafeIterableWithNonNullIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    assertThat(Utils.nullSafeIterable(mockIterable)).isSameAs(mockIterable);
+
+    verifyNoInteractions(mockIterable);
+  }
+
+  @Test
+  public void nullSafeIterableWithNullIterable() {
+    assertThat(Utils.nullSafeIterable(null)).isNotNull().isEmpty();
+  }
+
+  @Test
+  public void nullSafeMatchingPredicateWithNonNullPredicate() {
+
+    Predicate<?> mockPredicate = mock(Predicate.class);
+
+    assertThat(Utils.nullSafeMatchingPredicate(mockPredicate)).isSameAs(mockPredicate);
+
+    verifyNoInteractions(mockPredicate);
+  }
+
+  @Test
+  public void nullSafeMatchingPredicateWithNullPredicate() {
+
+    Predicate<Object> predicate = Utils.nullSafeMatchingPredicate(null);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isTrue();
+  }
+
+  @Test
+  public void nullSafeNonMatchingPredicateWithNonNullPredicate() {
+
+    Predicate<?> mockPredicate = mock(Predicate.class);
+
+    assertThat(Utils.nullSafeNonMatchingPredicate(mockPredicate)).isSameAs(mockPredicate);
+
+    verifyNoInteractions(mockPredicate);
+  }
+
+  @Test
+  public void nullSafeNonMatchingPredicateWithNullPredicate() {
+
+    Predicate<Object> predicate = Utils.nullSafeNonMatchingPredicate(null);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isFalse();
+  }
+
+  @Test
+  public void nullSafeIsFileWithNull() {
+    assertThat(Utils.nullSafeIsFile(null)).isFalse();
+  }
+
+  @Test
+  public void nullSafeIsFileWithObject() {
+    assertThat(Utils.nullSafeIsFile(new Object())).isFalse();
+  }
 
   @Test
   public void nullSafeFormatStringWithNonNullStringDoesNotAlterString() {
@@ -47,5 +198,66 @@ public class UtilsUnitTests {
   @Test
   public void nullSafeFormatStringWithNullString() {
     assertThat(Utils.nullSafeFormatString(null, 2)).isEqualTo("  ");
+  }
+
+  @Test
+  public void nullSafeTrimmedStringWithNonNullStrings() {
+
+    assertThat(Utils.nullSafeTrimmedString("test")).isEqualTo("test");
+    assertThat(Utils.nullSafeTrimmedString("  test")).isEqualTo("test");
+    assertThat(Utils.nullSafeTrimmedString("test  ")).isEqualTo("test");
+    assertThat(Utils.nullSafeTrimmedString(" test  ")).isEqualTo("test");
+    assertThat(Utils.nullSafeTrimmedString(" m o c k  ")).isEqualTo("m o c k");
+  }
+
+  @Test
+  public void nullSafeTrimmedStringWithNullString() {
+    assertThat(Utils.nullSafeTrimmedString(null)).isNotNull().isEmpty();
+  }
+
+  @Test
+  public void requireObjectWithNonNullObject() {
+    assertThat(Utils.requireObject("test", "Object is required")).isEqualTo("test");
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void requireObjectWithNullObject() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Utils.requireObject(null, "Object is %s", "required"))
+      .withMessage("Object is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void requireStateWithState() {
+    assertThat(Utils.requireState("test", "No State")).isEqualTo("test");
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void requireSateWithNoState() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> Utils.requireState(null, "%s state present", "No"))
+      .withMessage("No state present")
+      .withNoCause();
+  }
+
+  @Test
+  public void toSupplierWithValue() {
+
+    assertThat(Utils.toSupplier("test")).isNotNull()
+      .extracting(Supplier::get)
+      .isEqualTo("test");
+  }
+
+  @Test
+  public void toSupplierWithNullValue() {
+
+    assertThat(Utils.toSupplier(null)).isNotNull()
+      .extracting(Supplier::get)
+      .isNull();
   }
 }
