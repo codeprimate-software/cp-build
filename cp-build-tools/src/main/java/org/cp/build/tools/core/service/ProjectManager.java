@@ -69,6 +69,9 @@ public class ProjectManager implements Iterable<Project> {
     this.session = Utils.requireObject(session, "Session is required");
   }
 
+  /**
+   * Sets up the current {@link Project} using the {@link File current working directory}.
+   */
   @PostConstruct
   public void onInitialization() {
 
@@ -78,17 +81,6 @@ public class ProjectManager implements Iterable<Project> {
     catch (IllegalArgumentException cause) {
       getLogger().warn("Failed to set current Project [{}]", cause.getMessage());
     }
-  }
-
-  protected Logger getLogger() {
-    return log;
-  }
-
-  public Optional<Project> findByName(String projectName) {
-
-    return stream()
-      .filter(project -> project.getName().equalsIgnoreCase(projectName))
-      .findFirst();
   }
 
   public Optional<Project> getCurrentProject() {
@@ -101,6 +93,17 @@ public class ProjectManager implements Iterable<Project> {
     return getSession()
       .setProject(Utils.requireObject(project, "Project to activate is required"))
       .getCurrentProject();
+  }
+
+  protected Logger getLogger() {
+    return log;
+  }
+
+  public Optional<Project> findByName(String projectName) {
+
+    return stream()
+      .filter(project -> project.getName().equalsIgnoreCase(projectName))
+      .findFirst();
   }
 
   @Override
