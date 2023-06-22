@@ -52,6 +52,8 @@ public class GitCommands {
 
   private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyy-MMM-dd HH:mm:ss");
 
+  private static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
+
   private final GitTemplate gitTemplate;
 
   private final ProjectManager projectManager;
@@ -72,7 +74,8 @@ public class GitCommands {
 
   @Command(command = "commit-history")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitHistory(@Option(defaultValue = "10") int limit,
+  public String commitHistory(
+      @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "files", shortNames = 'f', defaultValue = "false") boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
