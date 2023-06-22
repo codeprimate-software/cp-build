@@ -119,16 +119,6 @@ public class Project implements Comparable<Project> {
     return false;
   }
 
-  /**
-   * Gets the {@link CommitHistory revision history} for this {@link Project}.
-   *
-   * @return the {@link CommitHistory revision history} for this {@link Project}.
-   * @see org.cp.build.tools.git.model.CommitHistory
-   */
-  public @NonNull CommitHistory getCommitHistory() {
-    return Utils.get(this.commitHistory, CommitHistory::empty);
-  }
-
   @Override
   public int compareTo(@NonNull Project project) {
     return getName().compareTo(project.getName());
