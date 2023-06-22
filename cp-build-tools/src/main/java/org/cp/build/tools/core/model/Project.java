@@ -15,15 +15,15 @@
  */
 package org.cp.build.tools.core.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.File;
 import java.net.URI;
 
 import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -78,14 +78,14 @@ public class Project implements Comparable<Project> {
    */
   public static @NonNull Project from(@NonNull String name) {
 
-    assertThat(name)
-      .describedAs("Name [%s] of Project is required", name)
-      .isNotBlank();
+    Assert.hasText(name, () -> String.format("Name [%s] of Project is required", name));
 
     return new Project(name);
   }
 
   private Artifact artifact;
+
+  private CommitHistory commitHistory;
 
   private File directory;
 
@@ -99,12 +99,34 @@ public class Project implements Comparable<Project> {
 
   private Version version;
 
+  /**
+   * Determines whether this is a {@literal Gradle} {@link Project}.
+   *
+   * @return a boolean value indicating whether this is a {@literal Gradle} {@link Project}.
+   * @see #isMaven()
+   */
   public boolean isGradle() {
     return false;
   }
 
+  /**
+   * Determines whether this is a {@literal Maven} {@link Project}.
+   *
+   * @return a boolean value indicating whether this is a {@literal Maven} {@link Project}.
+   * @see #isGradle()
+   */
   public boolean isMaven() {
     return false;
+  }
+
+  /**
+   * Gets the {@link CommitHistory revision history} for this {@link Project}.
+   *
+   * @return the {@link CommitHistory revision history} for this {@link Project}.
+   * @see org.cp.build.tools.git.model.CommitHistory
+   */
+  public @NonNull CommitHistory getCommitHistory() {
+    return Utils.get(this.commitHistory, CommitHistory::empty);
   }
 
   @Override
@@ -119,15 +141,21 @@ public class Project implements Comparable<Project> {
   }
 
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T describedAs(@Nullable String description) {
+  public @NonNull <T extends Project> T describedAs(@NonNull String description) {
+    Assert.hasText(description, () -> String.format("Description for Project [%s] is required", getName()));
     setDescription(description);
     return (T) this;
   }
 
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T inWorkingDirectory(File directory) {
-    assertThat(directory).describedAs("File [%s] must be a directory", directory).isDirectory();
-    setDirectory(directory);
+  public @NonNull <T extends Project> T inWorkingDirectory(@NonNull File directory) {
+    setDirectory(Utils.requireObject(directory, "File [%s] must be a directory", directory));
+    return (T) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T withCommitHistory(@Nullable CommitHistory commitHistory) {
+    setCommitHistory(commitHistory);
     return (T) this;
   }
 
@@ -144,8 +172,8 @@ public class Project implements Comparable<Project> {
 
     public static @NonNull Artifact from(@NonNull Project project, @NonNull String id) {
 
-      assertThat(project).describedAs("Project is required").isNotNull();
-      assertThat(id).describedAs("Artifact ID [%s] is required", id).isNotBlank();
+      Assert.notNull(project, "Project is required");
+      Assert.hasText(id, () -> String.format("Artifact ID [%s] is required", id));
 
       return new Artifact(project, id);
     }
@@ -206,9 +234,9 @@ public class Project implements Comparable<Project> {
 
     public static @NonNull Version parse(@NonNull String version) {
 
-      assertThat(version)
-        .describedAs("Version string [%s] to parse is required")
-        .isNotBlank();
+      String originalVersion = version;
+
+      Assert.hasText(version, () -> String.format("Version string [%s] is required", originalVersion));
 
       int versionQualifierIndex = version.indexOf(VERSION_QUALIFIER_SEPARATOR);
 
@@ -221,9 +249,9 @@ public class Project implements Comparable<Project> {
 
       String[] versionNumbers = version.split(VERSION_NUMBER_SEPARATOR);
 
-      assertThat(versionNumbers)
-        .describedAs("Version string [%s] must consist of at least a major and minor version numbers")
-        .hasSizeGreaterThanOrEqualTo(2);
+      Assert.isTrue(versionNumbers.length >= 2,
+        () -> String.format("Version string [%s] must consist of at least major and minor version numbers",
+          originalVersion));
 
       switch (versionNumbers.length) {
         case 2 -> {
