@@ -101,6 +101,8 @@ public class Project implements Comparable<Project> {
 
   private String description;
 
+  private Organization organization;
+
   private URI issueTracker;
   private URI sourceRepository;
 
@@ -202,6 +204,20 @@ public class Project implements Comparable<Project> {
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T withLicense(@NonNull License license) {
     getLicenses().add(license);
+    return (T) this;
+  }
+
+  /**
+   * Builder method used to configure the {@link Organization} owning this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param organization {@link Organization} that owns this {@link Project}.
+   * @return this {@link Project}.
+   * @see org.cp.build.tools.api.model.Project.Organization
+   */
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T withOrganization(@Nullable Organization organization) {
+    setOrganization(organization);
     return (T) this;
   }
 
@@ -324,7 +340,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public License withUri(@Nullable URI uri) {
+    public @NonNull License withUri(@Nullable URI uri) {
       setUri(uri);
       return this;
     }
@@ -354,6 +370,37 @@ public class Project implements Comparable<Project> {
     @Override
     public Iterator<License> iterator() {
       return Collections.unmodifiableSet(this.licenses).iterator();
+    }
+  }
+
+  @Getter
+  @RequiredArgsConstructor(staticName = "as")
+  public static class Organization implements Comparable<Organization> {
+
+    private final String name;
+
+    @Setter(AccessLevel.PROTECTED)
+    private URI uri;
+
+    @Override
+    public int compareTo(@NonNull Organization organization) {
+      return this.getName().compareTo(organization.getName());
+    }
+
+    public @NonNull Organization withUri(@Nullable URI uri) {
+      setUri(uri);
+      return this;
+    }
+
+    @Override
+    public String toString() {
+
+      String uriString = Optional.ofNullable(getUri())
+        .map(Object::toString)
+        .map(it -> String.format(" [%s]", it))
+        .orElse(Utils.EMPTY_STRING);
+
+      return String.valueOf(getName()).concat(uriString);
     }
   }
 
