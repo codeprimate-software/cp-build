@@ -55,6 +55,9 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class GitTemplate {
 
+  protected static final String MAIN_BRANCH_NAME = "main";
+  protected static final String MASTER_BRANCH_NAME = "master";
+
   public static @NonNull GitTemplate from(@NonNull Supplier<Git> gitSupplier) {
 
     Utils.requireObject(gitSupplier, "Supplier for Git is required");
@@ -86,8 +89,9 @@ public class GitTemplate {
         CommitRecord.Author author = CommitRecord.Author.as(commitAuthor.getName())
           .withEmail(commitAuthor.getEmailAddress());
 
-        LocalDateTime date =
-          LocalDateTime.ofEpochSecond(commit.getCommitTime(), 0, ZoneOffset.from(Instant.now()));
+        LocalDateTime date = Instant.ofEpochMilli(commit.getCommitTime())
+          .atZone(ZoneOffset.systemDefault())
+          .toLocalDateTime();
 
         String hash = commit.name();
 
