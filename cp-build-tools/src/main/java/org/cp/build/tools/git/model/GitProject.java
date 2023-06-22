@@ -26,6 +26,7 @@ import org.cp.build.tools.git.support.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
@@ -56,12 +57,14 @@ public class GitProject {
       Assert.notNull(it, "Project is required");
       Assert.notNull(it.getDirectory(), "Project directory is required");
 
-      Assert.isTrue(Utils.nullSafeIsDirectory(new File(project.getDirectory(), GIT_DIRECTORY_NAME)),
+      File gitDirectory = findGitDirectory(project);
+
+      Assert.notNull(gitDirectory,
         () -> String.format("Project [%s] in directory [%s] must contain a [%s] directory",
           it.getName(), it.getDirectory(), GIT_DIRECTORY_NAME));
 
       try {
-        Git git = new Git(FileRepositoryBuilder.create(it.getDirectory()));
+        Git git = new Git(FileRepositoryBuilder.create(gitDirectory));
         return new GitProject(git, it);
       }
       catch (IOException cause) {
@@ -69,6 +72,20 @@ public class GitProject {
         throw new GitException(message, cause);
       }
     });
+  }
+
+  private static File findGitDirectory(@NonNull Project project) {
+    return findGitDirectory(project.getDirectory());
+  }
+
+  private static File findGitDirectory(@Nullable File directory) {
+
+    if (Utils.nullSafeIsDirectory(directory)) {
+      File gitDirectory = new File(directory, GIT_DIRECTORY_NAME);
+      return Utils.nullSafeIsDirectory(gitDirectory) ? gitDirectory : findGitDirectory(directory.getParentFile());
+    }
+
+    return null;
   }
 
   public final Git git;
