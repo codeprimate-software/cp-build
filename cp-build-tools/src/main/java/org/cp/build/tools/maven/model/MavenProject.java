@@ -47,7 +47,7 @@ import lombok.Getter;
 @SuppressWarnings("unused")
 public class MavenProject extends Project {
 
-  public static final String POM_XML = "pom.xml";
+  protected static final String POM_XML = "pom.xml";
 
   protected static final FileFilter POM_XML_FILE_FILTER = file ->
     Utils.nullSafeIsFile(file) && file.getAbsolutePath().endsWith(POM_XML);
