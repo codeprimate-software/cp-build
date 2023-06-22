@@ -18,7 +18,10 @@ package org.cp.build.tools.config;
 import java.io.File;
 import java.util.Arrays;
 
+import org.cp.build.tools.core.model.Session;
 import org.cp.build.tools.core.service.ProjectManager;
+import org.cp.build.tools.git.model.GitProject;
+import org.cp.build.tools.git.support.GitTemplate;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -46,6 +49,11 @@ public class ApplicationConfiguration {
   }
 
   @Bean
+  GitTemplate gitTemplate(Session session) {
+    return GitTemplate.from(() -> GitProject.from(session.requireProject()).getGit());
+  }
+
+  @Bean
   KeyGenerator projectCacheKeyGenerator() {
 
     return (target, method, arguments) -> {
@@ -57,7 +65,7 @@ public class ApplicationConfiguration {
         return ProjectManager.CacheKey.of(name);
       }
 
-      throw new IllegalArgumentException(String.format("Cannot create Project CacheKey with arguments [%s]",
+      throw new IllegalArgumentException(String.format("Cannot create Project CacheKey from arguments [%s]",
         Arrays.toString(arguments)));
     };
   }
