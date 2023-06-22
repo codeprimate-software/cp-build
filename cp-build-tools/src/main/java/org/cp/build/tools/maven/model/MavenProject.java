@@ -134,7 +134,7 @@ public class MavenProject extends Project {
       org.apache.maven.project.MavenProject mavenProject = new org.apache.maven.project.MavenProject(model);
 
       return new MavenProject(mavenProject)
-        .inWorkingDirectory(pom.getParentFile());
+        .inDirectory(pom.getParentFile());
     }
     catch (Exception cause) {
       String message = String.format("Failed to read Maven POM from file [%s]", pom);

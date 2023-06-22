@@ -188,7 +188,7 @@ public class Project implements Comparable<Project> {
    * @see java.io.File
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T inWorkingDirectory(@NonNull File directory) {
+  public @NonNull <T extends Project> T inDirectory(@NonNull File directory) {
     Assert.isTrue(Utils.nullSafeIsDirectory(directory), "[%s] must be an existing, valid directory");
     setDirectory(directory);
     return (T) this;
