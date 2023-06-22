@@ -367,7 +367,7 @@ public class Project implements Comparable<Project> {
 
       String uriString = Optional.ofNullable(getUri())
         .map(Object::toString)
-        .map(it -> String.format(" [%s]", it))
+        .map(it -> String.format(" (%s)", it))
         .orElse(Utils.EMPTY_STRING);
 
       return String.valueOf(getName()).concat(uriString);
@@ -497,7 +497,7 @@ public class Project implements Comparable<Project> {
 
       String uriString = Optional.ofNullable(getUri())
         .map(Object::toString)
-        .map(it -> String.format(" [%s]", it))
+        .map(it -> String.format(" (%s)", it))
         .orElse(Utils.EMPTY_STRING);
 
       return String.valueOf(getName()).concat(uriString);

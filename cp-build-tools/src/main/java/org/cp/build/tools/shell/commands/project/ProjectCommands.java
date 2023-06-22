@@ -93,9 +93,15 @@ public class ProjectCommands extends AbstractCommandsSupport {
       .map(project -> "Name: ".concat(project.getName()).concat(Utils.newLine())
         .concat("Description: ").concat(indent(project.getDescription())).concat(Utils.newLine())
         .concat("Version: ").concat(project.getVersion().toString()).concat(Utils.newLine())
+        .concat("Artifact: ").concat(project.getArtifact().toString()).concat(Utils.newLine())
+        .concat(Utils.newLine())
+        .concat("Licenses: ").concat(project.getLicenses().toString()).concat(Utils.newLine())
+        .concat("Organization: ").concat(Utils.nullSafeToString(project.getOrganization()).concat(Utils.newLine())
+        .concat("Developers: ").concat(project.getDevelopers().toString()).concat(Utils.newLine()))
+        .concat(Utils.newLine())
         .concat("Source Repository: ").concat(project.getSourceRepository().toString()).concat(Utils.newLine())
         .concat("Issue Tracker: ").concat(project.getIssueTracker().toString()).concat(Utils.newLine())
-        .concat("Artifact: ").concat(project.getArtifact().toString()).concat(Utils.newLine()))
+      )
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
 
