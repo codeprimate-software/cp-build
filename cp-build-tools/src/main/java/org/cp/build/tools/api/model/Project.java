@@ -392,6 +392,11 @@ public class Project implements Comparable<Project> {
     public Iterator<License> iterator() {
       return Collections.unmodifiableSet(this.licenses).iterator();
     }
+
+    @Override
+    public String toString() {
+      return getLicenses().toString();
+    }
   }
 
   @Getter
@@ -458,6 +463,12 @@ public class Project implements Comparable<Project> {
     @Override
     public Iterator<Developer> iterator() {
       return Collections.unmodifiableSet(this.developers).iterator();
+    }
+
+    @Override
+    public String toString() {
+      return getDevelopers().stream()
+        .sorted().toList().toString();
     }
   }
 
