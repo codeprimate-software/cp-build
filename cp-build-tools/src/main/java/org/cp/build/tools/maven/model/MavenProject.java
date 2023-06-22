@@ -20,14 +20,20 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.maven.model.IssueManagement;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Scm;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.support.MavenPomNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -146,6 +152,11 @@ public class MavenProject extends Project {
     return isPomXml(file) ? file : new File(file, POM_XML);
   }
 
+  private final AtomicReference<Artifact> artifactReference = new AtomicReference<>(null);
+  private final AtomicReference<Developers> developersReference = new AtomicReference<>(null);
+  private final AtomicReference<Licenses> licensesReference = new AtomicReference<>(null);
+  private final AtomicReference<Organization> organizationReference = new AtomicReference<>(null);
+
   private final org.apache.maven.project.MavenProject mavenProject;
 
   /**
@@ -166,7 +177,11 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public Artifact getArtifact() {
+  public @NonNull Artifact getArtifact() {
+    return this.artifactReference.updateAndGet(artifact -> artifact != null ? artifact : buildArtifact());
+  }
+
+  private @NonNull Artifact buildArtifact() {
 
     org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
@@ -175,22 +190,104 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public String getDescription() {
+  public @NonNull Developers getDevelopers() {
+    return this.developersReference.updateAndGet(developers -> developers != null ? developers : buildDevelopers());
+  }
+
+  private @NonNull Developers buildDevelopers() {
+
+    org.apache.maven.project.MavenProject mavenProject = getMavenProject();
+
+    Developers developers = new Developers();
+
+    mavenProject.getDevelopers().stream()
+      .filter(Objects::nonNull)
+      .map(developer -> Developer.as(developer.getName())
+        .identifiedBy(developer.getId())
+        .withEmailAddress(developer.getEmail())
+        .withOrganization(buildDeveloperOrganization(developer))
+        .withUri(nullSafeUriCreate(developer.getUrl())))
+      .forEach(developers::add);
+
+    return developers;
+  }
+
+  private @Nullable Organization buildDeveloperOrganization(org.apache.maven.model.Developer developer) {
+
+    String developerOrganization = developer.getOrganization();
+
+    return StringUtils.hasText(developerOrganization)
+      ? Organization.as(developerOrganization).withUri(nullSafeUriCreate(developer.getOrganizationUrl()))
+      : null;
+  }
+
+  @Override
+  public @Nullable String getDescription() {
     return getMavenProject().getDescription();
   }
 
   @Override
-  public URI getIssueTracker() {
-    return URI.create(getMavenProject().getIssueManagement().getUrl());
+  public @Nullable URI getIssueTracker() {
+
+    return Optional.ofNullable(getMavenProject())
+      .map(org.apache.maven.project.MavenProject::getIssueManagement)
+      .map(IssueManagement::getUrl)
+      .map(URI::create)
+      .orElse(null);
   }
 
   @Override
-  public URI getSourceRepository() {
-    return URI.create(getMavenProject().getScm().getUrl());
+  public Licenses getLicenses() {
+    return this.licensesReference.updateAndGet(licenses -> licenses != null ? licenses : buildLicenses());
+  }
+
+  private @NonNull Licenses buildLicenses() {
+
+    org.apache.maven.project.MavenProject mavenProject = getMavenProject();
+
+    Licenses licenses = new Licenses();
+
+    mavenProject.getLicenses().stream()
+      .filter(Objects::nonNull)
+      .map(license -> License.from(license.getName())
+        .withUri(nullSafeUriCreate(license.getUrl())))
+      .forEach(licenses::add);
+
+    return licenses;
   }
 
   @Override
-  public Version getVersion() {
+  public @Nullable Organization getOrganization() {
+    return this.organizationReference.updateAndGet(organization -> organization != null ? organization
+      : buildOrganization());
+  }
+
+  private @Nullable Organization buildOrganization() {
+
+    org.apache.maven.project.MavenProject mavenProject = getMavenProject();
+
+    return Optional.ofNullable(mavenProject.getOrganization())
+      .map(org -> Project.Organization.as(org.getName())
+        .withUri(nullSafeUriCreate(org.getUrl())))
+      .orElse(null);
+  }
+
+  @Override
+  public @Nullable URI getSourceRepository() {
+
+    return Optional.ofNullable(getMavenProject())
+      .map(org.apache.maven.project.MavenProject::getScm)
+      .map(Scm::getUrl)
+      .map(URI::create)
+      .orElse(null);
+  }
+
+  @Override
+  public @NonNull Version getVersion() {
     return Version.parse(getMavenProject().getVersion());
+  }
+
+  private @Nullable URI nullSafeUriCreate(@Nullable String url) {
+    return StringUtils.hasText(url) ? URI.create(url) : null;
   }
 }

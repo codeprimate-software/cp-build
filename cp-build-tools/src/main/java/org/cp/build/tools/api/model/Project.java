@@ -395,18 +395,25 @@ public class Project implements Comparable<Project> {
   }
 
   @Getter
+  @Setter(AccessLevel.PROTECTED)
   @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "as")
   public static class Developer implements Comparable<Developer> {
 
-    @Setter(AccessLevel.PROTECTED)
     private Organization organization;
 
     @NonNull
     private final String name;
 
-    @Setter(AccessLevel.PROTECTED)
     private String emailAddress;
+    private String id;
+
+    private URI uri;
+
+    public @NonNull Developer identifiedBy(@Nullable String id) {
+      setId(id);
+      return this;
+    }
 
     public @NonNull Developer withEmailAddress(@Nullable String emailAddress) {
       setEmailAddress(emailAddress);
@@ -415,6 +422,11 @@ public class Project implements Comparable<Project> {
 
     public @NonNull Developer withOrganization(@Nullable Organization organization) {
       setOrganization(organization);
+      return this;
+    }
+
+    public @NonNull Developer withUri(@Nullable URI uri) {
+      setUri(uri);
       return this;
     }
 
