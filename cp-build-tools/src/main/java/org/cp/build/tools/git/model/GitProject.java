@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.support.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
  * Abstract Data Type (ADT) modeling a {@literal Git} project
  *
  * @author John Blum
- * @see org.cp.build.tools.core.model.Project
+ * @see org.cp.build.tools.api.model.Project
  * @see org.eclipse.jgit.api.Git
  * @since 2.0.0
  */
@@ -59,7 +59,7 @@ public class GitProject {
    * @throws IllegalArgumentException if the given {@link Project} is {@literal null},
    * or the {@link Project#getDirectory() project directory} does not exist or is not valid,
    * or a {@link File#isDirectory() project .git directory} could not be found.
-   * @see org.cp.build.tools.core.model.Project
+   * @see org.cp.build.tools.api.model.Project
    */
   public static @NonNull GitProject from(@NonNull Project project) {
 

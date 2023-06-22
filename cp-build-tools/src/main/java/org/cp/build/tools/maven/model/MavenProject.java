@@ -23,8 +23,8 @@ import java.util.Arrays;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.support.MavenPomNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -38,7 +38,7 @@ import lombok.Getter;
  * @author John Blum
  * @see java.io.File
  * @see java.net.URI
- * @see org.cp.build.tools.core.model.Project
+ * @see org.cp.build.tools.api.model.Project
  * @see org.apache.maven.model.Model
  * @see org.apache.maven.project.MavenProject
  * @since 2.0.0

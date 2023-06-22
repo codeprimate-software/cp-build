@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.model;
+package org.cp.build.tools.api.model;
 
 import java.util.Objects;
 
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.support.Utils;
 import org.slf4j.Logger;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
  * with the Codeprimate Build Tools shell.
  *
  * @author John Blum
- * @see org.cp.build.tools.core.model.Project
+ * @see org.cp.build.tools.api.model.Project
  * @see org.springframework.stereotype.Service
  * @since 2.0.0
  */

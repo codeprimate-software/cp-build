@@ -18,8 +18,8 @@ package org.cp.build.tools.config;
 import java.io.File;
 import java.util.Arrays;
 
-import org.cp.build.tools.core.model.Session;
-import org.cp.build.tools.core.service.ProjectManager;
+import org.cp.build.tools.api.model.Session;
+import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.git.model.GitProject;
 import org.cp.build.tools.git.support.GitTemplate;
 import org.springframework.cache.CacheManager;

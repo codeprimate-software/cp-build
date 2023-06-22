@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.support.Utils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 

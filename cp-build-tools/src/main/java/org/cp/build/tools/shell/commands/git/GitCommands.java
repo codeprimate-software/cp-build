@@ -19,9 +19,9 @@ import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.service.ProjectManager;
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.service.ProjectManager;
+import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.support.GitTemplate;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +41,11 @@ import lombok.RequiredArgsConstructor;
  * Spring Shell {@link Command Commands} for {@literal git}.
  *
  * @author John Blum
+ * @see org.cp.build.tools.api.model.Project
+ * @see org.cp.build.tools.api.service.ProjectManager
+ * @see org.cp.build.tools.git.model.CommitHistory
+ * @see org.cp.build.tools.git.model.CommitRecord
+ * @see org.cp.build.tools.git.support.GitTemplate
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */

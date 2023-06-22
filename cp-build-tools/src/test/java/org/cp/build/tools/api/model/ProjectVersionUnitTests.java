@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.model;
+package org.cp.build.tools.api.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.cp.build.tools.core.model.Project.Version
+ * @see org.cp.build.tools.api.model.Project.Version
  * @since 2.0.0
  */
 public class ProjectVersionUnitTests {

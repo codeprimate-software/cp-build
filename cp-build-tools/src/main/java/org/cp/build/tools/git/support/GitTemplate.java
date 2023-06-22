@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.eclipse.jgit.api.Git;

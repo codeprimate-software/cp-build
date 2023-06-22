@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.support;
+package org.cp.build.tools.api.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author John Blum
  * @see org.junit.jupiter.api.Test
- * @see org.cp.build.tools.core.support.ComparableComparator
+ * @see org.cp.build.tools.api.support.ComparableComparator
  * @since 2.0.0
  */
 public class ComparableComparatorUnitTests {

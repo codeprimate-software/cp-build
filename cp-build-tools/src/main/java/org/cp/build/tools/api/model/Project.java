@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.model;
+package org.cp.build.tools.api.model;
 
 import java.io.File;
 import java.net.URI;
 import java.util.Objects;
 
-import org.cp.build.tools.core.support.ComparableComparator;
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.support.ComparableComparator;
+import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.springframework.lang.NonNull;
@@ -126,7 +126,7 @@ public class Project implements Comparable<Project> {
    * @param <T> {@link Class concrete type} of {@link Project}.
    * @param artifact {@link Artifact} produced by this {@link Project}.
    * @return this {@link Project}.
-   * @see org.cp.build.tools.core.model.Project.Artifact
+   * @see org.cp.build.tools.api.model.Project.Artifact
    */
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T buildsArtifact(@Nullable Artifact artifact) {

@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.service.ProjectManager;
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.service.ProjectManager;
+import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
@@ -46,8 +46,8 @@ import lombok.RequiredArgsConstructor;
  * Spring Shell {@link Command Commands} for {@link Project Projects}.
  *
  * @author John Blum
- * @see org.cp.build.tools.core.model.Project
- * @see org.cp.build.tools.core.model.Session
+ * @see org.cp.build.tools.api.model.Project
+ * @see org.cp.build.tools.api.model.Session
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */

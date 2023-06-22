@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.model.support;
+package org.cp.build.tools.api.model.support;
 
 import java.io.File;
 import java.util.stream.Stream;
 
-import org.cp.build.tools.core.model.Project;
+import org.cp.build.tools.api.model.Project;
 
 /**
  * Strategy interface used to resolve the {@link String name} for a {@link Project}.
  *
  * @author John Blum
- * @see org.cp.build.tools.core.model.Project
+ * @see org.cp.build.tools.api.model.Project
  * @since 2.0.0
  */
 @SuppressWarnings("unused")

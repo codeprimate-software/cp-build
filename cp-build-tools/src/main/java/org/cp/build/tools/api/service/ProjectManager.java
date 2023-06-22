@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.core.service;
+package org.cp.build.tools.api.service;
 
 import java.io.File;
 import java.util.Iterator;
@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.cp.build.tools.core.model.Project;
-import org.cp.build.tools.core.model.Session;
-import org.cp.build.tools.core.support.Utils;
+import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.model.Session;
+import org.cp.build.tools.api.support.Utils;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
@@ -42,8 +42,8 @@ import lombok.extern.slf4j.Slf4j;
  * Spring {@link Service} bean used to manage {@link Project Projects}
  *
  * @author John Blum
- * @see org.cp.build.tools.core.model.Project
- * @see org.cp.build.tools.core.model.Session
+ * @see org.cp.build.tools.api.model.Project
+ * @see org.cp.build.tools.api.model.Session
  * @see org.springframework.stereotype.Service
  * @since 2.0.0
  */
@@ -63,7 +63,7 @@ public class ProjectManager implements Iterable<Project> {
    * @param session {@link Session object} managing the current state of the user's interactive session
    * with the shell.
    * @throws IllegalArgumentException if the given {@link Session} is {@literal null}.
-   * @see org.cp.build.tools.core.model.Session
+   * @see org.cp.build.tools.api.model.Session
    */
   public ProjectManager(@NonNull Session session) {
     this.session = Utils.requireObject(session, "Session is required");
