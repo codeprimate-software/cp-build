@@ -59,6 +59,10 @@ public class Session {
     return Objects.nonNull(getCurrentProject());
   }
 
+  public @NonNull Project requireProject() {
+    return Utils.requireState(getCurrentProject(), "Project has not be set");
+  }
+
   public @NonNull Session setProject(@Nullable Project project) {
     this.currentProject = project;
     return this;
