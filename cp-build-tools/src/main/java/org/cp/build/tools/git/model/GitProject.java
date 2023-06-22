@@ -50,22 +50,24 @@ public class GitProject {
 
   protected static final String GIT_DIRECTORY_NAME = ".git";
 
-  public static GitProject from(@NonNull Project project) {
+  /**
+   * Factory method used to construct a new {@link GitProject} initialized from the given, required {@link Project}.
+   *
+   * @param project {@link Project} to adapt as a {@link GitProject}; must not be {@literal null}.
+   * @return a new {@link GitProject} initialized from the given {@link Project}.
+   * @throws GitException if the given {@link Project} is not a {@literal Git-based} project.
+   * @throws IllegalArgumentException if the given {@link Project} is {@literal null},
+   * or the {@link Project#getDirectory() project directory} does not exist or is not valid,
+   * or a {@link File#isDirectory() project .git directory} could not be found.
+   * @see org.cp.build.tools.core.model.Project
+   */
+  public static @NonNull GitProject from(@NonNull Project project) {
+
+    Assert.notNull(project, "Project is required");
 
     return cache.computeIfAbsent(project, it -> {
-
-      Assert.notNull(it, "Project is required");
-      Assert.notNull(it.getDirectory(), "Project directory is required");
-
-      File gitDirectory = findGitDirectory(project);
-
-      Assert.notNull(gitDirectory,
-        () -> String.format("Project [%s] in directory [%s] must contain a [%s] directory",
-          it.getName(), it.getDirectory(), GIT_DIRECTORY_NAME));
-
       try {
-        Git git = new Git(FileRepositoryBuilder.create(gitDirectory));
-        return new GitProject(git, it);
+        return new GitProject(newGit(it), it);
       }
       catch (IOException cause) {
         String message = String.format("Failed to create GitProject from Project [%s]", it);
@@ -74,11 +76,23 @@ public class GitProject {
     });
   }
 
-  private static File findGitDirectory(@NonNull Project project) {
-    return findGitDirectory(project.getDirectory());
+  private static @NonNull Git newGit(@NonNull Project project) throws IOException {
+
+    File projectDirectory = project.getDirectory();
+
+    Assert.isTrue(Utils.nullSafeIsDirectory(projectDirectory),
+      () -> String.format("Project directory [%s] must be an existing, valid directory", projectDirectory));
+
+    File gitDirectory = findGitDirectory(projectDirectory);
+
+    Assert.notNull(gitDirectory,
+      () -> String.format("Project [%1$s] in directory [%2$s] must contain a [%3$s] directory",
+        project.getName(), projectDirectory, GIT_DIRECTORY_NAME));
+
+    return new Git(FileRepositoryBuilder.create(gitDirectory));
   }
 
-  private static File findGitDirectory(@Nullable File directory) {
+  private static @Nullable File findGitDirectory(@Nullable File directory) {
 
     if (Utils.nullSafeIsDirectory(directory)) {
       File gitDirectory = new File(directory, GIT_DIRECTORY_NAME);
