@@ -17,13 +17,16 @@ package org.cp.build.tools.core.model;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Objects;
 
+import org.cp.build.tools.core.support.ComparableComparator;
 import org.cp.build.tools.core.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -35,9 +38,7 @@ import lombok.Setter;
  * Abstract Data Type (ADT) used to model a [Codeprimate] software project.
  *
  * @author John Blum
- * @see java.io.File
  * @see java.lang.Comparable
- * @see java.net.URL
  * @since 2.0.0
  */
 @Getter
@@ -51,11 +52,11 @@ public class Project implements Comparable<Project> {
    * Factory method used to construct a new {@link Project} from the given {@link File}.
    * <p/>
    * In this case, the {@link File} may either refer to the {@link File working directory} of the {@link Project}
-   * or a {@literal Maven POM} specifying the metadata for the {@link Project}.
+   * or a {@link File Maven POM} specifying the metadata for the {@link Project}.
    *
    * @param file {@link File} referring to the {@link File working directory} containing {@link File source files}
-   * for the {@link Project} or a {@literal Maven POM} specifying the {@link Project} makeup and metadata.
-   * @return a new {@link Project}.
+   * for the {@link Project} or a {@link File Maven POM} specifying the {@link Project} metadata.
+   * @return a new {@link Project} from the given {@link File}.
    * @throws IllegalArgumentException if a {@link Project} cannot be created from the given {@link File}.
    * @see org.cp.build.tools.maven.model.MavenProject
    * @see java.io.File
@@ -66,19 +67,19 @@ public class Project implements Comparable<Project> {
       return MavenProject.fromMavenPom(file);
     }
 
-    throw new IllegalArgumentException(String.format("Cannot create Project from file [%s]", file));
+    throw new IllegalArgumentException(String.format("Cannot create project from file [%s]", file));
   }
 
   /**
    * Factory method used to construct a new {@link Project} with the given, required {@link String name}.
    *
-   * @param name {@link String} specifying the {@literal name} of the new {@link Project}.
+   * @param name {@link String} specifying the {@literal name} for the new {@link Project}.
    * @return a new {@link Project} with the given {@link String name}.
    * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
    */
   public static @NonNull Project from(@NonNull String name) {
 
-    Assert.hasText(name, () -> String.format("Name [%s] of Project is required", name));
+    Assert.hasText(name, () -> String.format("Name [%s] for project is required", name));
 
     return new Project(name);
   }
@@ -119,17 +120,29 @@ public class Project implements Comparable<Project> {
     return false;
   }
 
-  @Override
-  public int compareTo(@NonNull Project project) {
-    return getName().compareTo(project.getName());
-  }
-
+  /**
+   * Builder method used to configure the {@link Artifact} built by this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param artifact {@link Artifact} produced by this {@link Project}.
+   * @return this {@link Project}.
+   * @see org.cp.build.tools.core.model.Project.Artifact
+   */
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T buildsArtifact(@Nullable Artifact artifact) {
     setArtifact(artifact);
     return (T) this;
   }
 
+  /**
+   * Builder method used to configure a {@link String description} of this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param description {@link String} used to describe this {@link Project};
+   * must not be {@literal null} or {@literal blank}.
+   * @return this {@link Project}.
+   * @throws IllegalArgumentException if the {@link String description} is {@literal null} or {@literal blank}.
+   */
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T describedAs(@NonNull String description) {
     Assert.hasText(description, () -> String.format("Description for Project [%s] is required", getName()));
@@ -137,18 +150,59 @@ public class Project implements Comparable<Project> {
     return (T) this;
   }
 
+  /**
+   * Builder method used to configure the {@link File local working directory} containing the source files
+   * for this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param directory {@link File} referring to the {@literal working directory} containing the source files
+   * for this {@link Project}; must be an existing, valid {@link File#isDirectory() directory}.
+   * @return this {@link Project}.
+   * @throws IllegalArgumentException if the {@link File} is not an existing,
+   * valid {@link File#isDirectory() directory}.
+   * @see java.io.File
+   */
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T inWorkingDirectory(@NonNull File directory) {
-    setDirectory(Utils.requireObject(directory, "File [%s] must be a directory", directory));
+    Assert.isTrue(Utils.nullSafeIsDirectory(directory), "[%s] must be an existing, valid directory");
+    setDirectory(directory);
     return (T) this;
   }
 
+  /**
+   * Builder method used to configure the {@link CommitHistory} for this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param commitHistory {@link CommitHistory} capturing all the {@literal [git] commits}
+   * applied to this {@link Project} in reverse chronological order.
+   * @return this {@link Project}.
+   * @see org.cp.build.tools.git.model.CommitHistory
+   */
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T withCommitHistory(@Nullable CommitHistory commitHistory) {
     setCommitHistory(commitHistory);
     return (T) this;
   }
 
+  /**
+   * Compares and sorts a collection of {@link Project Projects} by {@link #getName() name} in ascending order.
+   *
+   * @param project {@link Project} compared for order with this {@link Project}; must not be null.
+   * @return an {@link Integer value} specifying relative ordering between this {@link Project}
+   * and the given {@link Project}.
+   * @see #getName()
+   */
+  @Override
+  public int compareTo(@NonNull Project project) {
+    return getName().compareTo(project.getName());
+  }
+
+  /**
+   * Returns the {@link #getName() name} of this {@link Project}.
+   *
+   * @return the {@link #getName() name} of this {@link Project}.
+   * @see #getName()
+   */
   @Override
   public String toString() {
     return getName();
@@ -156,7 +210,7 @@ public class Project implements Comparable<Project> {
 
   @Getter
   @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-  public static class Artifact {
+  public static class Artifact implements Comparable<Artifact> {
 
     protected static final String ARTIFACT_COMPONENT_SEPARATOR = ":";
 
@@ -182,7 +236,11 @@ public class Project implements Comparable<Project> {
       return !(groupId == null || groupId.isBlank());
     }
 
-    public Version getVersion() {
+    public boolean isVersionSet() {
+      return getVersion() != null;
+    }
+
+    public @Nullable Version getVersion() {
       return getProject().getVersion();
     }
 
@@ -192,24 +250,57 @@ public class Project implements Comparable<Project> {
     }
 
     @Override
+    public int compareTo(@NonNull Artifact artifact) {
+
+      int result = Utils.getInt(ComparableComparator.INSTANCE.compare(this.getGroupId(), artifact.getGroupId()),
+        () -> this.getId().compareTo(artifact.getId()));
+
+      return Utils.getInt(result,
+        () -> ComparableComparator.INSTANCE.compare(this.getVersion(), artifact.getVersion()));
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
+        return true;
+      }
+
+      if (!(obj instanceof Artifact that)) {
+        return false;
+      }
+
+      return this.getId().equals(that.getId())
+        && Objects.equals(this.getGroupId(), that.getGroupId())
+        && Objects.equals(this.getVersion(), that.getVersion());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getGroupId(), getId(), getVersion());
+    }
+
+    @Override
     public String toString() {
 
       return Utils.nullSafeTrimmedString(getGroupId())
         .concat(isGroupIdSet() ? ARTIFACT_COMPONENT_SEPARATOR : Utils.EMPTY_STRING)
         .concat(getId())
-        .concat(ARTIFACT_COMPONENT_SEPARATOR)
-        .concat(getVersion().toString());
+        .concat(isVersionSet() ? ARTIFACT_COMPONENT_SEPARATOR : Utils.EMPTY_STRING)
+        .concat(Utils.nullSafeToString(getVersion()));
     }
   }
 
   @Getter
-  public static class Version implements Cloneable, Comparable<Version> {
+  public static class Version implements Comparable<Version> {
 
     protected static final int DEFAULT_MAJOR_VERSION = 0;
     protected static final int DEFAULT_MINOR_VERSION = 0;
     protected static final int DEFAULT_MAINTENANCE_VERSION = 0;
 
     protected static final String MILESTONE = "M";
+    protected static final String RELEASE_CANDIDATE = "RC";
     protected static final String SNAPSHOT = "snapshot";
     protected static final String VERSION_NUMBER_SEPARATOR = "\\.";
     protected static final String VERSION_QUALIFIER_SEPARATOR = "-";
@@ -272,8 +363,7 @@ public class Project implements Comparable<Project> {
     }
 
     public boolean isQualifierPresent() {
-      String qualifier = getQualifier();
-      return !(qualifier == null || qualifier.isBlank());
+      return !Utils.nullSafeTrimmedString(getQualifier()).isEmpty();
     }
 
     public boolean isMilestone() {
@@ -281,7 +371,11 @@ public class Project implements Comparable<Project> {
     }
 
     public boolean isRelease() {
-      return !(isSnapshot() || isMilestone());
+      return !(isSnapshot() || isMilestone() || isReleaseCandidate());
+    }
+
+    public boolean isReleaseCandidate() {
+      return String.valueOf(getQualifier()).toUpperCase().startsWith(RELEASE_CANDIDATE);
     }
 
     public boolean isSnapshot() {
@@ -294,20 +388,74 @@ public class Project implements Comparable<Project> {
     }
 
     @Override
+    public int compareTo(Project.Version version) {
+
+      // Compare Major, Minor & Maintenance Version Numbers
+      int result = Utils.getInt(Integer.compare(this.getMajor(), version.getMajor()),
+        () -> Utils.getInt(Integer.compare(this.getMinor(), version.getMinor()),
+          () -> Integer.compare(this.getMaintenance(), version.getMaintenance())));
+
+      // Compare Qualifier
+      result = Utils.getInt(result,
+        () -> Utils.getInt(Integer.compare(quantifyQualifier(this), quantifyQualifier(version)),
+          () -> Integer.compare(resolveQualifierNumber(this), resolveQualifierNumber(version))));
+
+      return Utils.invert(result);
+    }
+
+    private int quantifyQualifier(@NonNull Version version) {
+      return quantifyQualifier(version.getQualifier());
+    }
+
+    private int quantifyQualifier(@Nullable String qualifier) {
+
+      String nonNullQualifier = Utils.nullSafeTrimmedString(qualifier);
+
+      return nonNullQualifier.isEmpty() ? 4
+        : nonNullQualifier.startsWith(RELEASE_CANDIDATE) ? 3
+        : nonNullQualifier.startsWith(MILESTONE) ? 2
+        : nonNullQualifier.startsWith(SNAPSHOT) ? 1
+        : 0;
+    }
+
+    private int resolveQualifierNumber(@NonNull Version version) {
+      return resolveQualifierNumber(version.getQualifier());
+    }
+
     @SuppressWarnings("all")
-    public Object clone() {
-      return Version.of(this.getMajor(), this.getMinor(), this.getMaintenance());
+    private int resolveQualifierNumber(@Nullable String qualifier) {
+
+      String number = "";
+
+      for (char x : Utils.nullSafeTrimmedString(qualifier).toCharArray()) {
+        if (Character.isDigit(x)) {
+          number += x;
+        }
+      }
+
+      return StringUtils.hasText(number) ? Integer.parseInt(number) : 0;
     }
 
     @Override
-    public int compareTo(Project.Version that) {
+    public boolean equals(Object obj) {
 
-      int result = Integer.compare(this.getMajor(), that.getMajor());
+      if (this == obj) {
+        return true;
+      }
 
-      result = result != 0 ? result : Integer.compare(this.getMinor(), that.getMinor());
-      result = result != 0 ? result : Integer.compare(this.getMaintenance(), that.getMaintenance());
+      if (!(obj instanceof Version that)) {
+        return false;
+      }
 
-      return result;
+      return this.getMajor() == that.getMajor()
+        && this.getMinor() == that.getMinor()
+        && this.getMaintenance() == that.getMaintenance()
+        && Objects.equals(this.getQualifier(), that.getQualifier());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(getMajor(), getMinor(), getMaintenance(), getQualifier());
     }
 
     @Override
