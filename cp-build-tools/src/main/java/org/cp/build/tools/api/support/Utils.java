@@ -41,6 +41,9 @@ public abstract class Utils {
   public static final String EMPTY_STRING = "";
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
   public static final String SINGLE_SPACE = " ";
+  public static final String TAB = "\t";
+  public static final String NEW_LINE_REGEX = "\\n";
+  public static final String NEW_LINE_TAB = LINE_SEPARATOR.concat(TAB);
 
   public static <T> T get(@Nullable T value, @NonNull Supplier<T> defaultValue) {
     return value != null ? value : defaultValue.get();
