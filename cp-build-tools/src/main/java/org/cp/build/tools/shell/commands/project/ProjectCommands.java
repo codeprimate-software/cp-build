@@ -26,6 +26,7 @@ import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.model.MavenProject;
+import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -48,6 +49,7 @@ import lombok.RequiredArgsConstructor;
  * @author John Blum
  * @see org.cp.build.tools.api.model.Project
  * @see org.cp.build.tools.api.model.Session
+ * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
@@ -55,7 +57,7 @@ import lombok.RequiredArgsConstructor;
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class ProjectCommands {
+public class ProjectCommands extends AbstractCommandsSupport {
 
   private final ProjectManager projectManager;
 
@@ -88,10 +90,11 @@ public class ProjectCommands {
   public String describe() {
 
     return getCurrentProject()
-      .map(project -> "Project Name: ".concat(project.getName()).concat(Utils.newLine())
-        .concat("Description: ").concat(project.getDescription()).concat(Utils.newLine())
+      .map(project -> "Name: ".concat(project.getName()).concat(Utils.newLine())
+        .concat("Description: ").concat(indent(project.getDescription())).concat(Utils.newLine())
         .concat("Version: ").concat(project.getVersion().toString()).concat(Utils.newLine())
         .concat("Source Repository: ").concat(project.getSourceRepository().toString()).concat(Utils.newLine())
+        .concat("Issue Tracker: ").concat(project.getIssueTracker().toString()).concat(Utils.newLine())
         .concat("Artifact: ").concat(project.getArtifact().toString()).concat(Utils.newLine()))
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
@@ -123,7 +126,7 @@ public class ProjectCommands {
   }
 
   @Command(command = "load", description = "Loads project from the given location")
-  public String load(@NonNull @OptionValues(provider = "projectSetCompletionProvider") File location) {
+  public String load(@NonNull @OptionValues(provider = "projectLoadCompletionProvider") File location) {
 
     ProjectManager projectManager = getProjectManager();
 
@@ -151,7 +154,7 @@ public class ProjectCommands {
   }
 
   @NonNull @Bean
-  CompletionProvider projectSetCompletionProvider() {
+  CompletionProvider projectLoadCompletionProvider() {
 
     return completionContext -> {
 
