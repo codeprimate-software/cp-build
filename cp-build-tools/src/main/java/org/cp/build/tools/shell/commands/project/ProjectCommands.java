@@ -83,7 +83,7 @@ public class ProjectCommands {
 
     return getCurrentProject()
       .map(project -> String.format("Current project is [%s] located in [%s]", project, project.getDirectory()))
-      .orElseGet(() -> "Project not set");
+      .orElse("Project not set");
   }
 
   @SuppressWarnings("all")
