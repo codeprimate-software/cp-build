@@ -91,7 +91,7 @@ public class UtilsUnitTests {
     assertThat(Utils.getInt(0, mockSupplier)).isEqualTo(101);
 
     verify(mockSupplier, times(1)).get();
-    verifyNoInteractions(mockSupplier);
+    verifyNoMoreInteractions(mockSupplier);
   }
 
   @Test
