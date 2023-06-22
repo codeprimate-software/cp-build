@@ -93,6 +93,8 @@ public class Project implements Comparable<Project> {
 
   private CommitHistory commitHistory;
 
+  private final Developers developers = new Developers();
+
   private File directory;
 
   private final Licenses licenses = new Licenses();
@@ -159,6 +161,21 @@ public class Project implements Comparable<Project> {
   }
 
   /**
+   * Builder method used to configure {@link Developers} who developed this {@link Project}.
+   *
+   * @param <T> {@link Class concrete type} of {@link Project}.
+   * @param developer {@link Developer} who engineered and developed this {@link Project}.
+   * @return this {@link Project}.
+   * @see org.cp.build.tools.api.model.Project.Developers
+   * @see org.cp.build.tools.api.model.Project.Developer
+   */
+  @SuppressWarnings("unchecked")
+  public @NonNull <T extends Project> T developedBy(@NonNull Developer developer) {
+    getDevelopers().add(developer);
+    return (T) this;
+  }
+
+  /**
    * Builder method used to configure the {@link File local working directory} containing the source files
    * for this {@link Project}.
    *
@@ -193,10 +210,10 @@ public class Project implements Comparable<Project> {
   }
 
   /**
-   * Builder method used to configure a {@link License} used by this {@link Project}.
+   * Builder method used to configure {@link Licenses} used to {@literal copyright} this {@link Project}.
    *
    * @param <T> {@link Class concrete type} of {@link Project}.
-   * @param license {@link License} used to enforce the copyright of this {@link Project Project's} source files.
+   * @param license {@link License} used to {@literal copyright} this {@link Project}.
    * @return this {@link Project}.
    * @see org.cp.build.tools.api.model.Project.Licenses
    * @see org.cp.build.tools.api.model.Project.License
@@ -208,10 +225,10 @@ public class Project implements Comparable<Project> {
   }
 
   /**
-   * Builder method used to configure the {@link Organization} owning this {@link Project}.
+   * Builder method used to configure the {@link Organization} governing this {@link Project}.
    *
    * @param <T> {@link Class concrete type} of {@link Project}.
-   * @param organization {@link Organization} that owns this {@link Project}.
+   * @param organization {@link Organization} that governs and owns this {@link Project}.
    * @return this {@link Project}.
    * @see org.cp.build.tools.api.model.Project.Organization
    */
@@ -367,6 +384,10 @@ public class Project implements Comparable<Project> {
       return license != null && getLicenses().add(license);
     }
 
+    public boolean contains(@Nullable License license) {
+      return license != null && getLicenses().contains(license);
+    }
+
     @Override
     public Iterator<License> iterator() {
       return Collections.unmodifiableSet(this.licenses).iterator();
@@ -374,6 +395,62 @@ public class Project implements Comparable<Project> {
   }
 
   @Getter
+  @EqualsAndHashCode(of = "name")
+  @RequiredArgsConstructor(staticName = "as")
+  public static class Developer implements Comparable<Developer> {
+
+    @Setter(AccessLevel.PROTECTED)
+    private Organization organization;
+
+    @NonNull
+    private final String name;
+
+    @Setter(AccessLevel.PROTECTED)
+    private String emailAddress;
+
+    public @NonNull Developer withEmailAddress(@Nullable String emailAddress) {
+      setEmailAddress(emailAddress);
+      return this;
+    }
+
+    public @NonNull Developer withOrganization(@Nullable Organization organization) {
+      setOrganization(organization);
+      return this;
+    }
+
+    @Override
+    public int compareTo(@NonNull Developer developer) {
+      return this.getName().compareTo(developer.getName());
+    }
+
+    @Override
+    public String toString() {
+      return getName();
+    }
+  }
+
+  @Getter(AccessLevel.PROTECTED)
+  public static class Developers implements Iterable<Developer> {
+
+    private final Set<Developer> developers = new HashSet<>();
+
+    @SuppressWarnings("all")
+    public boolean add(@NonNull Developer developer) {
+      return developer != null && getDevelopers().add(developer);
+    }
+
+    public boolean contains(@Nullable Developer developer) {
+      return developer != null && getDevelopers().contains(developer);
+    }
+
+    @Override
+    public Iterator<Developer> iterator() {
+      return Collections.unmodifiableSet(this.developers).iterator();
+    }
+  }
+
+  @Getter
+  @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "as")
   public static class Organization implements Comparable<Organization> {
 
@@ -382,14 +459,14 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    @Override
-    public int compareTo(@NonNull Organization organization) {
-      return this.getName().compareTo(organization.getName());
-    }
-
     public @NonNull Organization withUri(@Nullable URI uri) {
       setUri(uri);
       return this;
+    }
+
+    @Override
+    public int compareTo(@NonNull Organization organization) {
+      return this.getName().compareTo(organization.getName());
     }
 
     @Override
