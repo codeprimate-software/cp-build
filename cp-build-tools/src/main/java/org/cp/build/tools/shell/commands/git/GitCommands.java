@@ -15,6 +15,7 @@
  */
 package org.cp.build.tools.shell.commands.git;
 
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class GitCommands {
 
-  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyy-MM-dd HH:mm:ss");
+  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyy-MMM-dd HH:mm:ss");
 
   private final GitTemplate gitTemplate;
 
@@ -71,7 +72,8 @@ public class GitCommands {
 
   @Command(command = "commit-history")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitHistory(@Option(defaultValue = "10") int limit) {
+  public String commitHistory(@Option(defaultValue = "10") int limit,
+      @Option(longNames = "files", shortNames = 'f', defaultValue = "false") boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
 
@@ -83,10 +85,21 @@ public class GitCommands {
       .sorted()
       .toList()
       .forEach(commitRecord -> {
-        output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
+
         output.append(String.format("Author: %s <%s>",
           commitRecord.getAuthor().getName(), commitRecord.getAuthor().getEmail())).append(Utils.newLine());
-        output.append("Date: ").append(commitRecord.getDate().format(COMMIT_DATE_FORMATTER));
+        output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
+        output.append("Date/Time: ").append(commitRecord.getDate().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
+        output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
+          .append(commitRecord.getMessage()).append(Utils.newLine());
+
+        if (showFiles) {
+          output.append(Utils.newLine());
+          for (File sourceFile : commitRecord) {
+            output.append(sourceFile.getAbsolutePath()).append(Utils.newLine());
+          }
+        }
+
         output.append(Utils.newLine());
       });
 
