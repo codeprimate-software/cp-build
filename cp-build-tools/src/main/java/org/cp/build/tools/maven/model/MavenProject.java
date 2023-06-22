@@ -143,7 +143,7 @@ public class MavenProject extends Project {
   }
 
   private static @NonNull File resolvePomXml(@NonNull File file) {
-    return Utils.nullSafeIsDirectory(file) ? new File(file, POM_XML) : file;
+    return isPomXml(file) ? file : new File(file, POM_XML);
   }
 
   private final org.apache.maven.project.MavenProject mavenProject;
