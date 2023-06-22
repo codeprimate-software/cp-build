@@ -127,6 +127,7 @@ public class GitCommands {
 
     return getCurrentProject().isPresent()
       ? Availability::available
-      : () -> Availability.unavailable("the current Project is not set; please call 'project set <location>'");
+      : () -> Availability.unavailable("the current project is not set;"
+        + " please call 'project load <location>' or 'project switch <name>'");
   }
 }

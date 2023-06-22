@@ -70,10 +70,6 @@ public class ProjectCommands {
     return getProjectManager().getCurrentProject();
   }
 
-  protected @NonNull Project setCurrentProject(@NonNull Project project) {
-    return getProjectManager().setCurrentProject(project);
-  }
-
   protected List<Project> projects() {
     return getProjectManager().list();
   }
@@ -126,10 +122,12 @@ public class ProjectCommands {
     return output.toString();
   }
 
-  @Command(command = "set", description = "Sets the current Project to the given location")
-  public String set(@NonNull @OptionValues(provider = "projectSetCompletionProvider") File location) {
+  @Command(command = "load", description = "Loads project from the given location")
+  public String load(@NonNull @OptionValues(provider = "projectSetCompletionProvider") File location) {
 
-    Project project = setCurrentProject(getProjectManager().resolveByLocation(location));
+    ProjectManager projectManager = getProjectManager();
+
+    Project project = projectManager.setCurrentProject(projectManager.resolveByLocation(location));
 
     return String.format("Project set to [%s]", project);
   }
@@ -148,7 +146,8 @@ public class ProjectCommands {
 
     return getCurrentProject().isPresent()
       ? Availability::available
-      : () -> Availability.unavailable("the current project is not set; please call 'project set <location>'");
+      : () -> Availability.unavailable("the current project is not set;"
+        + " please call 'project load <location>' or 'project switch <name>'");
   }
 
   @NonNull @Bean
