@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -51,6 +52,10 @@ public abstract class Utils {
 
   public static int getInt(int value, @NonNull Supplier<Integer> intSupplier) {
     return value != 0 ? value : intSupplier.get();
+  }
+
+  public static String getString(String value, @NonNull Supplier<String> stringSupplier) {
+    return StringUtils.hasText(value) ? value : stringSupplier.get();
   }
 
   public static int invert(int compareResult) {

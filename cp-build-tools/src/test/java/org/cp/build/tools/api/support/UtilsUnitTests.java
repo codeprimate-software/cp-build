@@ -95,6 +95,31 @@ public class UtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void getStringReturnsString() {
+
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    assertThat(Utils.getString("test", mockSupplier)).isEqualTo("test");
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getStringReturnsSuppliedString() {
+
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    doReturn("mock").when(mockSupplier).get();
+
+    assertThat(Utils.getString(null, mockSupplier)).isEqualTo("mock");
+
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+  }
+
+  @Test
   public void invertIsCorrect() {
 
     assertThat(Utils.invert(1)).isLessThan(0);
