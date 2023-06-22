@@ -165,6 +165,16 @@ public class UtilsUnitTests {
   }
 
   @Test
+  public void nullSafeIsFileWithNull() {
+    assertThat(Utils.nullSafeIsFile(null)).isFalse();
+  }
+
+  @Test
+  public void nullSafeIsFileWithObject() {
+    assertThat(Utils.nullSafeIsFile(new Object())).isFalse();
+  }
+
+  @Test
   public void nullSafeFileArrayWithFileArray() {
 
     File[] array = new File[0];
@@ -178,7 +188,7 @@ public class UtilsUnitTests {
   }
 
   @Test
-  public void nullSafeIterableWithNonNullIterable() {
+  public void nullSafeIterableWithIterable() {
 
     Iterable<?> mockIterable = mock(Iterable.class);
 
@@ -193,7 +203,7 @@ public class UtilsUnitTests {
   }
 
   @Test
-  public void nullSafeMatchingPredicateWithNonNullPredicate() {
+  public void nullSafeMatchingPredicateWithPredicate() {
 
     Predicate<?> mockPredicate = mock(Predicate.class);
 
@@ -212,7 +222,7 @@ public class UtilsUnitTests {
   }
 
   @Test
-  public void nullSafeNonMatchingPredicateWithNonNullPredicate() {
+  public void nullSafeNonMatchingPredicateWithPredicate() {
 
     Predicate<?> mockPredicate = mock(Predicate.class);
 
@@ -228,16 +238,6 @@ public class UtilsUnitTests {
 
     assertThat(predicate).isNotNull();
     assertThat(predicate.test("mock")).isFalse();
-  }
-
-  @Test
-  public void nullSafeIsFileWithNull() {
-    assertThat(Utils.nullSafeIsFile(null)).isFalse();
-  }
-
-  @Test
-  public void nullSafeIsFileWithObject() {
-    assertThat(Utils.nullSafeIsFile(new Object())).isFalse();
   }
 
   @Test
@@ -258,6 +258,21 @@ public class UtilsUnitTests {
   @Test
   public void nullSafeFormatStringWithNullString() {
     assertThat(Utils.nullSafeFormatString(null, 2)).isEqualTo("  ");
+  }
+
+  @Test
+  public void nullSafeToStringWithNonNullObject() {
+
+    assertThat(Utils.nullSafeToString("test")).isEqualTo("test");
+    assertThat(Utils.nullSafeToString(" mock  ")).isEqualTo(" mock  ");
+    assertThat(Utils.nullSafeToString(true)).isEqualTo("true");
+    assertThat(Utils.nullSafeToString(1)).isEqualTo("1");
+    assertThat(Utils.nullSafeToString(3.14159)).isEqualTo("3.14159");
+  }
+
+  @Test
+  public void nullSafeToStringWithNullObject() {
+    assertThat(Utils.nullSafeToString(null)).isEqualTo(Utils.EMPTY_STRING);
   }
 
   @Test

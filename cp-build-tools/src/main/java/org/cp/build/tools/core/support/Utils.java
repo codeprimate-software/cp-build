@@ -96,6 +96,10 @@ public abstract class Utils {
     return nonNullString.substring(0, Math.min(nonNullString.length(), length));
   }
 
+  public static @NonNull String nullSafeToString(@Nullable Object target) {
+    return target != null ? target.toString() : EMPTY_STRING;
+  }
+
   public static @NonNull String nullSafeTrimmedString(@Nullable String target) {
     return target != null ? target.trim() : EMPTY_STRING;
   }
