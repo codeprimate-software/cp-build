@@ -40,6 +40,7 @@ import org.springframework.shell.AvailabilityProvider;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.CommandAvailability;
 import org.springframework.shell.command.annotation.Option;
+import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -64,7 +65,11 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class GitCommands extends AbstractCommandsSupport {
 
-  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, yyyy-MMM-dd HH:mm:ss");
+  protected static final String COMMIT_DATE_TIME_PATTERN = "EEE, yyyy-MMM-dd HH:mm:ss";
+  protected static final String INPUT_DATE_TIME_PATTERN = "yyyy-MMM-dd";
+
+  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
+  private static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_TIME_PATTERN);
 
   private static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
 
@@ -132,19 +137,26 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-after-hours")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitsAfterHours(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count) {
+  public String commitsAfterHours(
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+      @Option(longNames = "since", shortNames = 's') String dateString) {
 
     Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
 
-      LocalDateTime dateTime = commitRecord.getDateTime();
+      LocalDateTime since = StringUtils.hasText(dateString)
+        ? LocalDateTime.parse(dateString, INPUT_DATE_FORMATTER)
+        : Utils.atEpoch();
 
-      LocalTime time = dateTime.toLocalTime();
-      LocalTime nineAm = LocalTime.of(9, 0, 0);
+      LocalDateTime commitDateTime = commitRecord.getDateTime();
+
+      LocalTime commitTime = commitDateTime.toLocalTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
+      LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      boolean afterHours = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek());
+      boolean afterHours = commitDateTime.isAfter(since);
 
-      afterHours |= time.isBefore(nineAm) || time.isAfter(fivePm);
+      afterHours &= Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
+      afterHours &= commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm);
 
       return afterHours;
     };
@@ -167,19 +179,26 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-during-work")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitsOnTheClock(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count) {
+  public String commitsOnTheClock(
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+      @Option(longNames = "since", shortNames = 's') String dateString) {
 
     Predicate<CommitRecord> commitsDuringWorkPredicate = commitRecord -> {
 
-      LocalDateTime dateTime = commitRecord.getDateTime();
+      LocalDateTime since = StringUtils.hasText(dateString)
+        ? LocalDateTime.parse(dateString, INPUT_DATE_FORMATTER)
+        : Utils.atEpoch();
 
-      LocalTime time = dateTime.toLocalTime();
-      LocalTime nineAm = LocalTime.of(9, 0, 0);
+      LocalDateTime commitDateTime = commitRecord.getDateTime();
+
+      LocalTime commitTime = commitDateTime.toLocalTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
+      LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      boolean afterHours = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek());
+      boolean afterHours = commitDateTime.isAfter(since);
 
-      afterHours |= !(time.isBefore(nineAm) || time.isAfter(fivePm));
+      afterHours &= !Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
+      afterHours &= !(commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
 
       return afterHours;
     };
