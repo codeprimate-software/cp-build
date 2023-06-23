@@ -26,8 +26,10 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
+import java.util.Spliterator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -343,6 +345,33 @@ public class UtilsUnitTests {
       .isThrownBy(() -> Utils.requireState(null, "%s state present", "No"))
       .withMessage("No state present")
       .withNoCause();
+  }
+
+  @Test
+  public void streamIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    Spliterator<?> mockSpliterator = mock(Spliterator.class);
+
+    doReturn(mockSpliterator).when(mockIterable).spliterator();
+
+    Stream<?> stream = Utils.stream(mockIterable);
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).isEmpty();
+
+    verify(mockIterable, times(1)).spliterator();
+    verifyNoMoreInteractions(mockIterable);
+  }
+
+  @Test
+  public void streamNullIterable() {
+
+    Stream<?> stream = Utils.stream(null);
+
+    assertThat(stream).isNotNull();
+    assertThat(stream).isEmpty();
   }
 
   @Test

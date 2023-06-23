@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -136,6 +138,10 @@ public abstract class Utils {
     }
 
     return object;
+  }
+
+  public static @NonNull <T> Stream<T> stream(@Nullable Iterable<T> iterable) {
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false);
   }
 
   public static @NonNull <T> Supplier<T> toSupplier(@Nullable T target) {
