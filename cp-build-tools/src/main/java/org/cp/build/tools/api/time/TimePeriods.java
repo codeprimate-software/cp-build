@@ -120,7 +120,7 @@ public class TimePeriods implements Iterable<DateRange> {
   @Getter
   protected static class DateRange {
 
-    protected static final String DATE_PATTERN = "yyyy-MMM-dd";
+    protected static final String DATE_PATTERN = "yyyy-MM-dd";
 
     protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
