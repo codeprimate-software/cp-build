@@ -203,7 +203,7 @@ public class GitCommands extends AbstractCommandsSupport {
   private static @NonNull Predicate<CommitRecord> commitsExcludingDatesPredicate(@Nullable String excludesDates) {
 
     return StringUtils.hasText(excludesDates)
-      ? commitRecord -> TimePeriods.parse(excludesDates).asPredicate().test(commitRecord.getDate())
+      ? commitRecord -> !TimePeriods.parse(excludesDates).asPredicate().test(commitRecord.getDate())
       : commitRecord -> true;
   }
 
