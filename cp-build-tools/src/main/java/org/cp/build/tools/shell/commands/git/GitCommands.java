@@ -24,6 +24,7 @@ import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.support.GitTemplate;
+import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -46,6 +47,7 @@ import lombok.RequiredArgsConstructor;
  * @see org.cp.build.tools.git.model.CommitHistory
  * @see org.cp.build.tools.git.model.CommitRecord
  * @see org.cp.build.tools.git.support.GitTemplate
+ * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
@@ -53,7 +55,7 @@ import lombok.RequiredArgsConstructor;
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class GitCommands {
+public class GitCommands extends AbstractCommandsSupport {
 
   private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, yyyy-MMM-dd HH:mm:ss");
 
@@ -99,7 +101,7 @@ public class GitCommands {
         output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
         output.append("Date/Time: ").append(commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
         output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
-          .append(commitRecord.getMessage()).append(Utils.newLine());
+          .append(indent(commitRecord.getMessage())).append(Utils.newLine());
 
         if (showFiles) {
           output.append(Utils.newLine());
