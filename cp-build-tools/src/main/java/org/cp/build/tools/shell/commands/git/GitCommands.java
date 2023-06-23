@@ -66,11 +66,15 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class GitCommands extends AbstractCommandsSupport {
 
+  protected static final boolean DEFAULT_SHOW_FILES = false;
+
+  protected static final String COMMIT_AUTHOR_TO_STRING = "%1$s <%2$s>";
   protected static final String COMMIT_DATE_TIME_PATTERN = "EEE, yyyy-MMM-dd HH:mm:ss";
-  protected static final String INPUT_DATE_TIME_PATTERN = "yyyy-MM-dd";
+  protected static final String USER_INPUT_DATE_PATTERN = "yyyy-MM-dd";
 
   private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
-  private static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_TIME_PATTERN);
+  private static final DateTimeFormatter USER_INPUT_DATE_FORMATTER =
+    DateTimeFormatter.ofPattern(USER_INPUT_DATE_PATTERN);
 
   private static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
 
@@ -84,12 +88,8 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commit-count")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public int commitCount() {
-
-    return getCurrentProject()
-      .map(this::resolveCommitHistory)
-      .map(CommitHistory::size)
-      .orElse(0);
+  public int commitCount(@Option(longNames = "since", shortNames = 's') String dateString) {
+    return queryCommitHistory(commitsSincePredicate(dateString)).size();
   }
 
   @Command(command = "commit-history")
@@ -97,40 +97,21 @@ public class GitCommands extends AbstractCommandsSupport {
   public String commitHistory(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
-      @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles) {
+      @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
+      @Option(longNames = "since", shortNames = 's') String since) {
 
     if (count) {
-      return String.valueOf(commitCount());
+      return String.valueOf(commitCount(since));
     }
     else {
 
       StringBuilder output = new StringBuilder();
 
-      getCurrentProject()
-        .map(this::resolveCommitHistory)
-        .orElseGet(CommitHistory::empty)
-        .stream()
+      queryCommitHistory().stream()
         .limit(limit)
         .sorted()
         .toList()
-        .forEach(commitRecord -> {
-
-          output.append(String.format("Author: %s <%s>",
-            commitRecord.getAuthor().getName(), commitRecord.getAuthor().getEmailAddress())).append(Utils.newLine());
-          output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
-          output.append("Date/Time: ").append(commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
-          output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
-            .append(indent(commitRecord.getMessage())).append(Utils.newLine());
-
-          if (showFiles) {
-            output.append(Utils.newLine());
-            for (File sourceFile : commitRecord) {
-              output.append(sourceFile.getAbsolutePath()).append(Utils.newLine());
-            }
-          }
-
-          output.append(Utils.newLine());
-        });
+        .forEach(commitRecord -> showCommitRecord(output, commitRecord, showFiles));
 
       return output.toString();
     }
@@ -138,98 +119,147 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-after-hours")
   @CommandAvailability(provider = "gitCommandsAvailability")
+  @SuppressWarnings("all")
   public String commitsAfterHours(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
-      @Option(longNames = "since", shortNames = 's') String dateString) {
+      @Option(longNames = "since", shortNames = 's') String since) {
 
     Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
 
       LocalDateTime commitDateTime = commitRecord.getDateTime();
 
-      LocalDate commitDate = commitDateTime.toLocalDate();
-
       LocalTime commitTime = commitDateTime.toLocalTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
       LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      LocalDate since = StringUtils.hasText(dateString)
-        ? LocalDate.parse(dateString, INPUT_DATE_FORMATTER)
-        : Utils.atEpoch().toLocalDate();
-
-      boolean afterHours = commitDate.isAfter(since);
-
-      afterHours &= Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek())
+      boolean afterHours = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek())
         || (commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
 
       return afterHours;
     };
 
-    List<CommitRecord> commits = getCurrentProject()
-      .map(this::resolveCommitHistory)
-      .orElseGet(CommitHistory::empty)
-      .stream()
-      .filter(commitsAfterHoursPredicate)
-      .sorted()
-      .toList();
+    Predicate<CommitRecord> queryPredicate = commitsSincePredicate(since).and(commitsAfterHoursPredicate);
 
-    if (count) {
-      return String.valueOf(commits.size());
-    }
-    else {
-      return "Not Implemented";
-    }
+    List<CommitRecord> commits = queryCommitHistory(queryPredicate).stream().sorted().toList();
+
+    return count ? String.valueOf(commits.size()) : "Not Implemented";
   }
 
   @Command(command = "commits-during-work")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public String commitsOnTheClock(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
-      @Option(longNames = "since", shortNames = 's') String dateString) {
+      @Option(longNames = "since", shortNames = 's') String since) {
 
-    Predicate<CommitRecord> commitsDuringWorkPredicate = commitRecord -> {
+    Predicate<CommitRecord> commitsDuringWorkHoursPredicate = commitRecord -> {
 
       LocalDateTime commitDateTime = commitRecord.getDateTime();
-
-      LocalDate commitDate = commitDateTime.toLocalDate();
 
       LocalTime commitTime = commitDateTime.toLocalTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
       LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      LocalDate since = StringUtils.hasText(dateString)
-        ? LocalDate.parse(dateString, INPUT_DATE_FORMATTER)
-        : Utils.atEpoch().toLocalDate();
+      boolean duringWorkHours =
+        !Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
 
-      boolean afterHours = commitDate.isAfter(since);
+      duringWorkHours &= !(commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
 
-      afterHours &= !Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
-      afterHours &= !(commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
-
-      return afterHours;
+      return duringWorkHours;
     };
 
-    List<CommitRecord> commits = getCurrentProject()
-      .map(this::resolveCommitHistory)
-      .orElseGet(CommitHistory::empty)
-      .stream()
-      .filter(commitsDuringWorkPredicate)
-      .sorted()
-      .toList();
+    Predicate<CommitRecord> queryPredicate = commitsSincePredicate(since).and(commitsDuringWorkHoursPredicate);
 
-    if (count) {
-      return String.valueOf(commits.size());
-    }
-    else {
-      return "Not Implemented";
-    }
+    List<CommitRecord> commits = queryCommitHistory(queryPredicate).stream().sorted().toList();
+
+    return count ? String.valueOf(commits.size()) : "Not Implemented";
   }
 
-  private @Nullable CommitHistory resolveCommitHistory(@NonNull Project project) {
-    return Utils.get(project.getCommitHistory(), () -> loadCommitHistory(project));
+  private @NonNull CommitHistory queryCommitHistory() {
+    return queryCommitHistory(commitRecord -> true);
   }
 
-  private @Nullable CommitHistory loadCommitHistory(@NonNull Project project) {
+  private @NonNull CommitHistory queryCommitHistory(@NonNull Predicate<CommitRecord> queryPredicate) {
+
+    return getCurrentProject()
+      .map(project -> queryCommitHistory(project, Utils.nullSafeNonMatchingPredicate(queryPredicate)))
+      .orElseGet(CommitHistory::empty);
+  }
+
+  private @NonNull CommitHistory queryCommitHistory(@NonNull Project project,
+      @NonNull Predicate<CommitRecord> queryPredicate) {
+
+    return queryCommitHistory(resolveCommitHistory(project), queryPredicate);
+  }
+
+  private @NonNull CommitHistory queryCommitHistory(@NonNull CommitHistory commitHistory,
+      @NonNull Predicate<CommitRecord> queryPredicate) {
+
+    return CommitHistory.of(commitHistory.findBy(queryPredicate));
+  }
+
+  private static @NonNull Predicate<CommitRecord> commitsSincePredicate(@Nullable String dateString) {
+
+    return commitRecord -> {
+
+      LocalDate since = StringUtils.hasText(dateString)
+        ? LocalDate.parse(dateString, USER_INPUT_DATE_FORMATTER)
+        : Utils.atEpoch().toLocalDate();
+
+      LocalDateTime commitDateTime = commitRecord.getDateTime();
+
+      LocalDate commitDate = commitDateTime.toLocalDate();
+
+      return commitDate.isAfter(since);
+    };
+  }
+
+  private @NonNull CommitHistory resolveCommitHistory(@NonNull Project project) {
+    return Utils.get(Utils.get(project.getCommitHistory(), () -> loadCommitHistory(project)), CommitHistory::empty);
+  }
+
+  private @NonNull CommitHistory loadCommitHistory(@NonNull Project project) {
     return project.withCommitHistory(getGitTemplate().getCommitHistory()).getCommitHistory();
+  }
+
+  private @NonNull StringBuilder showCommitRecord(@NonNull StringBuilder output, @NonNull CommitRecord commitRecord) {
+    return showCommitRecord(output, commitRecord, DEFAULT_SHOW_FILES);
+  }
+
+  private StringBuilder showCommitRecord(@NonNull StringBuilder output,
+    @NonNull CommitRecord commitRecord, boolean showFiles) {
+
+    output.append("Author: ").append(toCommitAuthorString(commitRecord.getAuthor())).append(Utils.newLine());
+    output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
+    output.append("Date/Time: ").append(toCommitDateString(commitRecord)).append(Utils.newLine());
+    output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
+      .append(toCommitMessageString(commitRecord)).append(Utils.newLine());
+
+    if (showFiles) {
+      output.append(Utils.newLine());
+      for (File sourceFile : commitRecord) {
+        output.append(toCommitSourceFileString(sourceFile)).append(Utils.newLine());
+      }
+    }
+
+    output.append(Utils.newLine());
+
+    return output;
+  }
+
+  private String toCommitAuthorString(CommitRecord.Author author) {
+    return String.format(COMMIT_AUTHOR_TO_STRING, author.getName(), author.getEmailAddress());
+  }
+
+  private String toCommitDateString(CommitRecord commitRecord) {
+    return commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER);
+  }
+
+  private String toCommitMessageString(CommitRecord commitRecord) {
+    return indent(commitRecord.getMessage());
+  }
+
+  private String toCommitSourceFileString(File source) {
+    return source.getAbsolutePath();
   }
 
   @NonNull @Bean
