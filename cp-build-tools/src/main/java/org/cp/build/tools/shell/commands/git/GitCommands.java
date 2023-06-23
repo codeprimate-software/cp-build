@@ -55,7 +55,7 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class GitCommands {
 
-  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyy-MMM-dd HH:mm:ss");
+  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, yyyy-MMM-dd HH:mm:ss");
 
   private static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
 
@@ -81,7 +81,7 @@ public class GitCommands {
   @CommandAvailability(provider = "gitCommandsAvailability")
   public String commitHistory(
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
-      @Option(longNames = "files", shortNames = 'f', defaultValue = "false") boolean showFiles) {
+      @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
 
@@ -95,9 +95,9 @@ public class GitCommands {
       .forEach(commitRecord -> {
 
         output.append(String.format("Author: %s <%s>",
-          commitRecord.getAuthor().getName(), commitRecord.getAuthor().getEmail())).append(Utils.newLine());
+          commitRecord.getAuthor().getName(), commitRecord.getAuthor().getEmailAddress())).append(Utils.newLine());
         output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
-        output.append("Date/Time: ").append(commitRecord.getDate().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
+        output.append("Date/Time: ").append(commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
         output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
           .append(commitRecord.getMessage()).append(Utils.newLine());
 
