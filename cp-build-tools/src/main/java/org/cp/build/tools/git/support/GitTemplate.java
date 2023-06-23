@@ -46,6 +46,7 @@ import org.springframework.lang.NonNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Data Access Object (DAO) and Template for {@link Git}.
@@ -65,17 +66,27 @@ public class GitTemplate {
   protected static final String MASTER_BRANCH_NAME = "master";
 
   public static @NonNull GitTemplate from(@NonNull Supplier<Git> gitSupplier) {
-
-    Utils.requireObject(gitSupplier, "Supplier for Git is required");
-
-    return new GitTemplate(gitSupplier);
+    return new GitTemplate(Utils.requireObject(gitSupplier, "Supplier for Git is required"));
   }
 
   @NonNull
   private final Supplier<Git> git;
 
+  @Setter(AccessLevel.PROTECTED)
+  private Supplier<File> sourceFilesDirectoryResolver = () -> Utils.WORKING_DIRECTORY;
+
   protected @NonNull Git git() {
     return getGit().get();
+  }
+
+  @SuppressWarnings("all")
+  public @NonNull GitTemplate usingSourceFilesDirectoryResolver(@NonNull Supplier<File> sourceFilesDirectoryResolver) {
+
+    if (sourceFilesDirectoryResolver != null) {
+      setSourceFilesDirectoryResolver(sourceFilesDirectoryResolver);
+    }
+
+    return this;
   }
 
   public @NonNull CommitHistory getCommitHistory() {
@@ -86,12 +97,14 @@ public class GitTemplate {
 
       Iterable<RevCommit> commits = logCommand.call();
 
+      Repository repository = logCommand.getRepository();
+
       Set<CommitRecord> commitRecords = new HashSet<>();
 
       for (RevCommit commit : commits) {
 
         CommitRecord commitRecord =
-          resolveCommittedSourceFiles(logCommand.getRepository(), commit, newCommitRecord(commit));
+          resolveCommittedSourceFiles(repository, commit, newCommitRecord(commit));
 
         commitRecords.add(commitRecord);
       }
@@ -159,7 +172,7 @@ public class GitTemplate {
     List<File> sourceFiles = new ArrayList<>();
 
     for (DiffEntry diff : diffs) {
-      sourceFiles.add(new File(diff.getNewPath()));
+      sourceFiles.add(new File(getSourceFilesDirectoryResolver().get(), diff.getNewPath()));
     }
 
     return sourceFiles;

@@ -51,7 +51,8 @@ public class ApplicationConfiguration {
 
   @Bean
   GitTemplate gitTemplate(Session session) {
-    return GitTemplate.from(() -> GitProject.from(session.requireProject()).getGit());
+    return GitTemplate.from(() -> GitProject.from(session.requireProject()).getGit())
+      .usingSourceFilesDirectoryResolver(() -> session.requireProject().getDirectory());
   }
 
   @Bean
