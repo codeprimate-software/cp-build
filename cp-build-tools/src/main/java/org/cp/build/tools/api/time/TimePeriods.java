@@ -138,7 +138,7 @@ public class TimePeriods implements Iterable<DateRange> {
 
       try {
 
-        String[] dates = nonNullTrimmedDate.split(Utils.DASH);
+        String[] dates = nonNullTrimmedDate.split(Utils.DOUBLE_DASH);
 
         Assert.notEmpty(dates, "Date(s) [%s] to parse are required");
 
