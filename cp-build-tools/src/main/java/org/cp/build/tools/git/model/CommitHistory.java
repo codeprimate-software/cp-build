@@ -165,7 +165,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
     LocalDate resolvedDate = date != null ? date : LocalDate.now();
 
-    return findBy(commitRecord -> commitRecord.getDate().toLocalDate().equals(resolvedDate));
+    return findBy(commitRecord -> commitRecord.getDateTime().toLocalDate().equals(resolvedDate));
   }
 
   /**

@@ -51,16 +51,13 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
 
   protected static final String COMMIT_DATE_FORMAT_PATTERN = "EEE MMM dd HH:mm:ss yyyy Z";
 
-  @lombok.NonNull
   private final Author author;
 
-  @lombok.NonNull
-  private final LocalDateTime date;
+  private final LocalDateTime dateTime;
 
   @Getter(AccessLevel.PROTECTED)
   private final Set<File> sourceFiles = new ConcurrentSkipListSet<>();
 
-  @lombok.NonNull
   private final String hash;
 
   @Setter(AccessLevel.PROTECTED)
@@ -79,13 +76,8 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     return this;
   }
 
-  @Override
-  public int compareTo(@NonNull CommitRecord that) {
-    return that.getDate().compareTo(this.getDate());
-  }
-
-  public boolean contains(File sourceFile) {
-    return getSourceFiles().contains(sourceFile);
+  public boolean contains(@Nullable File sourceFile) {
+    return sourceFile != null && getSourceFiles().contains(sourceFile);
   }
 
   @Override
@@ -96,6 +88,11 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
   public @NonNull CommitRecord withMessage(String message) {
     setMessage(message);
     return this;
+  }
+
+  @Override
+  public int compareTo(@NonNull CommitRecord that) {
+    return that.getDateTime().compareTo(this.getDateTime());
   }
 
   @Override
@@ -115,7 +112,7 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
       Author author = new Author(authorComponents[0]);
 
       return authorComponents.length > 1
-        ? author.withEmail(authorComponents[1])
+        ? author.withEmailAddress(authorComponents[1])
         : author;
     }
 
@@ -123,15 +120,15 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     private final String name;
 
     @Setter(AccessLevel.PROTECTED)
-    private String email;
+    private String emailAddress;
 
     @Override
     public int compareTo(@NonNull CommitRecord.Author that) {
       return this.getName().compareTo(that.getName());
     }
 
-    public @NonNull Author withEmail(@Nullable String email) {
-      setEmail(email);
+    public @NonNull Author withEmailAddress(@Nullable String email) {
+      setEmailAddress(email);
       return this;
     }
 
