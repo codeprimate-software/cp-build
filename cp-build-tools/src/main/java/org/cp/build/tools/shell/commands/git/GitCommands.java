@@ -16,13 +16,20 @@
 package org.cp.build.tools.shell.commands.git;
 
 import java.io.File;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
+import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.support.GitTemplate;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
@@ -120,6 +127,40 @@ public class GitCommands extends AbstractCommandsSupport {
         });
 
       return output.toString();
+    }
+  }
+
+  @Command(command = "commits-after-hours")
+  public String commitsAfterHours(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count) {
+
+    Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
+
+      LocalDateTime dateTime = commitRecord.getDateTime();
+
+      LocalTime time = dateTime.toLocalTime();
+      LocalTime nineAm = LocalTime.of(9, 0, 0);
+      LocalTime fivePm = LocalTime.of(17, 0, 0);
+
+      boolean afterHours = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek());
+
+      afterHours |= time.isBefore(nineAm) || time.isAfter(fivePm);
+
+      return afterHours;
+    };
+
+    List<CommitRecord> commits = getCurrentProject()
+      .map(this::resolveCommitHistory)
+      .orElseGet(CommitHistory::empty)
+      .stream()
+      .filter(commitsAfterHoursPredicate)
+      .sorted()
+      .toList();
+
+    if (count) {
+      return String.valueOf(commits.size());
+    }
+    else {
+      return "Not Implemented";
     }
   }
 
