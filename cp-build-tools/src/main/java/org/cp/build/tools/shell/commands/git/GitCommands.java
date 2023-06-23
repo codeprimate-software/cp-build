@@ -155,8 +155,8 @@ public class GitCommands extends AbstractCommandsSupport {
 
       boolean afterHours = commitDateTime.isAfter(since);
 
-      afterHours &= Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
-      afterHours &= commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm);
+      afterHours &= Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek())
+        || (commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
 
       return afterHours;
     };
