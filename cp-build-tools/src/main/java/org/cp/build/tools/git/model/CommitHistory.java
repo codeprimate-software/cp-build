@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitRecord.Author;
@@ -57,8 +56,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * Factory method used to construct a new {@link CommitHistory} initialized with the given array
    * of {@link CommitRecord CommitRecords}.
    *
-   * @param commitRecords array of {@link CommitRecord CommitRecords} used to
-   * initialize the new {@link CommitHistory}.
+   * @param commitRecords array of {@link CommitRecord CommitRecords} used to initialize the new {@link CommitHistory}.
    * @return a new {@link CommitHistory} initialize with the given array of {@link CommitRecord CommitRecords}.
    * @see org.cp.build.tools.git.model.CommitRecord
    */
@@ -73,8 +71,8 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * Factory method used to construct a new {@link CommitHistory} initialized with the given {@link Iterable}
    * of {@link CommitRecord CommitRecords}.
    *
-   * @param commitRecords {@link Iterable collection} of {@link CommitRecord CommitRecords} used to
-   * initialize the new {@link CommitHistory}.
+   * @param commitRecords {@link Iterable collection} of {@link CommitRecord CommitRecords} used to initialize
+   * the new {@link CommitHistory}.
    * @return a new {@link CommitHistory} initialize with the given {@link Iterable}
    * of {@link CommitRecord CommitRecords}.
    * @see org.cp.build.tools.git.model.CommitRecord
@@ -87,19 +85,31 @@ public class CommitHistory implements Iterable<CommitRecord> {
   private final List<CommitRecord> commitRecords = new ArrayList<>();
 
   /**
-   * Constructs a new {@link CommitHistory} with the given {@link Iterable collection}
+   * Constructs a new {@link CommitHistory} initialized with the given {@link Iterable collection}
    * of {@link CommitRecord CommitRecords}.
    *
-   * @param commitRecords {@link Iterable collection} of {@link CommitRecord CommitRecords} making up this history.
+   * @param commitRecords {@link Iterable collection} of {@link CommitRecord CommitRecords} making up the history
+   * of the commit log.
    * @see org.cp.build.tools.git.model.CommitRecord
    * @see java.lang.Iterable
    */
   private CommitHistory(@NonNull Iterable<CommitRecord> commitRecords) {
 
-    StreamSupport.stream(Utils.nullSafeIterable(commitRecords).spliterator(), false)
+    Utils.stream(commitRecords)
       .filter(Objects::nonNull)
       .sorted()
       .forEach(this.commitRecords::add);
+  }
+
+  /**
+   * Determines whether this {@link CommitHistory} contains any {@link CommitRecord CommitRecords}.
+   *
+   * @return a boolean value indicating whether this {@link CommitHistory}
+   * contains any {@link CommitRecord CommitRecords}.
+   * @see #getCommitRecords()
+   */
+  public boolean isEmpty() {
+    return getCommitRecords().isEmpty();
   }
 
   /**
@@ -214,7 +224,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see java.util.stream.Stream
    */
   public Stream<CommitRecord> stream() {
-    return StreamSupport.stream(spliterator(), false);
+    return Utils.stream(this);
   }
 
   /**
