@@ -82,38 +82,45 @@ public class GitCommands extends AbstractCommandsSupport {
   @Command(command = "commit-history")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public String commitHistory(
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles) {
 
-    StringBuilder output = new StringBuilder();
+    if (count) {
+      return String.valueOf(commitCount());
+    }
+    else {
 
-    getCurrentProject()
-      .map(this::resolveCommitHistory)
-      .orElseGet(CommitHistory::empty)
-      .stream()
-      .limit(limit)
-      .sorted()
-      .toList()
-      .forEach(commitRecord -> {
+      StringBuilder output = new StringBuilder();
 
-        output.append(String.format("Author: %s <%s>",
-          commitRecord.getAuthor().getName(), commitRecord.getAuthor().getEmailAddress())).append(Utils.newLine());
-        output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
-        output.append("Date/Time: ").append(commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
-        output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
-          .append(indent(commitRecord.getMessage())).append(Utils.newLine());
+      getCurrentProject()
+        .map(this::resolveCommitHistory)
+        .orElseGet(CommitHistory::empty)
+        .stream()
+        .limit(limit)
+        .sorted()
+        .toList()
+        .forEach(commitRecord -> {
 
-        if (showFiles) {
-          output.append(Utils.newLine());
-          for (File sourceFile : commitRecord) {
-            output.append(sourceFile.getAbsolutePath()).append(Utils.newLine());
+          output.append(String.format("Author: %s <%s>",
+            commitRecord.getAuthor().getName(), commitRecord.getAuthor().getEmailAddress())).append(Utils.newLine());
+          output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
+          output.append("Date/Time: ").append(commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER)).append(Utils.newLine());
+          output.append("Message: ").append(Utils.newLine()).append(Utils.newLine())
+            .append(indent(commitRecord.getMessage())).append(Utils.newLine());
+
+          if (showFiles) {
+            output.append(Utils.newLine());
+            for (File sourceFile : commitRecord) {
+              output.append(sourceFile.getAbsolutePath()).append(Utils.newLine());
+            }
           }
-        }
 
-        output.append(Utils.newLine());
-      });
+          output.append(Utils.newLine());
+        });
 
-    return output.toString();
+      return output.toString();
+    }
   }
 
   private @Nullable CommitHistory resolveCommitHistory(@NonNull Project project) {
