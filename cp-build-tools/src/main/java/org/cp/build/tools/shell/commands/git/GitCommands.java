@@ -122,7 +122,7 @@ public class GitCommands extends AbstractCommandsSupport {
   @SuppressWarnings("all")
   public String commitsAfterHours(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
-      @Option(longNames = "excluded-dates") String excludedDates,
+      @Option(longNames = "exclude-dates") String excludedDates,
       @Option(longNames = "since", shortNames = 's') String since) {
 
     Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
@@ -151,7 +151,7 @@ public class GitCommands extends AbstractCommandsSupport {
   @CommandAvailability(provider = "gitCommandsAvailability")
   public String commitsOnTheClock(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
-    @Option(longNames = "excluded-dates") String excludedDates,
+    @Option(longNames = "exclude-dates") String excludedDates,
       @Option(longNames = "since", shortNames = 's') String since) {
 
     Predicate<CommitRecord> commitsDuringWorkHoursPredicate = commitRecord -> {
