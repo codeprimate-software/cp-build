@@ -17,6 +17,7 @@ package org.cp.build.tools.shell.commands.git;
 
 import java.io.File;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -143,17 +144,19 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
 
-      LocalDateTime since = StringUtils.hasText(dateString)
-        ? LocalDateTime.parse(dateString, INPUT_DATE_FORMATTER)
-        : Utils.atEpoch();
-
       LocalDateTime commitDateTime = commitRecord.getDateTime();
+
+      LocalDate commitDate = commitDateTime.toLocalDate();
 
       LocalTime commitTime = commitDateTime.toLocalTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
       LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      boolean afterHours = commitDateTime.isAfter(since);
+      LocalDate since = StringUtils.hasText(dateString)
+        ? LocalDate.parse(dateString, INPUT_DATE_FORMATTER)
+        : Utils.atEpoch().toLocalDate();
+
+      boolean afterHours = commitDate.isAfter(since);
 
       afterHours &= Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek())
         || (commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
@@ -185,17 +188,19 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Predicate<CommitRecord> commitsDuringWorkPredicate = commitRecord -> {
 
-      LocalDateTime since = StringUtils.hasText(dateString)
-        ? LocalDateTime.parse(dateString, INPUT_DATE_FORMATTER)
-        : Utils.atEpoch();
-
       LocalDateTime commitDateTime = commitRecord.getDateTime();
+
+      LocalDate commitDate = commitDateTime.toLocalDate();
 
       LocalTime commitTime = commitDateTime.toLocalTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
       LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      boolean afterHours = commitDateTime.isAfter(since);
+      LocalDate since = StringUtils.hasText(dateString)
+        ? LocalDate.parse(dateString, INPUT_DATE_FORMATTER)
+        : Utils.atEpoch().toLocalDate();
+
+      boolean afterHours = commitDate.isAfter(since);
 
       afterHours &= !Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
       afterHours &= !(commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
