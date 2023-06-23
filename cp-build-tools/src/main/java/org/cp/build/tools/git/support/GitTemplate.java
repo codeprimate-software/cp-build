@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -118,32 +121,28 @@ public class GitTemplate {
 
   private @NonNull CommitRecord newCommitRecord(@NonNull RevCommit commit) {
 
-    PersonIdent commitAuthor = resolveCommitAuthor(commit);
+    CommitterIdentity committerIdentity = resolveCommitAuthor(commit);
 
-    LocalDateTime dateTime = resolveCommitDateTime(commit);
+    LocalDateTime dateTime = resolveCommitDateTime(commit, committerIdentity);
 
     String hash = resolveCommitHash(commit);
 
-    CommitRecord.Author author = newCommitRecordAuthor(commitAuthor);
+    CommitRecord.Author author = newCommitRecordAuthor(committerIdentity);
 
     return CommitRecord.of(author, dateTime, hash)
       .withMessage(commit.getFullMessage());
   }
 
-  private @NonNull CommitRecord.Author newCommitRecordAuthor(@NonNull PersonIdent commitAuthor) {
-    return CommitRecord.Author.as(commitAuthor.getName()).withEmailAddress(commitAuthor.getEmailAddress());
+  private @NonNull CommitRecord.Author newCommitRecordAuthor(@NonNull CommitterIdentity committerIdentity) {
+    return CommitRecord.Author.as(committerIdentity.getName()).withEmailAddress(committerIdentity.getEmailAddress());
   }
 
-  private PersonIdent resolveCommitAuthor(@NonNull RevCommit commit) {
-    //return commit.getAuthorIdent();
-    return commit.getCommitterIdent();
+  private CommitterIdentity resolveCommitAuthor(@NonNull RevCommit commit) {
+    return CommitterIdentity.of(commit.getAuthorIdent(), commit.getCommitterIdent());
   }
 
-  private LocalDateTime resolveCommitDateTime(@NonNull RevCommit commit) {
-
-    return Instant.ofEpochMilli(TimeUnit.SECONDS.toMillis(commit.getCommitTime()))
-      .atZone(ZoneOffset.systemDefault())
-      .toLocalDateTime();
+  private LocalDateTime resolveCommitDateTime(@NonNull RevCommit commit, @NonNull CommitterIdentity committerIdentity) {
+    return committerIdentity.resolveCommitDateTime(commit);
   }
 
   private String resolveCommitHash(@NonNull RevCommit commit) {
@@ -204,5 +203,72 @@ public class GitTemplate {
     ObjectId previousCommitId = Utils.get(repository.resolve(commit.name().concat("~1")), headObjectIdSupplier);
 
     return new RevWalk(repository).parseCommit(previousCommitId);
+  }
+
+  @Getter
+  @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+  static class CommitterIdentity {
+
+    static @NonNull CommitterIdentity of(@Nullable PersonIdent authorIdentity,
+        @Nullable PersonIdent committerIdentity) {
+
+      Assert.isTrue(authorIdentity != null || committerIdentity != null,
+        () -> String.format("Either Author Identity [%s] or Commit Identity [%s] is required",
+          authorIdentity, committerIdentity));
+
+      return new CommitterIdentity(authorIdentity, committerIdentity);
+    }
+
+    private final PersonIdent authorIdentity;
+    private final PersonIdent committerIdentity;
+
+    protected @NonNull PersonIdent resolveIdentity() {
+      return this.committerIdentity != null ? this.committerIdentity : this.authorIdentity;
+    }
+
+    public String getEmailAddress() {
+      return resolveIdentity().getEmailAddress();
+    }
+
+    public String getName() {
+      return resolveIdentity().getName();
+    }
+
+    public Instant getWhen() {
+      return resolveIdentity().getWhenAsInstant();
+    }
+
+    public LocalDateTime resolveCommitDateTime(@NonNull RevCommit commit) {
+
+      LocalDateTime authorDateTime = nullSafeIdentityTime(getAuthorIdentity());
+      LocalDateTime committerDateTime = nullSafeIdentityTime(getCommitterIdentity());
+      LocalDateTime commitDateTime = toLocalDateTime(commit.getCommitTime());
+
+      return earliest(authorDateTime, committerDateTime, commitDateTime);
+    }
+
+    private @NonNull LocalDateTime earliest(LocalDateTime... datesTimes) {
+
+      return Arrays.stream(datesTimes)
+        .reduce((one, two) -> one.isBefore(two) ? one : two)
+        .stream()
+        .findFirst()
+        .orElseThrow();
+    }
+
+    private @NonNull LocalDateTime nullSafeIdentityTime(@Nullable PersonIdent personIdentity) {
+      return personIdentity != null ? toLocalDateTime(personIdentity.getWhenAsInstant()) : LocalDateTime.now();
+    }
+
+    private @NonNull LocalDateTime toLocalDateTime(@Nullable Instant instant) {
+      return instant != null ? toLocalDateTime(instant.getEpochSecond()) : LocalDateTime.now();
+    }
+
+    private @NonNull LocalDateTime toLocalDateTime(long seconds) {
+
+      return Instant.ofEpochMilli(TimeUnit.SECONDS.toMillis(seconds))
+        .atZone(ZoneOffset.systemDefault())
+        .toLocalDateTime();
+    }
   }
 }
