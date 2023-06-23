@@ -131,6 +131,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commits-after-hours")
+  @CommandAvailability(provider = "gitCommandsAvailability")
   public String commitsAfterHours(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count) {
 
     Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
@@ -153,6 +154,41 @@ public class GitCommands extends AbstractCommandsSupport {
       .orElseGet(CommitHistory::empty)
       .stream()
       .filter(commitsAfterHoursPredicate)
+      .sorted()
+      .toList();
+
+    if (count) {
+      return String.valueOf(commits.size());
+    }
+    else {
+      return "Not Implemented";
+    }
+  }
+
+  @Command(command = "commits-during-work")
+  @CommandAvailability(provider = "gitCommandsAvailability")
+  public String commitsOnTheClock(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count) {
+
+    Predicate<CommitRecord> commitsDuringWorkPredicate = commitRecord -> {
+
+      LocalDateTime dateTime = commitRecord.getDateTime();
+
+      LocalTime time = dateTime.toLocalTime();
+      LocalTime nineAm = LocalTime.of(9, 0, 0);
+      LocalTime fivePm = LocalTime.of(17, 0, 0);
+
+      boolean afterHours = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(dateTime.getDayOfWeek());
+
+      afterHours |= !(time.isBefore(nineAm) || time.isAfter(fivePm));
+
+      return afterHours;
+    };
+
+    List<CommitRecord> commits = getCurrentProject()
+      .map(this::resolveCommitHistory)
+      .orElseGet(CommitHistory::empty)
+      .stream()
+      .filter(commitsDuringWorkPredicate)
       .sorted()
       .toList();
 
