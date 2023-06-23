@@ -18,7 +18,6 @@ package org.cp.build.tools.shell.commands.git;
 import java.io.File;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -29,6 +28,7 @@ import java.util.function.Predicate;
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
+import org.cp.build.tools.api.time.TimePeriods;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.support.GitTemplate;
@@ -122,23 +122,25 @@ public class GitCommands extends AbstractCommandsSupport {
   @SuppressWarnings("all")
   public String commitsAfterHours(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+      @Option(longNames = "excluded-dates") String excludedDates,
       @Option(longNames = "since", shortNames = 's') String since) {
 
     Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
 
-      LocalDateTime commitDateTime = commitRecord.getDateTime();
-
-      LocalTime commitTime = commitDateTime.toLocalTime();
+      LocalTime commitTime = commitRecord.getTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
       LocalTime nineAm = LocalTime.of(9, 0, 0);
 
-      boolean afterHours = Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek())
-        || (commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
+      boolean afterHours =
+        Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitRecord.getDate().getDayOfWeek())
+          || (commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
 
       return afterHours;
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsSincePredicate(since).and(commitsAfterHoursPredicate);
+    Predicate<CommitRecord> queryPredicate = commitsSincePredicate(since)
+      .and(commitsExcludingDatesPredicate(excludedDates))
+      .and(commitsAfterHoursPredicate);
 
     List<CommitRecord> commits = queryCommitHistory(queryPredicate).stream().sorted().toList();
 
@@ -149,25 +151,26 @@ public class GitCommands extends AbstractCommandsSupport {
   @CommandAvailability(provider = "gitCommandsAvailability")
   public String commitsOnTheClock(
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+    @Option(longNames = "excluded-dates") String excludedDates,
       @Option(longNames = "since", shortNames = 's') String since) {
 
     Predicate<CommitRecord> commitsDuringWorkHoursPredicate = commitRecord -> {
 
-      LocalDateTime commitDateTime = commitRecord.getDateTime();
-
-      LocalTime commitTime = commitDateTime.toLocalTime();
+      LocalTime commitTime = commitRecord.getTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
       LocalTime nineAm = LocalTime.of(9, 0, 0);
 
       boolean duringWorkHours =
-        !Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitDateTime.getDayOfWeek());
+        !Arrays.asList(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(commitRecord.getDate().getDayOfWeek());
 
       duringWorkHours &= !(commitTime.isBefore(nineAm) || commitTime.isAfter(fivePm));
 
       return duringWorkHours;
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsSincePredicate(since).and(commitsDuringWorkHoursPredicate);
+    Predicate<CommitRecord> queryPredicate = commitsSincePredicate(since)
+      .and(commitsExcludingDatesPredicate(excludedDates))
+      .and(commitsDuringWorkHoursPredicate);
 
     List<CommitRecord> commits = queryCommitHistory(queryPredicate).stream().sorted().toList();
 
@@ -197,6 +200,13 @@ public class GitCommands extends AbstractCommandsSupport {
     return CommitHistory.of(commitHistory.findBy(queryPredicate));
   }
 
+  private static @NonNull Predicate<CommitRecord> commitsExcludingDatesPredicate(@Nullable String excludesDates) {
+
+    return StringUtils.hasText(excludesDates)
+      ? commitRecord -> TimePeriods.parse(excludesDates).asPredicate().test(commitRecord.getDate())
+      : commitRecord -> true;
+  }
+
   private static @NonNull Predicate<CommitRecord> commitsSincePredicate(@Nullable String dateString) {
 
     return commitRecord -> {
@@ -205,9 +215,7 @@ public class GitCommands extends AbstractCommandsSupport {
         ? LocalDate.parse(dateString, USER_INPUT_DATE_FORMATTER)
         : Utils.atEpoch().toLocalDate();
 
-      LocalDateTime commitDateTime = commitRecord.getDateTime();
-
-      LocalDate commitDate = commitDateTime.toLocalDate();
+      LocalDate commitDate = commitRecord.getDate();
 
       return commitDate.isAfter(since);
     };
