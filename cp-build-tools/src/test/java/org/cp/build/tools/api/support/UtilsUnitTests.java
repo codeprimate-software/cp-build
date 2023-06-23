@@ -26,6 +26,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Spliterator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -43,6 +45,21 @@ import org.junit.jupiter.api.Test;
  * @since 2.0.0
  */
 public class UtilsUnitTests {
+
+  @Test
+  public void atEpochIsCorrect() {
+
+    LocalDateTime epoch = Utils.atEpoch();
+
+    assertThat(epoch).isNotNull();
+    assertThat(epoch.getYear()).isEqualTo(1970);
+    assertThat(epoch.getMonth()).isEqualTo(Month.JANUARY);
+    assertThat(epoch.getDayOfMonth()).isEqualTo(1);
+    assertThat(epoch.getHour()).isZero();
+    assertThat(epoch.getMinute()).isZero();
+    assertThat(epoch.getSecond()).isZero();
+    assertThat(epoch.getNano()).isZero();
+  }
 
   @Test
   @SuppressWarnings("unchecked")

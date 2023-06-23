@@ -16,6 +16,7 @@
 package org.cp.build.tools.api.support;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -47,6 +48,10 @@ public abstract class Utils {
   public static final String TAB = "\t";
   public static final String NEW_LINE_REGEX = "\\n";
   public static final String NEW_LINE_TAB = LINE_SEPARATOR.concat(TAB);
+
+  public static @NonNull LocalDateTime atEpoch() {
+    return LocalDateTime.of(1970, 1, 1 , 0, 0, 0);
+  }
 
   public static <T> T get(@Nullable T value, @NonNull Supplier<T> defaultValue) {
     return value != null ? value : defaultValue.get();
