@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.cp.build.tools.api.support.Utils;
@@ -30,9 +31,16 @@ import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.springframework.lang.NonNull;
 
 import lombok.AccessLevel;
@@ -82,30 +90,9 @@ public class GitTemplate {
 
       for (RevCommit commit : commits) {
 
-        PersonIdent commitAuthor = commit.getAuthorIdent();
+        CommitRecord commitRecord =
+          resolveCommittedSourceFiles(logCommand.getRepository(), commit, newCommitRecord(commit));
 
-        CommitRecord.Author author = CommitRecord.Author.as(commitAuthor.getName())
-          .withEmail(commitAuthor.getEmailAddress());
-
-        LocalDateTime date = Instant.ofEpochMilli(commit.getCommitTime())
-          .atZone(ZoneOffset.systemDefault())
-          .toLocalDateTime();
-
-        String hash = commit.name();
-
-        CommitRecord commitRecord = CommitRecord.of(author, date, hash)
-          .withMessage(commit.getFullMessage());
-
-        List<File> sourceFiles = new ArrayList<>();
-
-        try (TreeWalk treeWalk = new TreeWalk(logCommand.getRepository())) {
-          treeWalk.reset(commit.getTree().getId());
-          while (treeWalk.next()) {
-            sourceFiles.add(new File(treeWalk.getPathString()));
-          }
-        }
-
-        commitRecord.add(sourceFiles.toArray(new File[0]));
         commitRecords.add(commitRecord);
       }
 
@@ -114,5 +101,95 @@ public class GitTemplate {
     catch (Exception cause) {
       throw new GitException("Failed to load commit history", cause);
     }
+  }
+
+  private @NonNull CommitRecord newCommitRecord(@NonNull RevCommit commit) {
+
+    PersonIdent commitAuthor = resolveCommitAuthor(commit);
+
+    LocalDateTime dateTime = resolveCommitDateTime(commit);
+
+    String hash = resolveCommitHash(commit);
+
+    CommitRecord.Author author = newCommitRecordAuthor(commitAuthor);
+
+    return CommitRecord.of(author, dateTime, hash)
+      .withMessage(commit.getFullMessage());
+  }
+
+  private @NonNull CommitRecord.Author newCommitRecordAuthor(@NonNull PersonIdent commitAuthor) {
+    return CommitRecord.Author.as(commitAuthor.getName()).withEmailAddress(commitAuthor.getEmailAddress());
+  }
+
+  private PersonIdent resolveCommitAuthor(@NonNull RevCommit commit) {
+    //return commit.getAuthorIdent();
+    return commit.getCommitterIdent();
+  }
+
+  private LocalDateTime resolveCommitDateTime(@NonNull RevCommit commit) {
+
+    return Instant.ofEpochMilli(TimeUnit.SECONDS.toMillis(commit.getCommitTime()))
+      .atZone(ZoneOffset.systemDefault())
+      .toLocalDateTime();
+  }
+
+  private String resolveCommitHash(@NonNull RevCommit commit) {
+    return commit.name();
+  }
+
+  private @NonNull CommitRecord resolveCommittedSourceFiles(@NonNull Repository repository, @NonNull RevCommit commit,
+      @NonNull CommitRecord commitRecord) throws Exception {
+
+    List<File> sourceFiles = resolveCommittedSourceFilesUsingDiffFormatter(repository, commit);
+
+    commitRecord.add(sourceFiles.toArray(new File[0]));
+
+    return commitRecord;
+  }
+
+  // @see https://www.eclipse.org/forums/index.php/t/213979/
+  private List<File> resolveCommittedSourceFilesUsingDiffFormatter(Repository repository, RevCommit commit)
+      throws Exception {
+
+    DiffFormatter diffFormatter = newDiffFormatter(repository);
+
+    List<DiffEntry> diffs =
+      diffFormatter.scan(resolvePreviousCommit(repository, commit).getTree(), commit.getTree());
+
+    List<File> sourceFiles = new ArrayList<>();
+
+    for (DiffEntry diff : diffs) {
+      sourceFiles.add(new File(diff.getNewPath()));
+    }
+
+    return sourceFiles;
+  }
+
+  private static @NonNull DiffFormatter newDiffFormatter(@NonNull Repository repository) {
+
+    DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
+
+    diffFormatter.setRepository(repository);
+    diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+    diffFormatter.setDetectRenames(true);
+
+    return diffFormatter;
+  }
+
+  private static @NonNull RevCommit resolvePreviousCommit(@NonNull Repository repository, @NonNull RevCommit commit)
+      throws Exception {
+
+    Supplier<ObjectId> headObjectIdSupplier = () -> {
+      try {
+        return repository.resolve(Constants.HEAD);
+      }
+      catch (Exception cause) {
+        throw new GitException("Failed to resolve ObjectId for HEAD", cause);
+      }
+    };
+
+    ObjectId previousCommitId = Utils.get(repository.resolve(commit.name().concat("~1")), headObjectIdSupplier);
+
+    return new RevWalk(repository).parseCommit(previousCommitId);
   }
 }
