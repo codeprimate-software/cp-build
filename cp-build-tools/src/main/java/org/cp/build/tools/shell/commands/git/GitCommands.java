@@ -66,7 +66,7 @@ import lombok.RequiredArgsConstructor;
 public class GitCommands extends AbstractCommandsSupport {
 
   protected static final String COMMIT_DATE_TIME_PATTERN = "EEE, yyyy-MMM-dd HH:mm:ss";
-  protected static final String INPUT_DATE_TIME_PATTERN = "yyyy-MMM-dd";
+  protected static final String INPUT_DATE_TIME_PATTERN = "yyyy-MM-dd";
 
   private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
   private static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_TIME_PATTERN);
