@@ -16,7 +16,9 @@
 package org.cp.build.tools.git.model;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -62,6 +64,14 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
 
   @Setter(AccessLevel.PROTECTED)
   private String message;
+
+  public @NonNull LocalDate getDate() {
+    return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalDate();
+  }
+
+  public @NonNull LocalTime getTime() {
+    return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalTime();
+  }
 
   public @NonNull String getShortHash() {
     return getHash().substring(0, SHORT_HASH_LENGTH);
