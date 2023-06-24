@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -31,6 +30,7 @@ import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
+import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.cp.build.tools.git.support.GitTemplate;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
@@ -70,19 +70,17 @@ public class GitCommands extends AbstractCommandsSupport {
 
   protected static final String COMMIT_AUTHOR_TO_STRING = "%1$s <%2$s>";
   protected static final String COMMIT_DATE_TIME_PATTERN = "EEE, yyyy-MMM-dd HH:mm:ss";
-  protected static final String USER_INPUT_DATE_PATTERN = "yyyy-MM-dd";
+  protected static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
+  protected static final String INPUT_DATE_PATTERN = "yyyy-MM-dd";
 
   private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
-  private static final DateTimeFormatter USER_INPUT_DATE_FORMATTER =
-    DateTimeFormatter.ofPattern(USER_INPUT_DATE_PATTERN);
-
-  private static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
+  private static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
 
   private final GitTemplate gitTemplate;
 
   private final ProjectManager projectManager;
 
-  protected Optional<Project> getCurrentProject() {
+  protected Optional<Project> currentProject() {
     return getProjectManager().getCurrentProject();
   }
 
@@ -92,17 +90,14 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates") String excludingDates,
       @Option(longNames = "during", shortNames = 'd') String duringDates) {
 
-    Predicate<CommitRecord> queryPredicate = commitsSinceDatePredicate(sinceDate)
-      .and(commitsExcludingDatesPredicate(excludingDates))
-      .and(commitsDuringDatesPredicate(duringDates));
+    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates);
 
     return queryCommitHistory(queryPredicate).size();
   }
 
   @Command(command = "commit-history")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitHistory(
-      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitHistory(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates") String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
@@ -110,15 +105,13 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "since", shortNames = 's') String sinceDate) {
 
     if (count) {
-      return String.valueOf(commitCount(sinceDate, null, null));
+      return String.valueOf(commitCount(sinceDate, excludingDates, duringDates));
     }
     else {
 
       StringBuilder output = new StringBuilder();
 
-      Predicate<CommitRecord> queryPredicate = commitsSinceDatePredicate(sinceDate)
-        .and(commitsExcludingDatesPredicate(excludingDates))
-        .and(commitsDuringDatesPredicate(duringDates));
+      Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates);
 
       queryCommitHistory(queryPredicate).stream()
         .limit(limit)
@@ -139,7 +132,7 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates") String excludingDates,
       @Option(longNames = "since", shortNames = 's') String sinceDate) {
 
-    Predicate<CommitRecord> commitsAfterHoursPredicate = commitRecord -> {
+    Predicate<CommitRecord> commitsAfterHoursQueryPredicate = commitRecord -> {
 
       LocalTime commitTime = commitRecord.getTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
@@ -152,14 +145,35 @@ public class GitCommands extends AbstractCommandsSupport {
       return afterHours;
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsSinceDatePredicate(sinceDate)
-      .and(commitsExcludingDatesPredicate(excludingDates))
-      .and(commitsDuringDatesPredicate(duringDates))
-      .and(commitsAfterHoursPredicate);
+    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
+      .and(commitsAfterHoursQueryPredicate);
 
-    List<CommitRecord> commits = queryCommitHistory(queryPredicate).stream().sorted().toList();
+    CommitHistory commits = queryCommitHistory(queryPredicate);
 
-    return count ? String.valueOf(commits.size()) : "Not Implemented";
+    return count ? String.valueOf(commits.size()) : showCommitHistory(commits).toString();
+  }
+
+  @Command(command = "commits-by")
+  public String commitsBy(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+      @Option(longNames = "during", shortNames = 'd') String duringDates,
+      @Option(longNames = "exclude-dates") String excludingDates,
+      @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      String committer) {
+
+    Predicate<CommitRecord> commitsByCommitterQueryPredicate = commitRecord -> {
+
+      Author author = commitRecord.getAuthor();
+
+      return author.getName().contains(committer) || author.getEmailAddress().contains(committer);
+    };
+
+    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
+      .and(commitsByCommitterQueryPredicate);
+
+    CommitHistory commits = queryCommitHistory(queryPredicate);
+
+    return count ? String.valueOf(commits.size()) : showCommitHistory(commits, showFiles).toString();
   }
 
   @Command(command = "commits-during-work")
@@ -170,7 +184,7 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates") String excludingDates,
       @Option(longNames = "since", shortNames = 's') String sinceDate) {
 
-    Predicate<CommitRecord> commitsDuringWorkHoursPredicate = commitRecord -> {
+    Predicate<CommitRecord> commitsDuringWorkHoursQueryPredicate = commitRecord -> {
 
       LocalTime commitTime = commitRecord.getTime();
       LocalTime fivePm = LocalTime.of(17, 0, 0);
@@ -184,14 +198,12 @@ public class GitCommands extends AbstractCommandsSupport {
       return duringWorkHours;
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsSinceDatePredicate(sinceDate)
-      .and(commitsExcludingDatesPredicate(excludingDates))
-      .and(commitsDuringDatesPredicate(duringDates))
-      .and(commitsDuringWorkHoursPredicate);
+    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
+      .and(commitsDuringWorkHoursQueryPredicate);
 
-    List<CommitRecord> commits = queryCommitHistory(queryPredicate).stream().sorted().toList();
+    CommitHistory commits = queryCommitHistory(queryPredicate);
 
-    return count ? String.valueOf(commits.size()) : "Not Implemented";
+    return count ? String.valueOf(commits.size()) : showCommitHistory(commits).toString();
   }
 
   private @NonNull CommitHistory queryCommitHistory() {
@@ -200,7 +212,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   private @NonNull CommitHistory queryCommitHistory(@NonNull Predicate<CommitRecord> queryPredicate) {
 
-    return getCurrentProject()
+    return currentProject()
       .map(project -> queryCommitHistory(project, Utils.nullSafeNonMatchingPredicate(queryPredicate)))
       .orElseGet(CommitHistory::empty);
   }
@@ -217,26 +229,34 @@ public class GitCommands extends AbstractCommandsSupport {
     return CommitHistory.of(commitHistory.findBy(queryPredicate));
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsDuringDatesPredicate(@Nullable String duringDates) {
+  private static @NonNull Predicate<CommitRecord> commitsByTimeQueryPredicate(
+      @Nullable String sinceDate, @Nullable String excludingDates, @Nullable String duringDates) {
+
+    return commitsSinceDateQueryPredicate(sinceDate)
+      .and(commitsExcludingDatesQueryPredicate(excludingDates))
+      .and(commitsDuringDatesQueryPredicate(duringDates));
+  }
+
+  private static @NonNull Predicate<CommitRecord> commitsDuringDatesQueryPredicate(@Nullable String duringDates) {
 
     return StringUtils.hasText(duringDates)
       ? commitRecord -> TimePeriods.parse(duringDates).asPredicate().test(commitRecord.getDate())
       : commitRecord -> true;
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsExcludingDatesPredicate(@Nullable String excludingDates) {
+  private static @NonNull Predicate<CommitRecord> commitsExcludingDatesQueryPredicate(@Nullable String excludingDates) {
 
     return StringUtils.hasText(excludingDates)
       ? commitRecord -> !TimePeriods.parse(excludingDates).asPredicate().test(commitRecord.getDate())
       : commitRecord -> true;
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsSinceDatePredicate(@Nullable String sinceDate) {
+  private static @NonNull Predicate<CommitRecord> commitsSinceDateQueryPredicate(@Nullable String sinceDate) {
 
     return commitRecord -> {
 
       LocalDate since = StringUtils.hasText(sinceDate)
-        ? LocalDate.parse(sinceDate, USER_INPUT_DATE_FORMATTER)
+        ? LocalDate.parse(sinceDate, INPUT_DATE_FORMATTER)
         : Utils.atEpoch().toLocalDate();
 
       LocalDate commitDate = commitRecord.getDate();
@@ -253,12 +273,26 @@ public class GitCommands extends AbstractCommandsSupport {
     return project.withCommitHistory(getGitTemplate().getCommitHistory()).getCommitHistory();
   }
 
+  private @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits) {
+    return showCommitHistory(commits, DEFAULT_SHOW_FILES);
+  }
+
+  private @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, boolean showFiles) {
+
+    StringBuilder output = new StringBuilder();
+
+    commits.stream().sorted().toList()
+      .forEach(commitRecord -> showCommitRecord(output, commitRecord, showFiles));
+
+    return output;
+  }
+
   private @NonNull StringBuilder showCommitRecord(@NonNull StringBuilder output, @NonNull CommitRecord commitRecord) {
     return showCommitRecord(output, commitRecord, DEFAULT_SHOW_FILES);
   }
 
   private StringBuilder showCommitRecord(@NonNull StringBuilder output,
-    @NonNull CommitRecord commitRecord, boolean showFiles) {
+      @NonNull CommitRecord commitRecord, boolean showFiles) {
 
     output.append("Author: ").append(toCommitAuthorString(commitRecord.getAuthor())).append(Utils.newLine());
     output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
@@ -297,7 +331,7 @@ public class GitCommands extends AbstractCommandsSupport {
   @NonNull @Bean
   AvailabilityProvider gitCommandsAvailability() {
 
-    return getCurrentProject().isPresent()
+    return currentProject().isPresent()
       ? Availability::available
       : () -> Availability.unavailable("the current project is not set;"
         + " please call 'project load <location>' or 'project switch <name>'");
