@@ -63,12 +63,12 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
   protected boolean isCurrentProject(@Nullable Project project) {
 
-    return getCurrentProject()
+    return currentProject()
       .filter(currentProject -> currentProject.equals(project))
       .isPresent();
   }
 
-  protected Optional<Project> getCurrentProject() {
+  protected Optional<Project> currentProject() {
     return getProjectManager().getCurrentProject();
   }
 
@@ -79,7 +79,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   @Command(command = "current", description = "Shows the current project")
   public String current() {
 
-    return getCurrentProject()
+    return currentProject()
       .map(project -> String.format("Current project is [%s] located in [%s]", project, project.getDirectory()))
       .orElse("Project not set");
   }
@@ -89,7 +89,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   @CommandAvailability(provider = "projectCommandsAvailabilityProvider")
   public String describe() {
 
-    return getCurrentProject()
+    return currentProject()
       .map(project -> "Name: ".concat(project.getName()).concat(Utils.newLine())
         .concat("Description: ").concat(indent(project.getDescription())).concat(Utils.newLine())
         .concat("Version: ").concat(project.getVersion().toString()).concat(Utils.newLine())
@@ -153,7 +153,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   @NonNull @Bean
   AvailabilityProvider projectCommandsAvailabilityProvider() {
 
-    return getCurrentProject().isPresent()
+    return currentProject().isPresent()
       ? Availability::available
       : () -> Availability.unavailable("the current project is not set;"
         + " please call 'project load <location>' or 'project switch <name>'");
