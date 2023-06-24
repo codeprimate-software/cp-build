@@ -120,8 +120,7 @@ public class GitCommands extends AbstractCommandsSupport {
   @Command(command = "commits-after-hours")
   @CommandAvailability(provider = "gitCommandsAvailability")
   @SuppressWarnings("all")
-  public String commitsAfterHours(
-      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitsAfterHours(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "since", shortNames = 's') String sinceDate) {
@@ -148,13 +147,13 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commits-by")
-  public String commitsBy(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitsBy(@Option(required = true) String committer,
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate,
-      String committer) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate) {
 
     Predicate<CommitRecord> commitsByCommitterQueryPredicate = commitRecord -> {
 
@@ -173,8 +172,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-during-work")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitsOnTheClock(
-      @Option(longNames = "count", shortNames = 'c', defaultValue = "true") boolean count,
+  public String commitsOnTheClock(@Option(longNames = "count", shortNames = 'c', defaultValue = "true") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "since", shortNames = 's') String sinceDate) {
@@ -202,13 +200,13 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commits-to")
-  public String commitsTo(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitsTo(@Option(required = true) String sourceFilePath,
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate,
-      String sourceFilePath) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate) {
 
     Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate = commitRecord -> commitRecord.stream()
       .anyMatch(sourceFile -> sourceFile.getAbsolutePath().contains(sourceFilePath));
@@ -222,13 +220,13 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commits-with")
-  public String commitsWith(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitsWith(@Option(required = true) String message,
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate,
-      String message) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate) {
 
     Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord ->
       commitRecord.getMessage().toLowerCase().contains(String.valueOf(message).toLowerCase());
