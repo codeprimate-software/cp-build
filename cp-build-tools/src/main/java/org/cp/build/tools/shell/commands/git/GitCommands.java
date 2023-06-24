@@ -270,15 +270,35 @@ public class GitCommands extends AbstractCommandsSupport {
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, null, excludingDates, null);
 
-    CommitHistory commitHistory = queryCommitHistory(queryPredicate);
+    CommitHistory commits = queryCommitHistory(queryPredicate);
 
-    Optional<CommitRecord> commitRecord = commitHistory.stream().min(CommitRecordComparator.INSTANCE);
+    Optional<CommitRecord> commitRecord = commits.stream().min(CommitRecordComparator.INSTANCE);
 
     return commitRecord
       .map(it -> showCommitRecord(it, showFiles))
       .map(Object::toString)
       .orElseGet(() -> isProjectSet()
         ? String.format("No commit after date [%s] was found", sinceDate)
+        : "Project not set");
+  }
+
+  @Command(command = "last-commit")
+  public String lastCommit(@Option(longNames = "until", shortNames = 'u') String untilDate,
+      @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
+      @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates ) {
+
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(null, untilDate, excludingDates, null);
+
+    CommitHistory commits = queryCommitHistory(queryPredicate);
+
+    Optional<CommitRecord> commitRecord = commits.stream().max(CommitRecordComparator.INSTANCE);
+
+    return commitRecord
+      .map(it -> showCommitRecord(it, showFiles))
+      .map(Object::toString)
+      .orElseGet(() -> isProjectSet()
+        ? String.format("No commit before date [%s] was found", untilDate)
         : "Project not set");
   }
 
