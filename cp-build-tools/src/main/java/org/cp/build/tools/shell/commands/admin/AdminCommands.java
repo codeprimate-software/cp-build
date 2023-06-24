@@ -15,6 +15,7 @@
  */
 package org.cp.build.tools.shell.commands.admin;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 
 import org.cp.build.tools.api.support.Utils;
@@ -36,7 +37,7 @@ import org.springframework.util.StringUtils;
 public class AdminCommands {
 
   @Command(command = "add")
-  public int add(String numbers) {
+  public int add(@Option(required = true) String numbers) {
 
     return Arrays.stream(Utils.nullSafeTrimmedString(numbers).split(Utils.COMMA))
       .filter(StringUtils::hasText)
@@ -53,6 +54,19 @@ public class AdminCommands {
       : System.getProperty("user.name");
 
     return String.format("Hello %s", resolvedUser);
+  }
+
+  @Command(command = "percent")
+  public String percent(@Option(required = true) String ratio) {
+
+    String[] numbers = ratio.split(Utils.FORWARD_SLASH);
+
+    double number = Double.parseDouble(numbers[0]) / Double.parseDouble(numbers[1]);
+
+    number *= 100;
+    number = Math.round(number);
+
+    return NumberFormat.getPercentInstance().format(Double.valueOf(number).longValue());
   }
 
   @Command
