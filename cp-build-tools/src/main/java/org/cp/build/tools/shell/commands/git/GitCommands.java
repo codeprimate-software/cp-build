@@ -113,7 +113,7 @@ public class GitCommands extends AbstractCommandsSupport {
       return currentProject()
         .map(this::resolveCommitHistory)
         .flatMap(commitHistory -> commitHistory.findByHash(hash))
-        .map(this::showCommitRecord)
+        .map(commitRecord -> showCommitRecord(commitRecord, showFiles))
         .map(Object::toString)
         .orElseGet(() -> isProjectSet() ? String.format("Commit for hash [%s] not found", hash) : "Project not set");
     }
@@ -372,10 +372,14 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   protected @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord) {
+    return showCommitRecord(commitRecord, DEFAULT_SHOW_FILES);
+  }
+
+  protected @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord, boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
 
-    showCommitRecord(output, commitRecord);
+    showCommitRecord(output, commitRecord, showFiles);
 
     return output;
   }
