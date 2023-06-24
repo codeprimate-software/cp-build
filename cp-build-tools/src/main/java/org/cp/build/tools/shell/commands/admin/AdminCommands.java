@@ -15,7 +15,6 @@
  */
 package org.cp.build.tools.shell.commands.admin;
 
-import java.text.NumberFormat;
 import java.util.Arrays;
 
 import org.cp.build.tools.api.support.Utils;
@@ -61,12 +60,9 @@ public class AdminCommands {
 
     String[] numbers = ratio.split(Utils.FORWARD_SLASH);
 
-    double number = Double.parseDouble(numbers[0]) / Double.parseDouble(numbers[1]);
+    double number = Math.round(Double.parseDouble(numbers[0]) / Double.parseDouble(numbers[1]) * 100);
 
-    number *= 100;
-    number = Math.round(number);
-
-    return NumberFormat.getPercentInstance().format(Double.valueOf(number).longValue());
+    return String.valueOf(Double.valueOf(number).intValue()).concat(Utils.PERCENT);
   }
 
   @Command
