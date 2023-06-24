@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
 import org.springframework.lang.NonNull;
@@ -91,8 +92,12 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
   }
 
   @Override
-  public Iterator<File> iterator() {
+  public @NonNull Iterator<File> iterator() {
     return Collections.unmodifiableSet(getSourceFiles()).stream().sorted().iterator();
+  }
+
+  public @NonNull Stream<File> stream() {
+    return Utils.stream(this);
   }
 
   public @NonNull CommitRecord withMessage(String message) {
