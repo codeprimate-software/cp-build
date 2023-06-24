@@ -101,9 +101,9 @@ public class GitCommands extends AbstractCommandsSupport {
     return queryCommitHistory(queryPredicate).size();
   }
 
-  @Command(command = "commit-history")
+  @Command(command = "commit-log")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitHistory(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitLog(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
@@ -264,24 +264,24 @@ public class GitCommands extends AbstractCommandsSupport {
   // TODO: implement git last-commit [until <date>] - show CommitRecord
   // TODO: implement git status
 
-  private @NonNull CommitHistory queryCommitHistory() {
+  protected @NonNull CommitHistory queryCommitHistory() {
     return queryCommitHistory(ALL_COMMITS_PREDICATE);
   }
 
-  private @NonNull CommitHistory queryCommitHistory(@NonNull Predicate<CommitRecord> queryPredicate) {
+  protected @NonNull CommitHistory queryCommitHistory(@NonNull Predicate<CommitRecord> queryPredicate) {
 
     return currentProject()
       .map(project -> queryCommitHistory(project, Utils.nullSafeNonMatchingPredicate(queryPredicate)))
       .orElseGet(CommitHistory::empty);
   }
 
-  private @NonNull CommitHistory queryCommitHistory(@NonNull Project project,
+  protected @NonNull CommitHistory queryCommitHistory(@NonNull Project project,
       @NonNull Predicate<CommitRecord> queryPredicate) {
 
     return queryCommitHistory(resolveCommitHistory(project), queryPredicate);
   }
 
-  private @NonNull CommitHistory queryCommitHistory(@NonNull CommitHistory commitHistory,
+  protected @NonNull CommitHistory queryCommitHistory(@NonNull CommitHistory commitHistory,
       @NonNull Predicate<CommitRecord> queryPredicate) {
 
     return CommitHistory.of(commitHistory.findBy(queryPredicate));
@@ -338,7 +338,7 @@ public class GitCommands extends AbstractCommandsSupport {
     };
   }
 
-  private @NonNull CommitHistory resolveCommitHistory(@NonNull Project project) {
+  protected @NonNull CommitHistory resolveCommitHistory(@NonNull Project project) {
     return Utils.get(Utils.get(project.getCommitHistory(), () -> loadCommitHistory(project)), CommitHistory::empty);
   }
 
@@ -346,19 +346,19 @@ public class GitCommands extends AbstractCommandsSupport {
     return project.withCommitHistory(getGitTemplate().getCommitHistory()).getCommitHistory();
   }
 
-  private @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits) {
+  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits) {
     return showCommitHistory(commits, commits.size(), DEFAULT_SHOW_FILES);
   }
 
-  private @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, int limit) {
+  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, int limit) {
     return showCommitHistory(commits, limit, DEFAULT_SHOW_FILES);
   }
 
-  private @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, boolean showFiles) {
+  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, boolean showFiles) {
     return showCommitHistory(commits, commits.size(), showFiles);
   }
 
-  private @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, int limit, boolean showFiles) {
+  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, int limit, boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
 
