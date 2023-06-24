@@ -84,6 +84,8 @@ public class GitCommands extends AbstractCommandsSupport {
     return getProjectManager().getCurrentProject();
   }
 
+  // TODO: Add [until <date>] Command Option
+
   @Command(command = "commit-count")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public int commitCount(@Option(longNames = "since", shortNames = 's') String sinceDate,
@@ -238,6 +240,10 @@ public class GitCommands extends AbstractCommandsSupport {
 
     return count ? String.valueOf(commits.size()) : showCommitHistory(commits, limit, showFiles).toString();
   }
+
+  // TODO: implement git first-commit [since <date>] - show CommitRecord
+  // TODO: implement git last-commit [until <date>] - show CommitRecord
+  // TODO: implement git status
 
   private @NonNull CommitHistory queryCommitHistory() {
     return queryCommitHistory(commitRecord -> true);
