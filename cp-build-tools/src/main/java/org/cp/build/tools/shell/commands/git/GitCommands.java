@@ -73,6 +73,8 @@ public class GitCommands extends AbstractCommandsSupport {
   protected static final String DEFAULT_COMMIT_HISTORY_LIMIT = "5";
   protected static final String INPUT_DATE_PATTERN = "yyyy-MM-dd";
 
+  protected static final Predicate<CommitRecord> ALL_COMMITS_PREDICATE = commitRecord -> true;
+
   private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
   private static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
 
@@ -89,10 +91,12 @@ public class GitCommands extends AbstractCommandsSupport {
   @Command(command = "commit-count")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public int commitCount(@Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "during", shortNames = 'd') String duringDates) {
 
-    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates);
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates);
 
     return queryCommitHistory(queryPredicate).size();
   }
@@ -104,14 +108,16 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
     if (count) {
-      return String.valueOf(commitCount(sinceDate, excludingDates, duringDates));
+      return String.valueOf(commitCount(sinceDate, untilDate, excludingDates, duringDates));
     }
     else {
 
-      Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates);
+      Predicate<CommitRecord> queryPredicate =
+        commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates);
 
       CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -125,7 +131,9 @@ public class GitCommands extends AbstractCommandsSupport {
   public String commitsAfterHours(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
-      @Option(longNames = "since", shortNames = 's') String sinceDate) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
+
 
     Predicate<CommitRecord> commitsAfterHoursQueryPredicate = commitRecord -> {
 
@@ -140,8 +148,9 @@ public class GitCommands extends AbstractCommandsSupport {
       return afterHours;
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
-      .and(commitsAfterHoursQueryPredicate);
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsAfterHoursQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -155,7 +164,9 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
+
 
     Predicate<CommitRecord> commitsByCommitterQueryPredicate = commitRecord -> {
 
@@ -164,8 +175,9 @@ public class GitCommands extends AbstractCommandsSupport {
       return author.getName().contains(committer) || author.getEmailAddress().contains(committer);
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
-      .and(commitsByCommitterQueryPredicate);
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsByCommitterQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -177,7 +189,8 @@ public class GitCommands extends AbstractCommandsSupport {
   public String commitsOnTheClock(@Option(longNames = "count", shortNames = 'c', defaultValue = "true") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
-      @Option(longNames = "since", shortNames = 's') String sinceDate) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
     Predicate<CommitRecord> commitsDuringWorkHoursQueryPredicate = commitRecord -> {
 
@@ -193,8 +206,9 @@ public class GitCommands extends AbstractCommandsSupport {
       return duringWorkHours;
     };
 
-    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
-      .and(commitsDuringWorkHoursQueryPredicate);
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsDuringWorkHoursQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -208,13 +222,15 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
     Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate = commitRecord -> commitRecord.stream()
       .anyMatch(sourceFile -> sourceFile.getAbsolutePath().contains(sourceFilePath));
 
-    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
-      .and(commitsToSourceFilePathQueryPredicate);
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsToSourceFilePathQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -228,13 +244,16 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
-      @Option(longNames = "since", shortNames = 's') String sinceDate) {
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
+
 
     Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord ->
       commitRecord.getMessage().toLowerCase().contains(String.valueOf(message).toLowerCase());
 
-    Predicate<CommitRecord> queryPredicate = commitsByTimeQueryPredicate(sinceDate, excludingDates, duringDates)
-      .and(commitsWithMessageContainingQueryPredicate);
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsWithMessageContainingQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -246,7 +265,7 @@ public class GitCommands extends AbstractCommandsSupport {
   // TODO: implement git status
 
   private @NonNull CommitHistory queryCommitHistory() {
-    return queryCommitHistory(commitRecord -> true);
+    return queryCommitHistory(ALL_COMMITS_PREDICATE);
   }
 
   private @NonNull CommitHistory queryCommitHistory(@NonNull Predicate<CommitRecord> queryPredicate) {
@@ -268,10 +287,11 @@ public class GitCommands extends AbstractCommandsSupport {
     return CommitHistory.of(commitHistory.findBy(queryPredicate));
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsByTimeQueryPredicate(
-      @Nullable String sinceDate, @Nullable String excludingDates, @Nullable String duringDates) {
+  private static @NonNull Predicate<CommitRecord> commitsByTimeQueryPredicate(@Nullable String sinceDate,
+      @Nullable String untilDate, @Nullable String excludingDates, @Nullable String duringDates) {
 
     return commitsSinceDateQueryPredicate(sinceDate)
+      .and(commitsUntilDateQueryPredicate(untilDate))
       .and(commitsExcludingDatesQueryPredicate(excludingDates))
       .and(commitsDuringDatesQueryPredicate(duringDates));
   }
@@ -280,14 +300,14 @@ public class GitCommands extends AbstractCommandsSupport {
 
     return StringUtils.hasText(duringDates)
       ? commitRecord -> TimePeriods.parse(duringDates).asPredicate().test(commitRecord.getDate())
-      : commitRecord -> true;
+      : ALL_COMMITS_PREDICATE;
   }
 
   private static @NonNull Predicate<CommitRecord> commitsExcludingDatesQueryPredicate(@Nullable String excludingDates) {
 
     return StringUtils.hasText(excludingDates)
       ? commitRecord -> !TimePeriods.parse(excludingDates).asPredicate().test(commitRecord.getDate())
-      : commitRecord -> true;
+      : ALL_COMMITS_PREDICATE;
   }
 
   private static @NonNull Predicate<CommitRecord> commitsSinceDateQueryPredicate(@Nullable String sinceDate) {
@@ -301,6 +321,20 @@ public class GitCommands extends AbstractCommandsSupport {
       LocalDate commitDate = commitRecord.getDate();
 
       return commitDate.isAfter(since);
+    };
+  }
+
+  private static @NonNull Predicate<CommitRecord> commitsUntilDateQueryPredicate(@Nullable String untilDate) {
+
+    return commitRecord -> {
+
+      LocalDate until = StringUtils.hasText(untilDate)
+        ? LocalDate.parse(untilDate, INPUT_DATE_FORMATTER)
+        : Utils.atEpoch().toLocalDate();
+
+      LocalDate commitDate = commitRecord.getDate();
+
+      return !commitDate.isAfter(until);
     };
   }
 
