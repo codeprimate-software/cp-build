@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.cp.build.tools.api.model.Project;
@@ -30,6 +31,7 @@ import org.cp.build.tools.api.time.TimePeriods;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.model.CommitRecord.Author;
+import org.cp.build.tools.git.model.support.CommitRecordComparator;
 import org.cp.build.tools.git.support.GitTemplate;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
@@ -137,7 +139,6 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
-
     Predicate<CommitRecord> commitsAfterHoursQueryPredicate = commitRecord -> {
 
       LocalTime commitTime = commitRecord.getTime();
@@ -169,7 +170,6 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
-
 
     Predicate<CommitRecord> commitsByCommitterQueryPredicate = commitRecord -> {
 
@@ -250,7 +250,6 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
-
     Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord ->
       commitRecord.getMessage().toLowerCase().contains(String.valueOf(message).toLowerCase());
 
@@ -263,7 +262,26 @@ public class GitCommands extends AbstractCommandsSupport {
     return count ? String.valueOf(commits.size()) : showCommitHistory(commits, limit, showFiles).toString();
   }
 
-  // TODO: implement git first-commit [since <date>] - show CommitRecord
+  @Command(command = "first-commit")
+  public String firstCommit(@Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
+      @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates ) {
+
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, null, excludingDates, null);
+
+    CommitHistory commitHistory = queryCommitHistory(queryPredicate);
+
+    Optional<CommitRecord> commitRecord = commitHistory.stream().min(CommitRecordComparator.INSTANCE);
+
+    return commitRecord
+      .map(it -> showCommitRecord(it, showFiles))
+      .map(Object::toString)
+      .orElseGet(() -> isProjectSet()
+        ? String.format("No commit after date [%s] was found", sinceDate)
+        : "Project not set");
+  }
+
   // TODO: implement git last-commit [until <date>] - show CommitRecord
   // TODO: implement git status
 
