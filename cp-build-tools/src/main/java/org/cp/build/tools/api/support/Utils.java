@@ -48,6 +48,7 @@ public abstract class Utils {
   public static final String EMPTY_STRING = "";
   public static final String FORWARD_SLASH = "/";
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  public static final String PERCENT = "%";
   public static final String SINGLE_SPACE = " ";
   public static final String TAB = "\t";
   public static final String NEW_LINE_REGEX = "\\n";
