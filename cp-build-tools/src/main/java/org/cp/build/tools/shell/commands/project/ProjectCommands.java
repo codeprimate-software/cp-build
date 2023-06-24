@@ -18,8 +18,6 @@ package org.cp.build.tools.shell.commands.project;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.cp.build.tools.api.model.Project;
@@ -29,7 +27,6 @@ import org.cp.build.tools.maven.model.MavenProject;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.shell.Availability;
 import org.springframework.shell.AvailabilityProvider;
 import org.springframework.shell.CompletionProposal;
@@ -60,21 +57,6 @@ import lombok.RequiredArgsConstructor;
 public class ProjectCommands extends AbstractCommandsSupport {
 
   private final ProjectManager projectManager;
-
-  protected boolean isCurrentProject(@Nullable Project project) {
-
-    return currentProject()
-      .filter(currentProject -> currentProject.equals(project))
-      .isPresent();
-  }
-
-  protected Optional<Project> currentProject() {
-    return getProjectManager().getCurrentProject();
-  }
-
-  protected List<Project> projects() {
-    return getProjectManager().list();
-  }
 
   @Command(command = "current", description = "Shows the current project")
   public String current() {
@@ -153,10 +135,9 @@ public class ProjectCommands extends AbstractCommandsSupport {
   @NonNull @Bean
   AvailabilityProvider projectCommandsAvailabilityProvider() {
 
-    return currentProject().isPresent()
-      ? Availability::available
+    return isProjectSet() ? Availability::available
       : () -> Availability.unavailable("the current project is not set;"
-        + " please call 'project load <location>' or 'project switch <name>'");
+        + " please call 'project load <location>' or 'project use <name>'");
   }
 
   @NonNull @Bean

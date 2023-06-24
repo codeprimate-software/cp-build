@@ -15,8 +15,14 @@
  */
 package org.cp.build.tools.shell.commands;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.shell.command.annotation.Command;
 
 /**
@@ -25,7 +31,33 @@ import org.springframework.shell.command.annotation.Command;
  * @author John Blum
  * @since 2.0.0
  */
+@SuppressWarnings("unused")
 public abstract class AbstractCommandsSupport {
+
+  protected abstract ProjectManager getProjectManager();
+
+  protected boolean isCurrentProject(@Nullable Project project) {
+
+    return currentProject()
+      .filter(currentProject -> currentProject.equals(project))
+      .isPresent();
+  }
+
+  protected boolean isProjectSet() {
+    return currentProject().isPresent();
+  }
+
+  protected Optional<Project> currentProject() {
+    return getProjectManager().getCurrentProject();
+  }
+
+  protected List<Project> projects() {
+    return getProjectManager().list();
+  }
+
+  protected @NonNull Project requireProject() {
+    return currentProject().orElseThrow(() -> new IllegalStateException("Project not set"));
+  }
 
   protected @NonNull String indent(@NonNull String content) {
 
