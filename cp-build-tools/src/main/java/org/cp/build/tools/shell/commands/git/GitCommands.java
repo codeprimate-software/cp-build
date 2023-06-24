@@ -333,7 +333,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
       LocalDate until = StringUtils.hasText(untilDate)
         ? LocalDate.parse(untilDate, INPUT_DATE_FORMATTER)
-        : Utils.atEpoch().toLocalDate();
+        : LocalDate.now();
 
       LocalDate commitDate = commitRecord.getDate();
 
