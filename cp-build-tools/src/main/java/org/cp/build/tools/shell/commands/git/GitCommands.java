@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.cp.build.tools.api.model.Project;
@@ -82,12 +81,6 @@ public class GitCommands extends AbstractCommandsSupport {
 
   private final ProjectManager projectManager;
 
-  protected Optional<Project> currentProject() {
-    return getProjectManager().getCurrentProject();
-  }
-
-  // TODO: Add [until <date>] Command Option
-
   @Command(command = "commit-count")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public int commitCount(@Option(longNames = "since", shortNames = 's') String sinceDate,
@@ -103,7 +96,8 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commit-log")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public String commitLog(@Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
+  public String commitLog(@Option String hash,
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_HISTORY_LIMIT) int limit,
@@ -113,6 +107,15 @@ public class GitCommands extends AbstractCommandsSupport {
 
     if (count) {
       return String.valueOf(commitCount(sinceDate, untilDate, excludingDates, duringDates));
+    }
+    else if (StringUtils.hasText(hash)) {
+
+      return currentProject()
+        .map(this::resolveCommitHistory)
+        .flatMap(commitHistory -> commitHistory.findByHash(hash))
+        .map(this::showCommitRecord)
+        .map(Object::toString)
+        .orElseGet(() -> isProjectSet() ? String.format("Commit for hash [%s] not found", hash) : "Project not set");
     }
     else {
 
@@ -368,6 +371,15 @@ public class GitCommands extends AbstractCommandsSupport {
     return output;
   }
 
+  protected @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord) {
+
+    StringBuilder output = new StringBuilder();
+
+    showCommitRecord(output, commitRecord);
+
+    return output;
+  }
+
   private @NonNull StringBuilder showCommitRecord(@NonNull StringBuilder output, @NonNull CommitRecord commitRecord) {
     return showCommitRecord(output, commitRecord, DEFAULT_SHOW_FILES);
   }
@@ -412,9 +424,8 @@ public class GitCommands extends AbstractCommandsSupport {
   @NonNull @Bean
   AvailabilityProvider gitCommandsAvailability() {
 
-    return currentProject().isPresent()
-      ? Availability::available
+    return isProjectSet() ? Availability::available
       : () -> Availability.unavailable("the current project is not set;"
-        + " please call 'project load <location>' or 'project switch <name>'");
+        + " please call 'project load <location>' or 'project use <name>'");
   }
 }
