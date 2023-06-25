@@ -155,7 +155,7 @@ public class GitCommands extends AbstractCommandsSupport {
         : "Project not set";
     }
     else if (count) {
-      return String.valueOf(commitCount(sinceDate, untilDate, excludingDates, duringDates));
+      return String.valueOf(commitCount(duringDates, excludingDates, sinceDate, untilDate));
     }
     else {
 
