@@ -154,6 +154,35 @@ public class CommitHistory implements Iterable<CommitRecord> {
   }
 
   /**
+   * Collects all {@link CommitRecord commits} from this {@link CommitHistory} until and including
+   * the {@link CommitRecord commit} with the given {@link String hash ID}.
+   *
+   * @param hash {@link String Hash ID} identifying a single {@link CommitRecord commit} in this {@link CommitHistory}.
+   * @return a new {@link CommitHistory} containing all {@link CommitRecord commits} from this {@link CommitHistory}
+   * until, including and before the {@link CommitRecord commit} with the given {@link String hash ID}.
+   */
+  public @NonNull CommitHistory findAllCommitsBeforeHash(@NonNull String hash) {
+
+    if (StringUtils.hasText(hash)) {
+
+      boolean include = false;
+
+      List<CommitRecord> commits = new ArrayList<>();
+
+      for (CommitRecord commit : this) {
+        if (include || commit.getHash().equals(hash)) {
+          commits.add(commit);
+          include = true;
+        }
+      }
+
+      return of(commits);
+    }
+
+    return empty();
+  }
+
+  /**
    * Finds all {@link CommitRecord CommitRecords} contained in this {@link CommitHistory}
    * matching the given {@link Predicate}.
    *
