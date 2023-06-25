@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.springframework.lang.NonNull;
+import org.springframework.util.StringUtils;
 
 /**
  * Abstract Data Type (ADT) modeling {@literal Git log}, or {@literal commit history}.
@@ -123,6 +124,33 @@ public class CommitHistory implements Iterable<CommitRecord> {
    */
   protected List<CommitRecord> getCommitRecords() {
     return Collections.unmodifiableList(this.commitRecords);
+  }
+
+  /**
+   * Collects all {@link CommitRecord commits} from this {@link CommitHistory} since and including
+   * the {@link CommitRecord commit} with the given {@link String hash ID}.
+   *
+   * @param hash {@link String Hash ID} identifying a single {@link CommitRecord commit} in this {@link CommitHistory}.
+   * @return a new {@link CommitHistory} containing all {@link CommitRecord commits} from this {@link CommitHistory}
+   * since, including and after the {@link CommitRecord commit} with the given {@link String hash ID}.
+   */
+  public @NonNull CommitHistory findAllCommitsAfterHash(@NonNull String hash) {
+
+    if (StringUtils.hasText(hash)) {
+
+      List<CommitRecord> commits = new ArrayList<>();
+
+      for (CommitRecord commit : this) {
+        commits.add(commit);
+        if (commit.getHash().equals(hash)) {
+          break;
+        }
+      }
+
+      return of(commits);
+    }
+
+    return empty();
   }
 
   /**
