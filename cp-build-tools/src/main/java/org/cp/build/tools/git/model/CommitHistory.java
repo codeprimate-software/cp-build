@@ -108,6 +108,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @return a boolean value indicating whether this {@link CommitHistory}
    * contains any {@link CommitRecord CommitRecords}.
    * @see #getCommitRecords()
+   * @see #size()
    */
   public boolean isEmpty() {
     return getCommitRecords().isEmpty();
@@ -133,6 +134,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @param hash {@link String Hash ID} identifying a single {@link CommitRecord commit} in this {@link CommitHistory}.
    * @return a new {@link CommitHistory} containing all {@link CommitRecord commits} from this {@link CommitHistory}
    * since, including and after the {@link CommitRecord commit} with the given {@link String hash ID}.
+   * @see #findAllCommitsBeforeHash(String)
    */
   public @NonNull CommitHistory findAllCommitsAfterHash(@NonNull String hash) {
 
@@ -160,6 +162,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @param hash {@link String Hash ID} identifying a single {@link CommitRecord commit} in this {@link CommitHistory}.
    * @return a new {@link CommitHistory} containing all {@link CommitRecord commits} from this {@link CommitHistory}
    * until, including and before the {@link CommitRecord commit} with the given {@link String hash ID}.
+   * @see #findAllCommitsAfterHash(String)
    */
   public @NonNull CommitHistory findAllCommitsBeforeHash(@NonNull String hash) {
 
@@ -185,6 +188,9 @@ public class CommitHistory implements Iterable<CommitRecord> {
   /**
    * Finds all {@link CommitRecord CommitRecords} contained in this {@link CommitHistory}
    * matching the given {@link Predicate}.
+   * <p>
+   * If the given {@link Predicate query predicate} is {@literal null}, then the query will not match
+   * any {@link CommitRecord commits} from this {@link CommitHistory}.
    *
    * @param predicate {@link Predicate} used to match and return {@link CommitRecord CommitRecords}
    * from this {@link CommitHistory}.
@@ -193,7 +199,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see org.cp.build.tools.git.model.CommitRecord
    * @see java.util.function.Predicate
    * @see #getCommitRecords()
-   * @see java.util.List
+   * @see #of(Iterable)
    */
   public @NonNull CommitHistory findBy(@NonNull Predicate<CommitRecord> predicate) {
 
@@ -209,9 +215,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @return a new {@link CommitHistory} containing all {@link CommitRecord CommitRecords}
    * from this {@link CommitHistory} for the given {@link Author}.
    * @see org.cp.build.tools.git.model.CommitRecord.Author
-   * @see org.cp.build.tools.git.model.CommitRecord
    * @see #findBy(Predicate)
-   * @see java.util.List
    */
   public @NonNull CommitHistory findByAuthor(@NonNull Author author) {
     return findBy(commitRecord -> commitRecord.getAuthor().equals(author));
@@ -224,10 +228,8 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @param author {@link LocalDate} used to match and return {@link CommitRecord CommitRecords} on a particular day.
    * @return a new {@link CommitHistory} containin all {@link CommitRecord CommitRecords}
    * from this {@link CommitHistory} on the given {@link LocalDate}.
-   * @see org.cp.build.tools.git.model.CommitRecord
    * @see java.time.LocalDate
    * @see #findBy(Predicate)
-   * @see java.util.List
    */
   @SuppressWarnings("all")
   public @NonNull CommitHistory findByDate(@NonNull LocalDate date) {
@@ -261,18 +263,34 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * in which the {@literal source file} was changed and committed.
    * @return a new {@link CommitHistory} containing all {@link CommitRecord CommitRecords}
    * from this {@link CommitHistory} in which the given {@link File source file} was changed and committed.
-   * @see org.cp.build.tools.git.model.CommitRecord
    * @see #findBy(Predicate)
-   * @see java.util.List
    * @see java.io.File
    */
   public @NonNull CommitHistory findBySourceFile(@NonNull File sourceFile) {
     return findBy(commitRecord -> commitRecord.contains(sourceFile));
   }
 
+  /**
+   * Iterates all the {@link CommitRecord commits} in this {@link CommitHistory} in reverse chronological order.
+   *
+   * @return an {@link Iterator} iterating over all the {@link CommitRecord commits} in this {@link CommitHistory}
+   * in reverse chronological order.
+   * @see org.cp.build.tools.git.model.CommitRecord
+   * @see java.util.Iterator
+   */
   @Override
   public @NonNull Iterator<CommitRecord> iterator() {
     return getCommitRecords().iterator();
+  }
+
+  /**
+   * Returns the {@link Integer number} of {@literal commits} in this {@link CommitHistory}.
+   *
+   * @return the {@link Integer number} of {@literal commits} in this {@link CommitHistory}.
+   * @see #isEmpty()
+   */
+  public int size() {
+    return getCommitRecords().size();
   }
 
   /**
@@ -284,14 +302,5 @@ public class CommitHistory implements Iterable<CommitRecord> {
    */
   public @NonNull Stream<CommitRecord> stream() {
     return Utils.stream(this);
-  }
-
-  /**
-   * Returns the {@link Integer number} of {@literal commits} in this {@link CommitHistory}.
-   *
-   * @return the {@link Integer number} of {@literal commits} in this {@link CommitHistory}.
-   */
-  public int size() {
-    return getCommitRecords().size();
   }
 }
