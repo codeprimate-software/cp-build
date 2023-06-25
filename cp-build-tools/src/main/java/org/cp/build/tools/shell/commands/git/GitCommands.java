@@ -87,23 +87,25 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commit-count", description = "Counts all commits")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public int commitCount(
+  public int commitCount(@Option(description = "Commit count by author") String author,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
     Predicate<CommitRecord> queryPredicate =
-      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates);
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsByAuthorQueryPredicate(author));
 
     return queryCommitHistory(queryPredicate).size();
   }
 
   @Command(command = "commit-log", description = "Logs all commits")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public @NonNull String commitLog(@Option String hash,
-      @Option(longNames = "after-hash", shortNames = 'a', description = "Can use --until & --exclude-dates") String afterHash,
-      @Option(longNames = "before-hash", shortNames = 'b', description = "Can use --since & --exclude-dates") String beforeHash,
+  public @NonNull String commitLog(@Option(description = "Commit with hash; options not applicable") String hash,
+      @Option(longNames = "author") String author,
+      @Option(longNames = "after-hash", shortNames = 'a', description = "[--until, --exclude-dates]") String afterHash,
+      @Option(longNames = "before-hash", shortNames = 'b', description = "[--since, --exclude-dates]") String beforeHash,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
@@ -138,7 +140,8 @@ public class GitCommands extends AbstractCommandsSupport {
         : CommitHistory.empty();
 
       // Filter commits by time (date)
-      Predicate<CommitRecord> queryPredicate = commitsExcludingDatesQueryPredicate(excludingDates);
+      Predicate<CommitRecord> queryPredicate = commitsByAuthorQueryPredicate(author)
+        .and(commitsExcludingDatesQueryPredicate(excludingDates));
 
       queryPredicate = Utils.isSet(afterHash) && Utils.isNotSet(beforeHash)
         ? queryPredicate.and(commitsUntilDateQueryPredicate(untilDate))
@@ -155,12 +158,13 @@ public class GitCommands extends AbstractCommandsSupport {
         : "Project not set";
     }
     else if (count) {
-      return String.valueOf(commitCount(duringDates, excludingDates, sinceDate, untilDate));
+      return String.valueOf(commitCount(author, duringDates, excludingDates, sinceDate, untilDate));
     }
     else {
 
       Predicate<CommitRecord> queryPredicate =
-        commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates);
+        commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+          .and(commitsByAuthorQueryPredicate(author));
 
       CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -179,7 +183,7 @@ public class GitCommands extends AbstractCommandsSupport {
   @Command(command = "commits-after-hours", description = "Finds all commits occurring after hours")
   @CommandAvailability(provider = "gitCommandsAvailability")
   @SuppressWarnings("all")
-  public @NonNull String commitsAfterHours(
+  public @NonNull String commitsAfterHours(@Option(description = "Commits by author") String author,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
@@ -201,6 +205,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsByAuthorQueryPredicate(author))
         .and(commitsAfterHoursQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
@@ -208,7 +213,7 @@ public class GitCommands extends AbstractCommandsSupport {
     return count ? String.valueOf(commits.size()) : showCommitHistory(commits).toString();
   }
 
-  @Command(command = "commits-by", description = "Finds all commits by author (committer)")
+  @Command(command = "commits-by", description = "Finds all commits by committer (author)")
   public @NonNull String commitsBy(@Option(required = true) String committer,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
@@ -236,7 +241,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-during-work", description = "Finds all commits during work hours (on-the-clock)")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public @NonNull String commitsOnTheClock(
+  public @NonNull String commitsOnTheClock(@Option(description = "Commits by author") String author,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "true") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
@@ -259,6 +264,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsByAuthorQueryPredicate(author))
         .and(commitsDuringWorkHoursQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
@@ -268,6 +274,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-to", description = "Finds all commit to a source file or path")
   public @NonNull String commitsTo(@Option(required = true) String sourceFilePath,
+      @Option(longNames = "author", description = "By author") String author,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
@@ -281,6 +288,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsByAuthorQueryPredicate(author))
         .and(commitsToSourceFilePathQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
@@ -290,6 +298,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "commits-with", description = "Finds all commits with message")
   public @NonNull String commitsWith(@Option(required = true) String message,
+      @Option(longNames = "author", description = "By author") String author,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
@@ -303,6 +312,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsByAuthorQueryPredicate(author))
         .and(commitsWithMessageContainingQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
@@ -311,13 +321,14 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "first-commit", description = "Finds the first commit since a given date")
-  public @NonNull String firstCommit(
+  public @NonNull String firstCommit(@Option(description = "By author") String author,
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates ) {
 
     Predicate<CommitRecord> queryPredicate =
-      commitsByTimeQueryPredicate(sinceDate, null, excludingDates, null);
+      commitsByTimeQueryPredicate(sinceDate, null, excludingDates, null)
+        .and(commitsByAuthorQueryPredicate(author));
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -332,13 +343,14 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "last-commit", description = "Finds the last commit before a given date")
-  public @NonNull String lastCommit(
+  public @NonNull String lastCommit(@Option(description = "By author") String author,
       @Option(longNames = "until", shortNames = 'u') String untilDate,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = "false") boolean showFiles,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates ) {
 
     Predicate<CommitRecord> queryPredicate =
-      commitsByTimeQueryPredicate(null, untilDate, excludingDates, null);
+      commitsByTimeQueryPredicate(null, untilDate, excludingDates, null)
+        .and(commitsByAuthorQueryPredicate(author));
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -374,7 +386,21 @@ public class GitCommands extends AbstractCommandsSupport {
   protected @NonNull CommitHistory queryCommitHistory(@NonNull CommitHistory commitHistory,
       @NonNull Predicate<CommitRecord> queryPredicate) {
 
-    return CommitHistory.of(commitHistory.findBy(queryPredicate));
+    return commitHistory.findBy(queryPredicate);
+  }
+
+  private static @NonNull Predicate<CommitRecord> commitsByAuthorQueryPredicate(@NonNull String authorCommitter) {
+
+    return Utils.isNotSet(authorCommitter) ? ALL_COMMITS_PREDICATE
+      : commitRecord -> {
+
+        String resolvedAuthorCommitter = Utils.nullSafeTrimmedString(authorCommitter).toLowerCase();
+
+        Author commitAuthor = commitRecord.getAuthor();
+
+        return commitAuthor.getName().toLowerCase().contains(resolvedAuthorCommitter)
+          || commitAuthor.getEmailAddress().contains(resolvedAuthorCommitter);
+    };
   }
 
   private static @NonNull Predicate<CommitRecord> commitsByTimeQueryPredicate(@Nullable String sinceDate,
