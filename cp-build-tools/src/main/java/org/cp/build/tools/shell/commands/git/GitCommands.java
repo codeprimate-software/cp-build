@@ -410,7 +410,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
       LocalDate commitDate = commitRecord.getDate();
 
-      return commitDate.isAfter(since);
+      return !commitDate.isBefore(since);
     };
   }
 
