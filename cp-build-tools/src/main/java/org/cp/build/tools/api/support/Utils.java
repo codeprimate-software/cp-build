@@ -75,6 +75,10 @@ public abstract class Utils {
     return Integer.compare(0, compareResult);
   }
 
+  public static boolean isNotSet(String... values) {
+    return !isSet(values);
+  }
+
   public static boolean isSet(String... values) {
     return Arrays.stream(values).anyMatch(StringUtils::hasText);
   }

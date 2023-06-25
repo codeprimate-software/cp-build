@@ -88,7 +88,7 @@ public class UtilsUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void getIntReturnsValue() {
+  public void getIntReturnsInt() {
 
     Supplier<Integer> mockSupplier = mock(Supplier.class);
 
@@ -161,6 +161,23 @@ public class UtilsUnitTests {
     assertThat(Utils.isSet((String) null)).isFalse();
     assertThat(Utils.isSet(null, "")).isFalse();
     assertThat(Utils.isSet(null, "", "  ")).isFalse();
+  }
+
+  @Test
+  public void isStringNotSetSetReturnsFalse() {
+
+    assertThat(Utils.isNotSet("test")).isFalse();
+    assertThat(Utils.isNotSet("", "test")).isFalse();
+    assertThat(Utils.isNotSet("", "test", "  ")).isFalse();
+    assertThat(Utils.isNotSet("", "test", "  ", null)).isFalse();
+  }
+
+  @Test
+  public void isStringNotSetReturnsTrue() {
+
+    assertThat(Utils.isNotSet((String) null)).isTrue();
+    assertThat(Utils.isNotSet(null, "")).isTrue();
+    assertThat(Utils.isNotSet(null, "", "  ")).isTrue();
   }
 
   @Test
