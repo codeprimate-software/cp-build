@@ -17,6 +17,7 @@ package org.cp.build.tools.api.support;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -72,6 +73,10 @@ public abstract class Utils {
 
   public static int invert(int compareResult) {
     return Integer.compare(0, compareResult);
+  }
+
+  public static boolean isSet(String... values) {
+    return Arrays.stream(values).anyMatch(StringUtils::hasText);
   }
 
   public static String newLine() {

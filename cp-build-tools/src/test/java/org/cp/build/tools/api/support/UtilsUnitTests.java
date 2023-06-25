@@ -147,6 +147,23 @@ public class UtilsUnitTests {
   }
 
   @Test
+  public void isStringSetReturnsTrue() {
+
+    assertThat(Utils.isSet("test")).isTrue();
+    assertThat(Utils.isSet("", "test")).isTrue();
+    assertThat(Utils.isSet("", "test", "  ")).isTrue();
+    assertThat(Utils.isSet("", "test", "  ", null)).isTrue();
+  }
+
+  @Test
+  public void isStringSetReturnsFalse() {
+
+    assertThat(Utils.isSet((String) null)).isFalse();
+    assertThat(Utils.isSet(null, "")).isFalse();
+    assertThat(Utils.isSet(null, "", "  ")).isFalse();
+  }
+
+  @Test
   public void nullSafeIsDirectoryWithDirectory() {
 
     File mockDirectory = mock(File.class);
