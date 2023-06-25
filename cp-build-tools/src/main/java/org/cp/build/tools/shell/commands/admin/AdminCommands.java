@@ -18,6 +18,7 @@ package org.cp.build.tools.shell.commands.admin;
 import java.util.Arrays;
 
 import org.cp.build.tools.api.support.Utils;
+import org.springframework.shell.command.CommandRegistration.OptionArity;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
 import org.springframework.util.StringUtils;
@@ -36,12 +37,9 @@ import org.springframework.util.StringUtils;
 public class AdminCommands {
 
   @Command(command = "add")
-  public int add(@Option(required = true) String numbers) {
+  public int add(@Option(arity = OptionArity.ONE_OR_MORE, required = true) int... numbers) {
 
-    return Arrays.stream(Utils.nullSafeTrimmedString(numbers).split(Utils.COMMA))
-      .filter(StringUtils::hasText)
-      .map(String::trim)
-      .map(Integer::parseInt)
+    return Arrays.stream(numbers)
       .reduce(Integer::sum)
       .orElse(0);
   }
