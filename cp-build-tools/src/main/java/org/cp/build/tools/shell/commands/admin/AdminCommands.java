@@ -50,7 +50,7 @@ public class AdminCommands extends AbstractCommandsSupport {
   public String add(@Option(arity = OptionArity.ONE_OR_MORE, required = true) int... numbers) {
 
     return new AttributedStringBuilder()
-      .style(toBoldText(Colors.BLUE))
+      .style(toBoldText(Colors.GREEN))
       .append(String.valueOf(Arrays.stream(numbers)
         .reduce(Integer::sum)
         .orElse(0)))
@@ -79,7 +79,7 @@ public class AdminCommands extends AbstractCommandsSupport {
     double number = Math.round(Double.parseDouble(numbers[0]) / Double.parseDouble(numbers[1]) * 100);
 
     return new AttributedStringBuilder()
-      .style(toBoldText(Colors.BLUE))
+      .style(toBoldText(Colors.GREEN))
       .append(String.valueOf(Double.valueOf(number).intValue()))
       .style(toPlainText(Colors.WHITE))
       .append(Utils.PERCENT)
@@ -88,6 +88,10 @@ public class AdminCommands extends AbstractCommandsSupport {
 
   @Command
   public String ping() {
-    return "PONG";
+
+    return new AttributedStringBuilder()
+      .style(toBoldText(Colors.GREEN))
+      .append("PONG")
+      .toAnsi();
   }
 }
