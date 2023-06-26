@@ -21,6 +21,8 @@ import java.util.Optional;
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
+import org.cp.build.tools.shell.jline.Colors;
+import org.jline.utils.AttributedStyle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.shell.command.annotation.Command;
@@ -71,5 +73,21 @@ public abstract class AbstractCommandsSupport {
     }
 
     return indentedContent.toString();
+  }
+
+  protected AttributedStyle toBoldText(Colors color) {
+    return AttributedStyle.BOLD.foreground(color.toJLineAttributeStyleColor());
+  }
+
+  protected AttributedStyle toBoldItalicText(Colors color) {
+    return toBoldText(color).italic();
+  }
+
+  protected AttributedStyle toItalicText(Colors color) {
+    return toPlainText(color).italic();
+  }
+
+  protected AttributedStyle toPlainText(Colors color) {
+    return AttributedStyle.DEFAULT.foreground(color.toJLineAttributeStyleColor()).italicOff();
   }
 }
