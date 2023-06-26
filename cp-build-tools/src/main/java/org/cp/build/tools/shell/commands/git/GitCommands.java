@@ -61,6 +61,7 @@ import lombok.RequiredArgsConstructor;
  * @see org.cp.build.tools.api.service.ProjectManager
  * @see org.cp.build.tools.git.model.CommitHistory
  * @see org.cp.build.tools.git.model.CommitRecord
+ * @see org.cp.build.tools.git.model.GitStatus
  * @see org.cp.build.tools.git.support.GitTemplate
  * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
  * @see org.springframework.shell.command.annotation.Command
@@ -287,13 +288,10 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
-    Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate = commitRecord -> commitRecord.stream()
-      .anyMatch(sourceFile -> sourceFile.getAbsolutePath().contains(sourceFilePath));
-
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
         .and(commitsByAuthorQueryPredicate(author))
-        .and(commitsToSourceFilePathQueryPredicate);
+        .and(commitsToSourceFilePathQueryPredicate(sourceFilePath));
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -328,13 +326,15 @@ public class GitCommands extends AbstractCommandsSupport {
   @Command(command = "first-commit", description = "Finds the first commit since a given date")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String firstCommit(@Option(description = "By author") String author,
+      @Option(longNames = "source") String sourceFilePath,
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, null, excludingDates, null)
-        .and(commitsByAuthorQueryPredicate(author));
+        .and(commitsByAuthorQueryPredicate(author))
+        .and(commitsToSourceFilePathQueryPredicate(sourceFilePath));
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -352,12 +352,14 @@ public class GitCommands extends AbstractCommandsSupport {
   @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String lastCommit(@Option(description = "By author") String author,
       @Option(longNames = "until", shortNames = 'u') String untilDate,
+      @Option(longNames = "source") String sourceFilePath,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(null, untilDate, excludingDates, null)
-        .and(commitsByAuthorQueryPredicate(author));
+        .and(commitsByAuthorQueryPredicate(author))
+        .and(commitsToSourceFilePathQueryPredicate(sourceFilePath));
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -455,7 +457,7 @@ public class GitCommands extends AbstractCommandsSupport {
     return commitHistory.findBy(queryPredicate);
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsByAuthorQueryPredicate(@NonNull String authorCommitter) {
+  private static @NonNull Predicate<CommitRecord> commitsByAuthorQueryPredicate(@Nullable String authorCommitter) {
 
     return Utils.isNotSet(authorCommitter) ? ALL_COMMITS_PREDICATE
       : commitRecord -> {
@@ -504,6 +506,14 @@ public class GitCommands extends AbstractCommandsSupport {
 
       return !commitDate.isBefore(since);
     };
+  }
+
+  @SuppressWarnings("all")
+  private static @NonNull Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate(@Nullable String sourceFilePath) {
+
+    return Utils.isSet(sourceFilePath) ? commitRecord -> commitRecord.stream().anyMatch(sourceFile ->
+        sourceFile.getAbsolutePath().contains(sourceFilePath))
+      : ALL_COMMITS_PREDICATE;
   }
 
   private static @NonNull Predicate<CommitRecord> commitsUntilDateQueryPredicate(@Nullable String untilDate) {
