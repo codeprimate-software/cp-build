@@ -30,8 +30,11 @@ import java.util.function.Supplier;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
+import org.cp.build.tools.git.model.GitStatus;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.StatusCommand;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
@@ -116,6 +119,32 @@ public class GitTemplate {
     }
     catch (Exception cause) {
       throw new GitException("Failed to load commit history", cause);
+    }
+  }
+
+  public @NonNull GitStatus getCommitStatus() {
+
+    try (Git git = git()) {
+
+      StatusCommand statusCommand = git.status();
+
+      Status status = statusCommand.call();
+
+      return GitStatus.create()
+        .withAdded(status.getAdded())
+        .withChangedModified(status.getChanged())
+        .withChangedModified(status.getModified())
+        .withClean(status.isClean())
+        .withConflicts(status.getConflicting())
+        .withIgnored(status.getIgnoredNotInIndex())
+        .withMissing(status.getMissing())
+        .withRemoved(status.getRemoved())
+        .withUncommitted(status.getUncommittedChanges())
+        .withUntracked(status.getUntracked())
+        .withUntracked(status.getUntrackedFolders());
+    }
+    catch (Exception cause) {
+      throw new GitException("Failed to call git status", cause);
     }
   }
 
