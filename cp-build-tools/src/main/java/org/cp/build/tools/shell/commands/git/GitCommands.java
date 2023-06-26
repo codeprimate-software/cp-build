@@ -244,7 +244,7 @@ public class GitCommands extends AbstractCommandsSupport {
   @Command(command = "commits-during-work", description = "Finds all commits during work hours (on-the-clock)")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String commitsOnTheClock(@Option(description = "Commits by author") String author,
-      @Option(longNames = "count", shortNames = 'c', defaultValue = "true") boolean count,
+      @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
       @Option(longNames = "during", shortNames = 'd') String duringDates,
       @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
