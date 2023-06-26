@@ -17,7 +17,11 @@ package org.cp.build.tools.shell.commands.admin;
 
 import java.util.Arrays;
 
+import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
+import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
+import org.cp.build.tools.shell.jline.Colors;
+import org.jline.utils.AttributedStringBuilder;
 import org.springframework.shell.command.CommandRegistration.OptionArity;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.Option;
@@ -27,6 +31,7 @@ import org.springframework.util.StringUtils;
  * Spring Shell {@link Command} class supplying {@link Command administrative commands} to the shell.
  *
  * @author John Blum
+ * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
  * @see org.springframework.shell.command.annotation.Command
  * @see org.springframework.shell.command.annotation.Option
  * @see org.springframework.shell.standard.ShellComponent
@@ -34,14 +39,22 @@ import org.springframework.util.StringUtils;
  */
 @Command
 @SuppressWarnings("unused")
-public class AdminCommands {
+public class AdminCommands extends AbstractCommandsSupport {
+
+  @Override
+  protected ProjectManager getProjectManager() {
+    return null;
+  }
 
   @Command(command = "add")
-  public int add(@Option(arity = OptionArity.ONE_OR_MORE, required = true) int... numbers) {
+  public String add(@Option(arity = OptionArity.ONE_OR_MORE, required = true) int... numbers) {
 
-    return Arrays.stream(numbers)
-      .reduce(Integer::sum)
-      .orElse(0);
+    return new AttributedStringBuilder()
+      .style(toBoldText(Colors.BLUE))
+      .append(String.valueOf(Arrays.stream(numbers)
+        .reduce(Integer::sum)
+        .orElse(0)))
+      .toAnsi();
   }
 
   @Command(command = "hello")
@@ -50,7 +63,12 @@ public class AdminCommands {
     String resolvedUser = StringUtils.hasText(user) ? user
       : System.getProperty("user.name");
 
-    return String.format("Hello %s", resolvedUser);
+    return new AttributedStringBuilder()
+      .style(toBoldText(Colors.WHITE))
+      .append("Hello ")
+      .style(toBoldText(Colors.YELLOW))
+      .append(resolvedUser)
+      .toAnsi();
   }
 
   @Command(command = "percent")
@@ -60,7 +78,12 @@ public class AdminCommands {
 
     double number = Math.round(Double.parseDouble(numbers[0]) / Double.parseDouble(numbers[1]) * 100);
 
-    return String.valueOf(Double.valueOf(number).intValue()).concat(Utils.PERCENT);
+    return new AttributedStringBuilder()
+      .style(toBoldText(Colors.BLUE))
+      .append(String.valueOf(Double.valueOf(number).intValue()))
+      .style(toPlainText(Colors.WHITE))
+      .append(Utils.PERCENT)
+      .toAnsi();
   }
 
   @Command
