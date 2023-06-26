@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
@@ -32,9 +33,12 @@ import org.cp.build.tools.api.time.TimePeriods;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.model.CommitRecord.Author;
+import org.cp.build.tools.git.model.GitStatus;
 import org.cp.build.tools.git.model.support.CommitRecordComparator;
 import org.cp.build.tools.git.support.GitTemplate;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
+import org.cp.build.tools.shell.jline.Colors;
+import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -272,6 +276,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commits-to", description = "Finds all commit to a source file or path")
+  @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String commitsTo(@Option(required = true) String sourceFilePath,
       @Option(longNames = "author", description = "By author") String author,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
@@ -296,6 +301,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commits-with", description = "Finds all commits with message")
+  @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String commitsWith(@Option(required = true) String message,
       @Option(longNames = "author", description = "By author") String author,
       @Option(longNames = "count", shortNames = 'c', defaultValue = "false") boolean count,
@@ -320,6 +326,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "first-commit", description = "Finds the first commit since a given date")
+  @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String firstCommit(@Option(description = "By author") String author,
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
@@ -342,6 +349,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "last-commit", description = "Finds the last commit before a given date")
+  @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String lastCommit(@Option(description = "By author") String author,
       @Option(longNames = "until", shortNames = 'u') String untilDate,
       @Option(longNames = "show-files", shortNames = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
@@ -363,7 +371,66 @@ public class GitCommands extends AbstractCommandsSupport {
         : PROJECT_NOT_FOUND);
   }
 
-  // TODO: implement git status
+  @Command(command = "status", description = "Reports git status")
+  @CommandAvailability(provider = "gitCommandsAvailability")
+  public String status() {
+
+    GitStatus status = getGitTemplate().getCommitStatus();
+
+    Function<Stream<String>, String> streamToString = stream -> stream
+      .map(it -> String.format("%s%n", it))
+      .reduce(String::concat)
+      .orElse(Utils.EMPTY_STRING);
+
+    AttributedStringBuilder output = new AttributedStringBuilder();
+
+    if (status.isDirty()) {
+      if (status.hasAdded()) {
+        output.style(toBoldItalicText(Colors.GREEN))
+          .append(Utils.newLine()).append("Added: ").append(Utils.newLine())
+          .style(toPlainText(Colors.GREEN))
+          .append(streamToString.apply(status.streamAdded().sorted()));
+      }
+      if (status.hasConflicts()) {
+        output.style(toBoldItalicText(Colors.RED))
+          .append(Utils.newLine()).append("Conflicts: ").append(Utils.newLine())
+          .style(toPlainText(Colors.RED))
+          .append(streamToString.apply(status.streamConflicts().sorted()));
+      }
+      if (status.hasIgnoredChanges()) {
+        output.style(toBoldItalicText(Colors.WHITE))
+          .append(Utils.newLine()).append("Ignored: ").append(Utils.newLine())
+          .style(toPlainText(Colors.WHITE))
+          .append(streamToString.apply(status.streamIgnored().sorted()));
+      }
+      if (status.hasMissing()) {
+        output.style(toBoldItalicText(Colors.YELLOW))
+          .append(Utils.newLine()).append("Missing: ").append(Utils.newLine())
+          .style(toPlainText(Colors.YELLOW))
+          .append(streamToString.apply(status.streamMissing().sorted()));
+      }
+      if (status.hasRemoved()) {
+        output.style(toBoldItalicText(Colors.BLUE))
+          .append(Utils.newLine()).append("Removed: ").append(Utils.newLine())
+          .style(toPlainText(Colors.BLUE))
+          .append(streamToString.apply(status.streamRemoved().sorted()));
+      }
+      if (status.hasUncommittedChanges()) {
+        output.style(toBoldItalicText(Colors.RED))
+          .append(Utils.newLine()).append("Uncommitted: ").append(Utils.newLine())
+          .style(toPlainText(Colors.RED))
+          .append(streamToString.apply(status.streamUncommitted().sorted()));
+      }
+      if (status.hasUntrackedChanges()) {
+        output.style(toBoldItalicText(Colors.YELLOW))
+          .append(Utils.newLine()).append("Untracked: ").append(Utils.newLine())
+          .style(toPlainText(Colors.YELLOW))
+          .append(streamToString.apply(status.streamUntracked().sorted()));
+      }
+    }
+
+    return output.toAnsi();
+  }
 
   protected @NonNull CommitHistory queryCommitHistory() {
     return queryCommitHistory(ALL_COMMITS_PREDICATE);
