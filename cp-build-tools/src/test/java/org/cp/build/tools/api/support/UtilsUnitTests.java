@@ -181,6 +181,26 @@ public class UtilsUnitTests {
   }
 
   @Test
+  public void newLine() {
+    assertThat(Utils.newLine()).isEqualTo("\n");
+  }
+
+  @Test
+  public void newLineAfter() {
+    assertThat(Utils.newLineAfter("test")).isEqualTo("test\n");
+  }
+
+  @Test
+  public void newLineBefore() {
+    assertThat(Utils.newLineBefore("test")).isEqualTo("\ntest");
+  }
+
+  @Test
+  public void newLineBeforeAfter() {
+    assertThat(Utils.newLineBeforeAfter("test")).isEqualTo("\ntest\n");
+  }
+
+  @Test
   public void nullSafeIsDirectoryWithDirectory() {
 
     File mockDirectory = mock(File.class);

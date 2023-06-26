@@ -83,8 +83,20 @@ public abstract class Utils {
     return Arrays.stream(values).anyMatch(StringUtils::hasText);
   }
 
-  public static String newLine() {
+  public static @NonNull String newLine() {
     return LINE_SEPARATOR;
+  }
+
+  public static @NonNull String newLineAfter(@Nullable String text) {
+    return nullSafeTrimmedString(text).concat(newLine());
+  }
+
+  public static @NonNull String newLineBefore(@Nullable String text) {
+    return newLine().concat(nullSafeTrimmedString(text));
+  }
+
+  public static @NonNull String newLineBeforeAfter(@Nullable String text) {
+    return newLineBefore(text).concat(newLine());
   }
 
   public static boolean nullSafeIsDirectory(@Nullable Object target) {
