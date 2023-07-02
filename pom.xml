@@ -120,7 +120,7 @@
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.1.2</maven-surefire-report-plugin.version>
     <maven-wrapper-plugin.version>3.2.0</maven-wrapper-plugin.version>
-    <mockito.version>5.3.1</mockito.version>
+    <mockito.version>5.4.0</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>3.1.0</spring-boot.version>
