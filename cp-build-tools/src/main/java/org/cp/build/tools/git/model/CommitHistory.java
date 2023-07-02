@@ -116,7 +116,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
   /**
    * Returns an unmodifiable {@link List} of {@link CommitRecord CommitRecords} contained in this {@link CommitHistory}.
-   *
+   * <p>
    * The {@link CommitRecord CommitRecords} will be sorted in reverse chronological order.
    *
    * @return an unmodifiable {@link List} of {@link CommitRecord CommitRecords} contained in this {@link CommitHistory}.
