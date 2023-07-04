@@ -1,8 +1,10 @@
 To perform a release of the Codeprimate Core (cp-core) project, run the following script:
 
-0. Set the project's 'Major, Minor, Maintenance and Version Qualifier' for the release (e.g. 1.0.0.RELEASE)
-in both pom.xml and gradle.properties.
+0. Set the project's 'Major, Minor, Maintenance and Version Qualifier' for the release (e.g. 1.0.0-RELEASE)
+in both pom.xml and (optionally) gradle.properties.
 
-Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) or RELEASE.
+Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) or (optionally) RELEASE.
 
-1. mvn -P release clean install deploy
+1. mvn clean install
+
+2. mvn -P release deploy
