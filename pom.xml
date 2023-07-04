@@ -122,6 +122,7 @@
     <maven-wrapper-plugin.version>3.2.0</maven-wrapper-plugin.version>
     <mockito.version>5.4.0</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
+    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>3.1.1</spring-boot.version>
     <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
@@ -559,6 +560,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>${nexus-staging-maven-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>ossrh</serverId>
