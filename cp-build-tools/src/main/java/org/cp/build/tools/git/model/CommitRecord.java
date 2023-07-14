@@ -70,12 +70,12 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalDate();
   }
 
-  public @NonNull LocalTime getTime() {
-    return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalTime();
-  }
-
   public @NonNull String getShortHash() {
     return getHash().substring(0, SHORT_HASH_LENGTH);
+  }
+
+  public @NonNull LocalTime getTime() {
+    return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalTime();
   }
 
   public @NonNull CommitRecord add(File... sourceFiles) {
