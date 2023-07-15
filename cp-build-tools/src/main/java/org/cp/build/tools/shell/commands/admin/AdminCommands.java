@@ -49,11 +49,15 @@ public class AdminCommands extends AbstractCommandsSupport {
   @Command(command = "add")
   public String add(@Option(arity = OptionArity.ONE_OR_MORE, required = true) int... numbers) {
 
+    int sum = Arrays.stream(numbers)
+      .reduce(Integer::sum)
+      .orElse(0);
+
+    Colors color = sum >= 0 ? Colors.GREEN : Colors.RED;
+
     return new AttributedStringBuilder()
-      .style(toBoldText(Colors.GREEN))
-      .append(String.valueOf(Arrays.stream(numbers)
-        .reduce(Integer::sum)
-        .orElse(0)))
+      .style(toBoldText(color))
+      .append(String.valueOf(sum))
       .toAnsi();
   }
 
