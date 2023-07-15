@@ -321,9 +321,13 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
     for (CommitRecord commitRecord : this) {
       for (File file : commitRecord) {
-        SourceFile sourceFile = sourceFileSet.resolve(file)
-          .withRevision(toSourceFileRevision(commitRecord));
-        sourceFileSet.add(sourceFile);
+        if (Utils.nullSafeIsFile(file)) {
+
+          SourceFile sourceFile = sourceFileSet.resolve(file)
+            .withRevision(toSourceFileRevision(commitRecord));
+
+          sourceFileSet.add(sourceFile);
+        }
       }
     }
 
