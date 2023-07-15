@@ -386,8 +386,18 @@ public class GitCommands extends AbstractCommandsSupport {
     @Option(longNames = "since", shortNames = 's') String sinceDate,
     @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
-    Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord ->
-      commitRecord.getMessage().toLowerCase().contains(String.valueOf(commitMessage).toLowerCase());
+    Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord -> {
+
+      String[] commitMessages = commitMessage.split(Utils.PIPE_SEPARATOR_REGEX);
+
+      for (String message : commitMessages) {
+        if (commitRecord.getMessage().toLowerCase().contains(String.valueOf(message).toLowerCase())) {
+          return true;
+        }
+      }
+
+      return false;
+    };
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
