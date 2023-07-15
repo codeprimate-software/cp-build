@@ -68,8 +68,9 @@ public class SourceFileSet implements Iterable<SourceFile> {
   @Getter(AccessLevel.PROTECTED)
   private final Set<SourceFile> sourceFiles = new TreeSet<>();
 
-  public boolean isEmpty() {
-    return getSourceFiles().isEmpty();
+  @SuppressWarnings("all")
+  public boolean add(@NonNull SourceFile sourceFile) {
+    return sourceFile != null && this.sourceFiles.add(sourceFile);
   }
 
   public boolean contains(@Nullable File file) {
@@ -102,6 +103,10 @@ public class SourceFileSet implements Iterable<SourceFile> {
 
   public @NonNull SourceFileSet findDuring(@NonNull TimePeriods timePeriods) {
     return findBy(sourceFile -> sourceFile.wasModifiedDuring(timePeriods));
+  }
+
+  public boolean isEmpty() {
+    return getSourceFiles().isEmpty();
   }
 
   @Override
