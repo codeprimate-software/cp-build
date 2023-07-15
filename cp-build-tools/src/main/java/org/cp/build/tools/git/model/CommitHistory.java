@@ -99,6 +99,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
     Utils.stream(commitRecords)
       .filter(Objects::nonNull)
       .sorted()
+      .map(commitRecord -> commitRecord.from(this))
       .forEach(this.commitRecords::add);
   }
 
