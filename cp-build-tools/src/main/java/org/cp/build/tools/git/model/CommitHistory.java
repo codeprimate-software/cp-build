@@ -28,6 +28,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.cp.build.tools.api.model.SourceFile;
+import org.cp.build.tools.api.model.SourceFile.Revision;
+import org.cp.build.tools.api.model.SourceFileSet;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.springframework.lang.NonNull;
@@ -303,5 +306,40 @@ public class CommitHistory implements Iterable<CommitRecord> {
    */
   public @NonNull Stream<CommitRecord> stream() {
     return Utils.stream(this);
+  }
+
+  /**
+   * Converts this {@link CommitHistory} to a {@link SourceFileSet} with a {@literal revision history}.
+   *
+   * @return a {@link SourceFileSet} with {@literal revision history} from this {@link CommitHistory}.
+   * @see org.cp.build.tools.api.model.SourceFileSet
+   * @see org.cp.build.tools.api.model.SourceFile
+   */
+  public @NonNull SourceFileSet toSourceFileSet() {
+
+    SourceFileSet sourceFileSet = SourceFileSet.empty();
+
+    for (CommitRecord commitRecord : this) {
+      for (File file : commitRecord) {
+        SourceFile sourceFile = sourceFileSet.resolve(file)
+          .withRevision(toSourceFileRevision(commitRecord));
+        sourceFileSet.add(sourceFile);
+      }
+    }
+
+    return sourceFileSet;
+  }
+
+  private @NonNull Revision toSourceFileRevision(CommitRecord commitRecord) {
+
+    return SourceFile.Revision.of(
+      toSourceFileAuthor(commitRecord.getAuthor()),
+      commitRecord.getDateTime(),
+      commitRecord.getHash()
+    );
+  }
+
+  private SourceFile.Author toSourceFileAuthor(CommitRecord.Author author) {
+    return SourceFile.Author.as(author.getName()).withEmailAddress(author.getEmailAddress());
   }
 }
