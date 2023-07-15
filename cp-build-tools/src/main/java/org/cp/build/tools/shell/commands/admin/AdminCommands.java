@@ -81,7 +81,6 @@ public class AdminCommands extends AbstractCommandsSupport {
     return new AttributedStringBuilder()
       .style(toBoldText(Colors.GREEN))
       .append(String.valueOf(Double.valueOf(number).intValue()))
-      .style(toPlainText(Colors.WHITE))
       .append(Utils.PERCENT)
       .toAnsi();
   }
