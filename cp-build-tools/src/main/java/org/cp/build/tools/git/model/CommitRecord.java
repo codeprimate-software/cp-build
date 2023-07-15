@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Stream;
@@ -56,6 +57,9 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
 
   private final Author author;
 
+  @Setter(AccessLevel.PROTECTED)
+  private CommitHistory commitHistory;
+
   private final LocalDateTime dateTime;
 
   @Getter(AccessLevel.PROTECTED)
@@ -65,6 +69,10 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
 
   @Setter(AccessLevel.PROTECTED)
   private String message;
+
+  public Optional<CommitHistory> getCommitHistory() {
+    return Optional.ofNullable(this.commitHistory);
+  }
 
   public @NonNull LocalDate getDate() {
     return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalDate();
@@ -98,6 +106,11 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
 
   public @NonNull Stream<File> stream() {
     return Utils.stream(this);
+  }
+
+  public @NonNull CommitRecord from(@Nullable CommitHistory commitHistory) {
+    setCommitHistory(commitHistory);
+    return this;
   }
 
   public @NonNull CommitRecord withMessage(String message) {
