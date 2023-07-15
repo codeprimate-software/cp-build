@@ -31,12 +31,14 @@ import java.util.stream.Stream;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Abstract Data Type (ADT) modeling a {@link File source file} under source control, such as {@literal git}.
@@ -177,13 +179,20 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   @Getter
   @EqualsAndHashCode
-  @RequiredArgsConstructor(staticName = "of")
+  @RequiredArgsConstructor(staticName = "as")
   public static class Author implements Comparable<Author> {
 
     protected static final String AUTHOR_TO_STRING = "%1$s <%2$s>";
 
     private final String name;
-    private final String emailAddress;
+
+    @Setter(AccessLevel.PROTECTED)
+    private String emailAddress;
+
+    public Author withEmailAddress(@Nullable String emailAddress) {
+      setEmailAddress(emailAddress);
+      return this;
+    }
 
     @Override
     public int compareTo(@NonNull Author that) {
