@@ -22,13 +22,13 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.model.SourceFile;
+import org.cp.build.tools.api.model.SourceFileSet;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
@@ -378,7 +378,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "source-files", description = "Finds all source files with commit message like")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public @NotNull String filesWithCommitMessage(@Option(description = "Commit message like") String commitMessage,
+  public @NotNull String sourceFilesWithCommitMessage(@Option(description = "Commit message like") String commitMessage,
     @Option(longNames = "during", shortNames = 'd') String duringDates,
     @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
     @Option(longNames = "exclude-filter") String excludeFilter,
@@ -399,31 +399,24 @@ public class GitCommands extends AbstractCommandsSupport {
     boolean includeFilterSet = StringUtils.hasText(includeFilter);
 
     @SuppressWarnings("all")
-    Predicate<File> sourceFilePredicate = file -> {
-      boolean accept = file != null && file.isFile();
-      accept &= !(excludeFilterSet && file.getAbsolutePath().contains(excludeFilter));
-      accept &= !includeFilterSet || file.getAbsolutePath().contains(includeFilter);
+    Predicate<SourceFile> sourceFilePredicate = sourceFile -> {
+      boolean accept = sourceFile != null;
+      accept &= !(excludeFilterSet && sourceFile.getFile().getAbsolutePath().contains(excludeFilter));
+      accept &= !includeFilterSet || sourceFile.getFile().getAbsolutePath().contains(includeFilter);
       return accept;
     };
 
-    Set<String> sourceFilePaths = new TreeSet<>();
-
-    for (CommitRecord commit : commits) {
-      for (File sourceFile : commit) {
-        if (sourceFilePredicate.test(sourceFile)) {
-          sourceFilePaths.add(toCommitSourceFileString(sourceFile));
-        }
-      }
-    }
+    SourceFileSet sourceFileSet = commits.toSourceFileSet()
+      .findBy(sourceFilePredicate);
 
     StringBuilder output = new StringBuilder(Utils.newLine());
 
-    for (String sourceFilePath : sourceFilePaths) {
-      output.append(Utils.newLine()).append(sourceFilePath);
+    for (SourceFile sourceFile : sourceFileSet) {
+      output.append(Utils.newLine()).append(sourceFile.getFile().getAbsolutePath());
     }
 
     output.append(Utils.newLine())
-      .append("Count: ").append(sourceFilePaths.size())
+      .append("Count: ").append(sourceFileSet.size())
       .append(Utils.newLine());
 
     return output.toString();
