@@ -418,13 +418,13 @@ public class GitCommands extends AbstractCommandsSupport {
 
     StringBuilder output = new StringBuilder(Utils.newLine());
 
-    output.append("Count: ").append(sourceFilePaths.size());
-
     for (String sourceFilePath : sourceFilePaths) {
       output.append(Utils.newLine()).append(sourceFilePath);
     }
 
-    output.append(Utils.newLine());
+    output.append(Utils.newLine())
+      .append("Count: ").append(sourceFilePaths.size())
+      .append(Utils.newLine());
 
     return output.toString();
   }
