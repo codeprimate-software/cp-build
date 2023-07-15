@@ -22,6 +22,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -49,6 +51,7 @@ import org.springframework.shell.command.annotation.CommandAvailability;
 import org.springframework.shell.command.annotation.Option;
 import org.springframework.util.StringUtils;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -371,6 +374,59 @@ public class GitCommands extends AbstractCommandsSupport {
       .orElseGet(() -> isProjectSet()
         ? String.format("No commit before date [%s] was found", untilDate)
         : PROJECT_NOT_FOUND);
+  }
+
+  @Command(command = "source-files", description = "Finds all source files with commit message like")
+  @CommandAvailability(provider = "gitCommandsAvailability")
+  public @NotNull String filesWithCommitMessage(@Option(description = "Commit message like") String commitMessage,
+    @Option(longNames = "during", shortNames = 'd') String duringDates,
+    @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
+    @Option(longNames = "exclude-filter") String excludeFilter,
+    @Option(longNames = "include-filter") String includeFilter,
+    @Option(longNames = "since", shortNames = 's') String sinceDate,
+    @Option(longNames = "until", shortNames = 'u') String untilDate) {
+
+    Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord ->
+      commitRecord.getMessage().toLowerCase().contains(String.valueOf(commitMessage).toLowerCase());
+
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
+        .and(commitsWithMessageContainingQueryPredicate);
+
+    CommitHistory commits = queryCommitHistory(queryPredicate);
+
+    boolean excludeFilterSet = StringUtils.hasText(excludeFilter);
+    boolean includeFilterSet = StringUtils.hasText(includeFilter);
+
+    @SuppressWarnings("all")
+    Predicate<File> sourceFilePredicate = file -> {
+      boolean accept = file != null && file.isFile();
+      accept &= !(excludeFilterSet && file.getAbsolutePath().contains(excludeFilter));
+      accept &= !includeFilterSet || file.getAbsolutePath().contains(includeFilter);
+      return accept;
+    };
+
+    Set<String> sourceFilePaths = new TreeSet<>();
+
+    for (CommitRecord commit : commits) {
+      for (File sourceFile : commit) {
+        if (sourceFilePredicate.test(sourceFile)) {
+          sourceFilePaths.add(toCommitSourceFileString(sourceFile));
+        }
+      }
+    }
+
+    StringBuilder output = new StringBuilder(Utils.newLine());
+
+    output.append("Count: ").append(sourceFilePaths.size());
+
+    for (String sourceFilePath : sourceFilePaths) {
+      output.append(Utils.newLine()).append(sourceFilePath);
+    }
+
+    output.append(Utils.newLine());
+
+    return output.toString();
   }
 
   @Command(command = "status", description = "Reports git status")
