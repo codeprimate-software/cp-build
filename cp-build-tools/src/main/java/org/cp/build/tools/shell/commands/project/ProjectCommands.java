@@ -27,6 +27,8 @@ import org.cp.build.tools.api.service.ProjectManager.RecentProject;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
+import org.cp.build.tools.shell.jline.Colors;
+import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.shell.Availability;
@@ -74,19 +76,37 @@ public class ProjectCommands extends AbstractCommandsSupport {
   public String describe() {
 
     return currentProject()
-      .map(project -> "Name: ".concat(Utils.newLineAfter(project.getName()))
-        .concat("Description: ").concat(Utils.newLineAfter(indent(project.getDescription())))
-        .concat("Version: ").concat(Utils.newLineAfter(project.getVersion().toString()))
-        .concat("Artifact: ").concat(Utils.newLineAfter(project.getArtifact().toString()))
-        .concat(Utils.newLine())
-        .concat("Licenses: ").concat(Utils.newLineAfter(project.getLicenses().toString()))
-        .concat("Organization: ").concat(Utils.newLineAfter(Utils.nullSafeToString(project.getOrganization())))
-        .concat("Developers: ").concat(Utils.newLineAfter(project.getDevelopers().toString()))
+      .map(project -> {
 
-        .concat(Utils.newLine())
-        .concat("Source Repository: ").concat(Utils.newLineAfter(project.getSourceRepository().toString()))
-        .concat("Issue Tracker: ").concat(Utils.newLineAfter(project.getIssueTracker().toString()))
-      )
+        AttributedStringBuilder output = new AttributedStringBuilder();
+
+        Colors labelColor = Colors.LIME;
+        Colors textColor = Colors.WHITE;
+
+        output.style(toBoldText(labelColor)).append("Name: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getName()))
+          .style(toBoldItalicText(labelColor)).append("Description: ")
+          .style(toPlainText(textColor)).append("~").append(indent(project.getDescription())).append(Utils.newLine())
+          .style(toBoldItalicText(labelColor)).append("Version: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getVersion().toString()))
+          .style(toBoldItalicText(labelColor)).append("Artifact: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getArtifact().toString()))
+          .append(Utils.newLine())
+          .style(toBoldItalicText(labelColor)).append("Licenses: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getLicenses().toString()))
+          .style(toBoldItalicText(labelColor)).append("Organization: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(Utils.nullSafeToString(project.getOrganization())))
+          .style(toBoldItalicText(labelColor)).append("Developers: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getDevelopers().toString()))
+          .append(Utils.newLine())
+          .style(toBoldItalicText(labelColor)).append("Source Repository: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getSourceRepository().toString()))
+          .style(toBoldItalicText(labelColor)).append("Issue Tracker: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getIssueTracker().toString()));
+
+          return output.toAnsi();
+
+      })
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
 

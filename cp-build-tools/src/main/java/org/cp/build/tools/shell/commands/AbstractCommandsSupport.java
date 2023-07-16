@@ -72,8 +72,15 @@ public abstract class AbstractCommandsSupport {
     StringBuilder indentedContent = new StringBuilder();
 
     for (String line : lines) {
+
       line = Utils.nullSafeTrimmedString(line);
-      indentedContent.append(Utils.NEW_LINE_TAB).append(line);
+
+      if (line.isEmpty()) {
+        indentedContent.append(Utils.newLine());
+      }
+      else {
+        indentedContent.append(Utils.newLine()).append(Utils.getSpaces(8).concat(line));
+      }
     }
 
     return indentedContent.toString();
