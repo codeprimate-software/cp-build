@@ -422,12 +422,11 @@ public class GitCommands extends AbstractCommandsSupport {
     StringBuilder output = new StringBuilder(Utils.newLine());
 
     for (SourceFile sourceFile : sourceFileSet) {
-      output.append(Utils.newLine()).append(sourceFile.getFile().getAbsolutePath());
+      output.append(Utils.newLineBefore(sourceFile.getFile().getAbsolutePath()));
     }
 
-    output.append(Utils.newLine())
-      .append("Count: ").append(sourceFileSet.size())
-      .append(Utils.newLine());
+    output.append(Utils.newLineBefore("Count: "))
+      .append(Utils.newLineAfter(String.valueOf(sourceFileSet.size())));
 
     return output.toString();
   }
@@ -448,43 +447,43 @@ public class GitCommands extends AbstractCommandsSupport {
     if (status.isDirty()) {
       if (status.hasAdded()) {
         output.style(toBoldItalicText(Colors.GREEN))
-          .append(Utils.newLine()).append("Added: ").append(Utils.newLine())
+          .append(Utils.newLineBeforeAfter("Added: "))
           .style(toPlainText(Colors.GREEN))
           .append(streamToString.apply(status.streamAdded().sorted()));
       }
       if (status.hasConflicts()) {
         output.style(toBoldItalicText(Colors.RED))
-          .append(Utils.newLine()).append("Conflicts: ").append(Utils.newLine())
+          .append(Utils.newLineBeforeAfter("Conflicts: "))
           .style(toPlainText(Colors.RED))
           .append(streamToString.apply(status.streamConflicts().sorted()));
       }
       if (status.hasIgnoredChanges()) {
-        output.style(toBoldItalicText(Colors.WHITE))
-          .append(Utils.newLine()).append("Ignored: ").append(Utils.newLine())
+        output.style(toBoldItalicText(Colors.GREY))
+          .append(Utils.newLineBeforeAfter("Ignored: "))
           .style(toPlainText(Colors.WHITE))
           .append(streamToString.apply(status.streamIgnored().sorted()));
       }
       if (status.hasMissing()) {
         output.style(toBoldItalicText(Colors.YELLOW))
-          .append(Utils.newLine()).append("Missing: ").append(Utils.newLine())
+          .append(Utils.newLineBeforeAfter("Missing: "))
           .style(toPlainText(Colors.YELLOW))
           .append(streamToString.apply(status.streamMissing().sorted()));
       }
       if (status.hasRemoved()) {
         output.style(toBoldItalicText(Colors.BLUE))
-          .append(Utils.newLine()).append("Removed: ").append(Utils.newLine())
+          .append(Utils.newLineBeforeAfter("Removed: "))
           .style(toPlainText(Colors.BLUE))
           .append(streamToString.apply(status.streamRemoved().sorted()));
       }
       if (status.hasUncommittedChanges()) {
         output.style(toBoldItalicText(Colors.RED))
-          .append(Utils.newLine()).append("Uncommitted: ").append(Utils.newLine())
+          .append(Utils.newLineBeforeAfter("Uncommitted: "))
           .style(toPlainText(Colors.RED))
           .append(streamToString.apply(status.streamUncommitted().sorted()));
       }
       if (status.hasUntrackedChanges()) {
         output.style(toBoldItalicText(Colors.YELLOW))
-          .append(Utils.newLine()).append("Untracked: ").append(Utils.newLine())
+          .append(Utils.newLineBeforeAfter("Untracked: "))
           .style(toPlainText(Colors.YELLOW))
           .append(streamToString.apply(status.streamUntracked().sorted()));
       }
