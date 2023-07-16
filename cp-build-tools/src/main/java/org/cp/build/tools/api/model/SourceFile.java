@@ -18,6 +18,7 @@ package org.cp.build.tools.api.model;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -78,10 +79,18 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return stream().findFirst();
   }
 
+  public Optional<LocalDateTime> getFirstRevisionDateTime() {
+    return getFirstRevision().map(Revision::getDateTime);
+  }
+
   public Optional<Revision> getLastRevision() {
     List<Revision> revisions = stream().toList();
     Revision last = revisions.isEmpty() ? null : revisions.get(revisions.size() - 1);
     return Optional.ofNullable(last);
+  }
+
+  public Optional<LocalDateTime> getLastRevisionDateTime() {
+    return getLastRevision().map(Revision::getDateTime);
   }
 
   public Optional<Revision> getRevision(@NonNull String id) {
@@ -174,7 +183,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   @Override
   public String toString() {
-    return  getFile().getAbsolutePath();
+    return getFile().getAbsolutePath();
   }
 
   @Getter
@@ -218,6 +227,10 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
     public @NonNull LocalDate getDate() {
       return getDateTime().toLocalDate();
+    }
+
+    public @NonNull LocalTime getTime() {
+      return getDateTime().toLocalTime();
     }
 
     @Override
