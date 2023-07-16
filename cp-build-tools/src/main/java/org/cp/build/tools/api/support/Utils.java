@@ -58,6 +58,19 @@ public abstract class Utils {
   public static final String TAB = "\t";
   public static final String NEW_LINE_TAB = LINE_SEPARATOR.concat(TAB);
 
+  public static final String[] SPACES = {
+    " ",
+    "  ",
+    "   ",
+    "    ",
+    "     ",
+    "      ",
+    "       ",
+    "        ",
+    "         ",
+    "          ",
+  };
+
   public static @NonNull LocalDateTime atEpoch() {
     return LocalDateTime.of(1970, 1, 1 , 0, 0, 0);
   }
@@ -74,6 +87,28 @@ public abstract class Utils {
     return StringUtils.hasText(value) ? value : stringSupplier.get();
   }
 
+  public static String getSpaces(int length) {
+
+    length = Math.abs(length);
+
+    if (length < 1) {
+      return EMPTY_STRING;
+    }
+    else if (length <= 10) {
+      return SPACES[length - 1];
+    }
+    else {
+
+      StringBuilder spaces = new StringBuilder();
+
+      for (int count = length, amount = SPACES.length; count > 0; count -= amount, amount = Math.min(SPACES.length, count)) {
+        int index = amount - 1;
+        spaces.append(SPACES[index]);
+      }
+
+      return spaces.toString();
+    }
+  }
   public static int invert(int compareResult) {
     return Integer.compare(0, compareResult);
   }

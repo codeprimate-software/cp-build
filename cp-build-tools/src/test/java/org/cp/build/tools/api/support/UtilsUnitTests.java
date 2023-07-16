@@ -139,6 +139,14 @@ public class UtilsUnitTests {
   }
 
   @Test
+  public void getSpacesIsCorrect() {
+
+    for (int length = 0; length < 101; length++) {
+      assertThat(Utils.getSpaces(length)).hasSize(length);
+    }
+  }
+
+  @Test
   public void invertIsCorrect() {
 
     assertThat(Utils.invert(1)).isLessThan(0);
