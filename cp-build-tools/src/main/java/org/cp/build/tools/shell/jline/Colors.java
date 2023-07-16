@@ -20,19 +20,34 @@ package org.cp.build.tools.shell.jline;
  *
  * @author John Blum
  * @since 2.0.0
+ * @see <a href="https://github.com/jline/jline3/blob/master/terminal/src/main/java/org/jline/utils/Colors.java">JLine Colors.java</a>
+ * @see <a href="https://github.com/jline/jline3/blob/master/terminal/src/main/resources/org/jline/utils/colors.txt">JLine colors.txt</a>
  */
 @SuppressWarnings("unused")
 public enum Colors {
 
-  BLACK(0),
-  RED(1),
-  GREEN(2),
-  YELLOW(3),
-  BLUE(4),
-  MAGENTA(5),
-  CYAN(6),
-  WHITE(7),
-  BRIGHT(8),
+  AQUA(org.jline.utils.Colors.rgbColor("aqua")),
+  BLACK(org.jline.utils.Colors.rgbColor("black")),
+  BLUE(org.jline.utils.Colors.rgbColor("blue")),
+  BROWN(org.jline.utils.Colors.rgbColor("sandybrown")),
+  CYAN(org.jline.utils.Colors.rgbColor("cyan")),
+  GOLD(org.jline.utils.Colors.rgbColor("gold1")),
+  GREY(org.jline.utils.Colors.rgbColor("grey")),
+  GREEN(org.jline.utils.Colors.rgbColor("green")),
+  LIGHT_GREEN(org.jline.utils.Colors.rgbColor("lightgreen")),
+  LIME(org.jline.utils.Colors.rgbColor("lime")),
+  MAGENTA(org.jline.utils.Colors.rgbColor("magenta1")),
+  OLIVE(org.jline.utils.Colors.rgbColor("olive")),
+  ORANGE(org.jline.utils.Colors.rgbColor("orange1")),
+  PINK(org.jline.utils.Colors.rgbColor("hotpink")),
+  PLUM(org.jline.utils.Colors.rgbColor("plum1")),
+  PURPLE(org.jline.utils.Colors.rgbColor("purple")),
+  NAVY(org.jline.utils.Colors.rgbColor("navy")),
+  RED(org.jline.utils.Colors.rgbColor("red")),
+  SILVER(org.jline.utils.Colors.rgbColor("silver")),
+  TAN(org.jline.utils.Colors.rgbColor("tan")),
+  WHITE(org.jline.utils.Colors.rgbColor("white")),
+  YELLOW(org.jline.utils.Colors.rgbColor("yellow")),
   DEFAULT(BLACK.value);
 
   private final int value;
