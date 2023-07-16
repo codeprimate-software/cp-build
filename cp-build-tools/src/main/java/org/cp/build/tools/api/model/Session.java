@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Session {
 
   @Nullable
-  private volatile Project currentProject;
+  private volatile Project project;
 
   @PostConstruct
   public void onInitialization() {
@@ -56,15 +56,15 @@ public class Session {
   }
 
   public boolean isProjectSet() {
-    return Objects.nonNull(getCurrentProject());
+    return Objects.nonNull(getProject());
   }
 
   public @NonNull Project requireProject() {
-    return Utils.requireState(getCurrentProject(), "Project has not be set");
+    return Utils.requireState(getProject(), "Project has not be set");
   }
 
   public @NonNull Session setProject(@Nullable Project project) {
-    this.currentProject = project;
+    this.project = project;
     return this;
   }
 
