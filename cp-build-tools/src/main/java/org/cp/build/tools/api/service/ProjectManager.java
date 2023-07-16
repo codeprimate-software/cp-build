@@ -212,7 +212,7 @@ public class ProjectManager implements Iterable<Project> {
    * @see java.util.Optional
    * @see #stream()
    */
-  public Optional<Project> findByName(String projectName) {
+  public Optional<Project> findProjectByName(String projectName) {
 
     return stream()
       .filter(project -> project.getName().equalsIgnoreCase(projectName))
