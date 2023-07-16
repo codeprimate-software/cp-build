@@ -39,6 +39,7 @@ import jakarta.validation.constraints.NotNull;
 @SuppressWarnings("unused")
 public abstract class Utils {
 
+  public static final File USER_HOME_DIRECTORY = new File(System.getProperty("user.home"));
   public static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
 
   public static final File[] EMPTY_FILE_ARRAY = new File[0];
