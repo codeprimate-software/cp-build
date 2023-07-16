@@ -30,7 +30,7 @@ public enum Colors {
   BLACK(org.jline.utils.Colors.rgbColor("black")),
   BLUE(org.jline.utils.Colors.rgbColor("blue")),
   BROWN(org.jline.utils.Colors.rgbColor("sandybrown")),
-  CYAN(org.jline.utils.Colors.rgbColor("cyan")),
+  CYAN(org.jline.utils.Colors.rgbColor("cyan1")),
   GOLD(org.jline.utils.Colors.rgbColor("gold1")),
   GREY(org.jline.utils.Colors.rgbColor("grey")),
   GREEN(org.jline.utils.Colors.rgbColor("green")),
