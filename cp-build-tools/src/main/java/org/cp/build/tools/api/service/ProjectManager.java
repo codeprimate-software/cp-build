@@ -204,17 +204,34 @@ public class ProjectManager implements Iterable<Project> {
   }
 
   /**
-   * Searches for a {@literal loaded} {@link Project} by {@link Project#getName() name}.
+   * Searches for a {@literal loaded} {@link Project} by the given {@link String name}.
    *
    * @param projectName {@link String name} of the requested {@link Project}.
    * @return an {@link Optional} {@link Project} with the given {@link String name} if loaded.
    * @see org.cp.build.tools.api.model.Project
    * @see java.util.Optional
+   * @see #stream()
    */
   public Optional<Project> findByName(String projectName) {
 
     return stream()
       .filter(project -> project.getName().equalsIgnoreCase(projectName))
+      .findFirst();
+  }
+
+  /**
+   * Searches for a {@link RecentProject} by the given {@link String name}.
+   *
+   * @param projectName  {@link String name} of the requested {@link Project}.
+   * @return an {@link Optional} {@link RecentProject} with the given {@link String name} if recently used.
+   * @see org.cp.build.tools.api.service.ProjectManager.RecentProject
+   * @see java.util.Optional
+   * @see #recent()
+   */
+  public Optional<RecentProject> findRecentProjectByName(String projectName) {
+
+    return recent().stream()
+      .filter(recentProject -> recentProject.getName().equalsIgnoreCase(projectName))
       .findFirst();
   }
 
