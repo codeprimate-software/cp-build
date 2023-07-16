@@ -18,6 +18,7 @@ package org.cp.build.tools.shell.commands.git;
 import java.io.File;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -313,13 +314,13 @@ public class GitCommands extends AbstractCommandsSupport {
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
-    Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord ->
+    Predicate<CommitRecord> commitsWithMessageQueryPredicate = commitRecord ->
       commitRecord.getMessage().toLowerCase().contains(String.valueOf(message).toLowerCase());
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
         .and(commitsByAuthorQueryPredicate(author))
-        .and(commitsWithMessageContainingQueryPredicate);
+        .and(commitsWithMessageQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -378,15 +379,15 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "source-files", description = "Finds all source files with commit message like")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public @NotNull String sourceFilesWithCommitMessage(@Option(description = "Commit message like") String commitMessage,
-    @Option(longNames = "during", shortNames = 'd') String duringDates,
-    @Option(longNames = "exclude-dates", shortNames = 'e') String excludingDates,
-    @Option(longNames = "exclude-filter") String excludeFilter,
-    @Option(longNames = "include-filter") String includeFilter,
-    @Option(longNames = "since", shortNames = 's') String sinceDate,
-    @Option(longNames = "until", shortNames = 'u') String untilDate) {
+  public @NotNull String sourceFilesWithCommitMessage(
+      @Option(description = "Commit message like; use '|' to (OR) multiple commit messages") String commitMessage,
+      @Option(longNames = "exclude-filter") String excludeFilter,
+      @Option(longNames = "include-filter") String includeFilter,
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "strict", defaultValue = "false") boolean strict,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
-    Predicate<CommitRecord> commitsWithMessageContainingQueryPredicate = commitRecord -> {
+    Predicate<CommitRecord> commitsWithMessageQueryPredicate = commitRecord -> {
 
       String[] commitMessages = commitMessage.split(Utils.PIPE_SEPARATOR_REGEX);
 
@@ -400,8 +401,8 @@ public class GitCommands extends AbstractCommandsSupport {
     };
 
     Predicate<CommitRecord> queryPredicate =
-      commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
-        .and(commitsWithMessageContainingQueryPredicate);
+      commitsByTimeQueryPredicate(sinceDate, untilDate, null, null)
+        .and(commitsWithMessageQueryPredicate);
 
     CommitHistory commits = queryCommitHistory(queryPredicate);
 
@@ -415,6 +416,26 @@ public class GitCommands extends AbstractCommandsSupport {
       accept &= !includeFilterSet || sourceFile.getFile().getAbsolutePath().contains(includeFilter);
       return accept;
     };
+
+    if (strict) {
+
+      Predicate<SourceFile> sourceFileTimePredicate = sourceFile -> {
+
+         boolean result = !StringUtils.hasText(sinceDate) || sourceFile.getFirstRevisionDateTime()
+           .map(LocalDateTime::toLocalDate)
+           .filter(date -> !date.isBefore(LocalDate.parse(sinceDate, INPUT_DATE_FORMATTER)))
+           .isPresent();
+
+         result &= !StringUtils.hasText(untilDate) || sourceFile.getLastRevisionDateTime()
+           .map(LocalDateTime::toLocalDate)
+           .filter(date -> !date.isAfter(LocalDate.parse(untilDate, INPUT_DATE_FORMATTER)))
+           .isPresent();
+
+         return result;
+      };
+
+      sourceFilePredicate = sourceFilePredicate.and(sourceFileTimePredicate);
+    }
 
     SourceFileSet sourceFileSet = commits.toSourceFileSet()
       .findBy(sourceFilePredicate);
@@ -460,7 +481,7 @@ public class GitCommands extends AbstractCommandsSupport {
       if (status.hasIgnoredChanges()) {
         output.style(toBoldItalicText(Colors.GREY))
           .append(Utils.newLineBeforeAfter("Ignored: "))
-          .style(toPlainText(Colors.WHITE))
+          .style(toPlainText(Colors.GREY))
           .append(streamToString.apply(status.streamIgnored().sorted()));
       }
       if (status.hasMissing()) {
