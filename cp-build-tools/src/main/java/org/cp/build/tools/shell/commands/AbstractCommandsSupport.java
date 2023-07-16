@@ -57,6 +57,10 @@ public abstract class AbstractCommandsSupport {
     return getProjectManager().list();
   }
 
+  protected List<ProjectManager.RecentProject> recentProjects() {
+    return getProjectManager().recent();
+  }
+
   protected @NonNull Project requireProject() {
     return currentProject().orElseThrow(() -> new IllegalStateException("Project not set"));
   }
