@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,6 +69,10 @@ public class ProjectCommands extends AbstractCommandsSupport {
   protected static final int DEFAULT_WORK_HOURS_PER_DAY = 8;
 
   protected static final BigDecimal DEFAULT_HOURLY_RATE = BigDecimal.valueOf(100.0d);
+
+  protected static final String DATE_TIME_PATTERN = "yyyy-MMMM-dd HH:mm:ss";
+
+  protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
   private final ProjectManager projectManager;
 
@@ -127,9 +133,20 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
         int daysOfDevelopmentCount = countDaysOfDevelopment(project);
         int hoursOfDevelopmentCount = daysOfDevelopmentCount * DEFAULT_WORK_HOURS_PER_DAY;
+        int numberOfCommits = project.getCommitHistory().size();
 
         BigDecimal resolvedHourlyRate = hourlyRate != null ? hourlyRate : DEFAULT_HOURLY_RATE;
         BigDecimal costOfDevelopment = resolvedHourlyRate.multiply(BigDecimal.valueOf(hoursOfDevelopmentCount));
+
+        LocalDateTime firstCommit = project.getCommitHistory()
+          .firstCommit()
+          .map(CommitRecord::getDateTime)
+          .orElseThrow(() -> new IllegalStateException("CommitHistory not loaded"));
+
+        LocalDateTime lastCommit = project.getCommitHistory()
+          .lastCommit()
+          .map(CommitRecord::getDateTime)
+          .orElseThrow(() -> new IllegalStateException("CommitHistory not loaded"));
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
@@ -142,6 +159,12 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
         output.style(toBoldText(labelColor)).append("Name: ")
           .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getName()))
+          .style(toBoldItalicText(labelColor)).append("Number of Commits: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(String.valueOf(numberOfCommits)))
+          .style(toBoldItalicText(labelColor)).append("First Commit: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(firstCommit.format(DATE_TIME_FORMATTER)))
+          .style(toBoldItalicText(labelColor)).append("Last Commit: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(lastCommit.format(DATE_TIME_FORMATTER)))
           .style(toBoldItalicText(labelColor)).append("Days of Development: ")
           .style(toPlainText(textColor)).append(Utils.newLineAfter(String.valueOf(daysOfDevelopmentCount)))
           .style(toBoldItalicText(labelColor)).append("Hours of Development: ")
