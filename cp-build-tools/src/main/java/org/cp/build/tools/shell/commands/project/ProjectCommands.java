@@ -17,6 +17,8 @@ package org.cp.build.tools.shell.commands.project;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.service.ProjectManager.RecentProject;
 import org.cp.build.tools.api.support.Utils;
+import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
@@ -36,6 +39,7 @@ import org.springframework.shell.AvailabilityProvider;
 import org.springframework.shell.CompletionProposal;
 import org.springframework.shell.command.annotation.Command;
 import org.springframework.shell.command.annotation.CommandAvailability;
+import org.springframework.shell.command.annotation.Option;
 import org.springframework.shell.command.annotation.OptionValues;
 import org.springframework.shell.completion.CompletionProvider;
 import org.springframework.util.StringUtils;
@@ -59,6 +63,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class ProjectCommands extends AbstractCommandsSupport {
+
+  protected static final int DEFAULT_WORK_HOURS_PER_DAY = 8;
+
+  protected static final BigDecimal DEFAULT_HOURLY_RATE = BigDecimal.valueOf(100.0d);
 
   private final ProjectManager projectManager;
 
@@ -108,6 +116,58 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
       })
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
+  }
+
+  @Command(command = "development", description="Details the project's development effort and activity")
+  @CommandAvailability(provider = "projectCommandsAvailabilityProvider")
+  public String development(@Option(longNames = "hourly-rate", defaultValue = "100.0") BigDecimal hourlyRate) {
+
+    return currentProject()
+      .map(project -> {
+
+        int daysOfDevelopmentCount = countDaysOfDevelopment(project);
+        int hoursOfDevelopmentCount = daysOfDevelopmentCount * DEFAULT_WORK_HOURS_PER_DAY;
+
+        BigDecimal resolvedHourlyRate = hourlyRate != null ? hourlyRate : DEFAULT_HOURLY_RATE;
+        BigDecimal costOfDevelopment = resolvedHourlyRate.multiply(BigDecimal.valueOf(hoursOfDevelopmentCount));
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+
+        String costOfDevelopmentText = currencyFormat.format(costOfDevelopment.doubleValue());
+
+        AttributedStringBuilder output = new AttributedStringBuilder();
+
+        Colors labelColor = Colors.LIME;
+        Colors textColor = Colors.WHITE;
+
+        output.style(toBoldText(labelColor)).append("Name: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getName()))
+          .style(toBoldItalicText(labelColor)).append("Days of Development: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(String.valueOf(daysOfDevelopmentCount)))
+          .style(toBoldItalicText(labelColor)).append("Hours of Development: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(String.valueOf(hoursOfDevelopmentCount)))
+          .style(toBoldItalicText(labelColor)).append("Cost of Development: ")
+          .style(toPlainText(textColor)).append(Utils.newLineAfter(costOfDevelopmentText));
+
+        return output.toAnsi();
+
+      })
+      .orElseThrow(() -> new IllegalStateException("Project was not set"));
+  }
+
+  private int countDaysOfDevelopment(Project project) {
+
+    int currentDay = 0;
+    int dayCount = 0;
+
+    for (CommitRecord commit : project.getCommitHistory()) {
+      if (commit.getDateTime().getDayOfYear() != currentDay) {
+        currentDay = commit.getDateTime().getDayOfYear();
+        dayCount++;
+      }
+    }
+
+    return dayCount;
   }
 
   @Command(command = "list", description = "List all loaded projects")
