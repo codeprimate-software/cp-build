@@ -34,6 +34,7 @@ import org.cp.build.tools.api.model.SourceFileSet;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.springframework.lang.NonNull;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -272,6 +273,17 @@ public class CommitHistory implements Iterable<CommitRecord> {
    */
   public @NonNull CommitHistory findBySourceFile(@NonNull File sourceFile) {
     return findBy(commitRecord -> commitRecord.contains(sourceFile));
+  }
+
+  /**
+   * Returns an {@link Optional} {@link CommitRecord first commit} in this {@link CommitHistory}.
+   *
+   * @return an {@link Optional} {@link CommitRecord first commit} in this {@link CommitHistory}.
+   * @see org.cp.build.tools.git.model.CommitRecord
+   * @see java.util.Optional
+   */
+  public Optional<CommitRecord> firstCommit() {
+    return Optional.ofNullable(CollectionUtils.lastElement(getCommitRecords()));
   }
 
   /**
