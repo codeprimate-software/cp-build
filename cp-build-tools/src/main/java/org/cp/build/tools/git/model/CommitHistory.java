@@ -275,15 +275,22 @@ public class CommitHistory implements Iterable<CommitRecord> {
     return findBy(commitRecord -> commitRecord.contains(sourceFile));
   }
 
-  /**
-   * Returns an {@link Optional} {@link CommitRecord first commit} in this {@link CommitHistory}.
-   *
-   * @return an {@link Optional} {@link CommitRecord first commit} in this {@link CommitHistory}.
-   * @see org.cp.build.tools.git.model.CommitRecord
-   * @see java.util.Optional
-   */
   public Optional<CommitRecord> firstCommit() {
     return Optional.ofNullable(CollectionUtils.lastElement(getCommitRecords()));
+  }
+
+  /**
+   * Returns an {@link Optional} {@link CommitRecord last commit}, or most recent {@link CommitRecord commit}
+   * in this {@link CommitHistory}.
+   *
+   * @return an {@link Optional} {@link CommitRecord last commit}, or most recent {@link CommitRecord commit}
+   * in this {@link CommitHistory}.
+   * @see org.cp.build.tools.git.model.CommitRecord
+   * @see #getCommitRecords()
+   * @see java.util.Optional
+   */
+  public Optional<CommitRecord> lastCommit() {
+    return Optional.ofNullable(CollectionUtils.firstElement(getCommitRecords()));
   }
 
   /**
