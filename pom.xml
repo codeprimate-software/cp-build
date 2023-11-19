@@ -100,7 +100,7 @@
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>5.2.0</easymock.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
-    <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <java.version>17</java.version>
     <java-module-name/>
     <junit.version>4.13.2</junit.version>
