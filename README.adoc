@@ -1,6 +1,6 @@
 [[codeprimate-build]]
 = Codeprimate Build
-:version: 2.0.0-M4
+:version: 2.0.0-M5
 
 
 The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project
@@ -10,7 +10,8 @@ used to build and release all Codeprimate software.
 == Requirements
 
 1. Baseline is Java SE (JDK/JRE) 17.
-2. Built with Oracle JDK 17.0.7 2023-04-18 LTS
+2. Built with Oracle JDK 17.0.8 2023-07-18 LTS
+2.1 Builds with Oracle JDK 21 2023-09-19 LTS
 
 [[license]]
 == License
