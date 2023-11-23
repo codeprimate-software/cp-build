@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Abstract utility class containing common functions.
+ * Abstract utility class containing common functions used by the Maven-based Codeprimate Build project.
  *
  * @author John Blum
  * @since 2.0.0
@@ -109,6 +109,7 @@ public abstract class Utils {
       return spaces.toString();
     }
   }
+
   public static int invert(int compareResult) {
     return Integer.compare(0, compareResult);
   }
@@ -134,7 +135,7 @@ public abstract class Utils {
   }
 
   public static @NonNull String newLineBeforeAfter(@Nullable String text) {
-    return newLineBefore(text).concat(newLine());
+    return newLine().concat(newLineAfter(text));
   }
 
   public static boolean nullSafeIsDirectory(@Nullable Object target) {
