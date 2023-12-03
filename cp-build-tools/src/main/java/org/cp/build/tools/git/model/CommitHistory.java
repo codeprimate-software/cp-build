@@ -336,7 +336,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
     });
 
     Set<Group> groups = map.entrySet().stream()
-      .map(entry -> Group.of(entry.getValue()).groupedBy(entry.getKey()))
+      .map(entry -> Group.of(entry.getValue()).groupedBy(entry.getKey().getKey()))
       .collect(Collectors.toSet());
 
     return groups;
