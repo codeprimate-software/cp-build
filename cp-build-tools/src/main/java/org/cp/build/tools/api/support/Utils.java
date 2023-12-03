@@ -184,6 +184,12 @@ public abstract class Utils {
     return target != null ? target.trim() : EMPTY_STRING;
   }
 
+  public static String padRight(String value, int totalLength) {
+    int valueLength = value != null ? value.length() : 0;
+    String paddedValue = String.valueOf(value).concat(" ".repeat(Math.max(totalLength - valueLength, 0)));
+    return paddedValue.substring(0, Math.min(paddedValue.length(), totalLength));
+  }
+
   public static @NonNull <T> T requireObject(T object, String message, Object... arguments) {
     return requireObject(object, toSupplier(String.format(message, arguments)));
   }
