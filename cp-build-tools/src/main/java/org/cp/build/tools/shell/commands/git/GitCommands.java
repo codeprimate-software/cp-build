@@ -20,9 +20,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -34,6 +39,7 @@ import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
 import org.cp.build.tools.git.model.CommitHistory;
+import org.cp.build.tools.git.model.CommitHistory.Group;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.cp.build.tools.git.model.GitStatus;
@@ -80,7 +86,10 @@ public class GitCommands extends AbstractCommandsSupport {
   protected static final boolean DEFAULT_SHOW_FILES = false;
 
   protected static final String COMMIT_AUTHOR_TO_STRING = "%1$s <%2$s>";
+  protected static final String COMMIT_DATE_PATTERN = "yyyy-MMM-dd";
   protected static final String COMMIT_DATE_TIME_PATTERN = "EEE, yyyy-MMM-dd HH:mm:ss";
+  protected static final String COMMIT_DATE_YEAR_MONTH_PATTERN = "yyyy-MMMM";
+  protected static final String DEFAULT_COMMIT_COUNT_GROUP_BY_LIMIT_OPTION = "12";
   protected static final String DEFAULT_COMMIT_LOG_LIMIT_OPTION = "5";
   protected static final String DEFAULT_SHOW_FILES_OPTION = "false";
   protected static final String INPUT_DATE_PATTERN = "yyyy-MM-dd";
@@ -88,7 +97,9 @@ public class GitCommands extends AbstractCommandsSupport {
 
   protected static final Predicate<CommitRecord> ALL_COMMITS_PREDICATE = commitRecord -> true;
 
-  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
+  private static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_PATTERN);
+  private static final DateTimeFormatter COMMIT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_TIME_PATTERN);
+  private static final DateTimeFormatter COMMIT_DATE_YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_YEAR_MONTH_PATTERN);
   private static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
 
   private final GitTemplate gitTemplate;
@@ -108,6 +119,43 @@ public class GitCommands extends AbstractCommandsSupport {
         .and(commitsByAuthorQueryPredicate(author));
 
     return queryCommitHistory(queryPredicate).size();
+  }
+
+  @Command(command = "commit-count-group", description = "Counts all commits grouped by a given time period")
+  public @NotNull String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
+      @Option(longNames = "by-day", defaultValue = "false") boolean groupedByDay,
+      @Option(longNames = "by-month", defaultValue = "false") boolean groupedByMonth,
+      @Option(longNames = "by-year", defaultValue = "false") boolean groupedByYear,
+      @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_COUNT_GROUP_BY_LIMIT_OPTION) int limit,
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate) {
+
+    Predicate<CommitRecord> queryPredicate =
+      commitsByTimeQueryPredicate(sinceDate, untilDate, null, null)
+        .and(commitsByAuthorQueryPredicate(author));
+
+    CommitHistory commitRecords = queryCommitHistory(queryPredicate);
+
+    Set<CommitHistory.Group> groupedCommitRecords =
+      groupedByYear ? commitRecords.groupByYear()
+      : groupedByMonth ? commitRecords.groupByMonth()
+      : commitRecords.groupByDay();
+
+    List<CommitHistory.Group> limitedSortedCommitRecords = groupedCommitRecords.stream()
+      .sorted(Comparator.comparing(Group::size).reversed())
+      .limit(limit)
+      .toList();
+
+    StringBuilder stringBuilder = new StringBuilder();
+
+    stringBuilder.append("    TIME PERIOD    |    COUNT    ").append(Utils.newLine());
+    stringBuilder.append("--------------------------------").append(Utils.newLine());
+
+    limitedSortedCommitRecords.forEach(group ->
+      stringBuilder.append(Utils.padRight(toCommitDateByCountString(group.getGroupedBy()), 19))
+        .append("| ").append(group.size()).append(Utils.newLine()));
+
+    return stringBuilder.toString();
   }
 
   @Command(command = "commit-log", description = "Logs all commits")
@@ -690,7 +738,15 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   private String toCommitDateString(CommitRecord commitRecord) {
-    return commitRecord.getDateTime().format(COMMIT_DATE_FORMATTER);
+    return commitRecord.getDateTime().format(COMMIT_DATE_TIME_FORMATTER);
+  }
+
+  private String toCommitDateByCountString(Object value) {
+
+    return value instanceof LocalDate localDate ? localDate.format(COMMIT_DATE_FORMATTER)
+      : value instanceof YearMonth yearMonth ? yearMonth.format(COMMIT_DATE_YEAR_MONTH_FORMATTER)
+      : value instanceof Year year ? String.valueOf(year.getValue())
+      : String.valueOf(value);
   }
 
   private String toCommitMessageString(CommitRecord commitRecord) {
