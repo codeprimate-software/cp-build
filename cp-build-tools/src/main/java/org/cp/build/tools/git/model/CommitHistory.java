@@ -50,6 +50,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -315,11 +316,13 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @param groupByFunction {@link Function} used to compute the grouping; must not be {@literal null}.
    * @return a {@link Map} of {@link CommitRecord CommitRecords} grouped according to the given {@link Function}.
    * @see org.cp.build.tools.git.model.CommitHistory.GroupByKey
+   * @see org.cp.build.tools.git.model.CommitHistory.Group
    * @see org.cp.build.tools.git.model.CommitRecord
    * @see java.util.function.Function
+   * @see java.util.Set
    */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public Map<GroupByKey<?>, Set<CommitRecord>> groupBy(@NotNull Function<CommitRecord, Comparable<?>> groupByFunction) {
+  @SuppressWarnings({ "all", "rawtypes", "unchecked" })
+  public Set<Group> groupBy(@NotNull Function<CommitRecord, Comparable<?>> groupByFunction) {
 
     Assert.notNull(groupByFunction, "Group By Function is required");
 
@@ -332,16 +335,22 @@ public class CommitHistory implements Iterable<CommitRecord> {
       set.add(commitRecord);
     });
 
-    return map;
+    Set<Group> groups = map.entrySet().stream()
+      .map(entry -> Group.of(entry.getValue()).groupedBy(entry.getKey()))
+      .collect(Collectors.toSet());
+
+    return groups;
   }
 
   /**
    * Groups {@link CommitRecord CommitRecords} by {@link LocalDate day}.
    *
    * @return {@link CommitRecord CommitRecords} grouped by {@link LocalDate day}.
+   * @see org.cp.build.tools.git.model.CommitHistory.Group
    * @see #groupBy(Function)
+   * @see java.util.Set
    */
-  public Map<GroupByKey<?>, Set<CommitRecord>> groupByDay() {
+  public Set<Group> groupByDay() {
     return groupBy(CommitRecord::getDate);
   }
 
@@ -349,9 +358,11 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * Groups {@link CommitRecord CommitRecords} by {@link YearMonth month}.
    *
    * @return {@link CommitRecord CommitRecords} grouped by {@link YearMonth month}.
+   * @see org.cp.build.tools.git.model.CommitHistory.Group
    * @see #groupBy(Function)
+   * @see java.util.Set
    */
-  public Map<GroupByKey<?>, Set<CommitRecord>> groupByMonth() {
+  public Set<Group> groupByMonth() {
 
     return groupBy(commitRecord -> {
       LocalDate commitDate = commitRecord.getDate();
@@ -363,9 +374,11 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * Groups {@link CommitRecord CommitRecords} by {@link Year}.
    *
    * @return {@link CommitRecord CommitRecords} grouped by {@link Year}.
+   * @see org.cp.build.tools.git.model.CommitHistory.Group
    * @see #groupBy(Function)
+   * @see java.util.Set
    */
-  public Map<GroupByKey<?>, Set<CommitRecord>> groupByYear() {
+  public Set<Group> groupByYear() {
     return groupBy(commitRecord -> Year.of(commitRecord.getDate().getYear()));
   }
 
@@ -440,6 +453,48 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
   private SourceFile.Author toSourceFileAuthor(CommitRecord.Author author) {
     return SourceFile.Author.as(author.getName()).withEmailAddress(author.getEmailAddress());
+  }
+
+  @Getter
+  @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+  public static class Group implements Iterable<CommitRecord> {
+
+    public static @NotNull Group of(CommitRecord... commitRecords) {
+      return of(Arrays.asList(commitRecords));
+    }
+
+    public static @NotNull Group of(Iterable<CommitRecord> commitRecords) {
+      Set<CommitRecord> commitRecordSet = Utils.stream(commitRecords).collect(Collectors.toSet());
+      return new Group(commitRecordSet);
+    }
+
+    @Setter(AccessLevel.PROTECTED)
+    private Comparable<?> groupedBy;
+
+    private final Set<CommitRecord> commitRecords;
+
+    public Set<CommitRecord> getCommitRecords() {
+      return Collections.unmodifiableSet(this.commitRecords);
+    }
+
+    public @NonNull Group groupedBy(@NonNull Comparable<?> groupedBy) {
+      Assert.notNull(groupedBy, "Grouped By is required");
+      setGroupedBy(groupedBy);
+      return this;
+    }
+
+    @Override
+    public @NonNull Iterator<CommitRecord> iterator() {
+      return getCommitRecords().iterator();
+    }
+
+    public int size() {
+      return getCommitRecords().size();
+    }
+
+    public @NonNull Stream<CommitRecord> stream() {
+      return getCommitRecords().stream();
+    }
   }
 
   @Getter
