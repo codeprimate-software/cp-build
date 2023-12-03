@@ -17,13 +17,20 @@ package org.cp.build.tools.git.model;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,8 +41,16 @@ import org.cp.build.tools.api.model.SourceFileSet;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.springframework.lang.NonNull;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Abstract Data Type (ADT) modeling {@literal Git log}, or {@literal commit history}.
@@ -294,6 +309,67 @@ public class CommitHistory implements Iterable<CommitRecord> {
   }
 
   /**
+   * Groups {@link CommitRecord CommitRecords} by a given {@link Object classification} computed from
+   * the {@link CommitRecord} using the given {@link Function}.
+   *
+   * @param groupByFunction {@link Function} used to compute the grouping; must not be {@literal null}.
+   * @return a {@link Map} of {@link CommitRecord CommitRecords} grouped according to the given {@link Function}.
+   * @see org.cp.build.tools.git.model.CommitHistory.GroupByKey
+   * @see org.cp.build.tools.git.model.CommitRecord
+   * @see java.util.function.Function
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public Map<GroupByKey<?>, Set<CommitRecord>> groupBy(@NotNull Function<CommitRecord, Comparable<?>> groupByFunction) {
+
+    Assert.notNull(groupByFunction, "Group By Function is required");
+
+    Map<GroupByKey<?>, Set<CommitRecord>> map = new HashMap<>();
+
+    stream().forEach(commitRecord -> {
+      Comparable key = groupByFunction.apply(commitRecord);
+      GroupByKey<?> groupByKey = GroupByKey.from(key);
+      Set<CommitRecord> set = map.computeIfAbsent(groupByKey, it -> new HashSet<>());
+      set.add(commitRecord);
+    });
+
+    return map;
+  }
+
+  /**
+   * Groups {@link CommitRecord CommitRecords} by {@link LocalDate day}.
+   *
+   * @return {@link CommitRecord CommitRecords} grouped by {@link LocalDate day}.
+   * @see #groupBy(Function)
+   */
+  public Map<GroupByKey<?>, Set<CommitRecord>> groupByDay() {
+    return groupBy(CommitRecord::getDate);
+  }
+
+  /**
+   * Groups {@link CommitRecord CommitRecords} by {@link YearMonth month}.
+   *
+   * @return {@link CommitRecord CommitRecords} grouped by {@link YearMonth month}.
+   * @see #groupBy(Function)
+   */
+  public Map<GroupByKey<?>, Set<CommitRecord>> groupByMonth() {
+
+    return groupBy(commitRecord -> {
+      LocalDate commitDate = commitRecord.getDate();
+      return YearMonth.of(commitDate.getYear(), commitDate.getMonth());
+    });
+  }
+
+  /**
+   * Groups {@link CommitRecord CommitRecords} by {@link Year}.
+   *
+   * @return {@link CommitRecord CommitRecords} grouped by {@link Year}.
+   * @see #groupBy(Function)
+   */
+  public Map<GroupByKey<?>, Set<CommitRecord>> groupByYear() {
+    return groupBy(commitRecord -> Year.of(commitRecord.getDate().getYear()));
+  }
+
+  /**
    * Iterates all the {@link CommitRecord commits} in this {@link CommitHistory} in reverse chronological order.
    *
    * @return an {@link Iterator} iterating over all the {@link CommitRecord commits} in this {@link CommitHistory}
@@ -364,5 +440,24 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
   private SourceFile.Author toSourceFileAuthor(CommitRecord.Author author) {
     return SourceFile.Author.as(author.getName()).withEmailAddress(author.getEmailAddress());
+  }
+
+  @Getter
+  @ToString
+  @EqualsAndHashCode
+  @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+  public static class GroupByKey<T extends Comparable<T>> implements Comparable<GroupByKey<T>> {
+
+    public static <T extends Comparable<T>> GroupByKey<T> from(T key) {
+      Assert.notNull(key, "Key is required");
+      return new GroupByKey<>(key);
+    }
+
+    private final T key;
+
+    @Override
+    public int compareTo(@NonNull GroupByKey<T> that) {
+      return this.getKey().compareTo(that.getKey());
+    }
   }
 }
