@@ -60,7 +60,7 @@ import lombok.RequiredArgsConstructor;
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
-@Command(command = "project")
+@Command(command = "project", group = "project commands")
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
