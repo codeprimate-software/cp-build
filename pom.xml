@@ -98,7 +98,7 @@
     <asciidoctorj-pdf.version>2.3.17</asciidoctorj-pdf.version>
     <assertj.version>3.26.3</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
-    <easymock.version>5.2.0</easymock.version>
+    <easymock.version>5.3.0</easymock.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
     <java.version>17</java.version>
