@@ -104,7 +104,7 @@
     <java.version>17</java.version>
     <java-module-name/>
     <junit.version>4.13.2</junit.version>
-    <junit-bom.version>5.10.1</junit-bom.version>
+    <junit-bom.version>5.11.0-M2</junit-bom.version>
     <lombok.version>1.18.30</lombok.version>
     <maven.version>3.9.5</maven.version>
     <maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
