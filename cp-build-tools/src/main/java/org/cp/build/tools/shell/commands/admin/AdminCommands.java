@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.shell.standard.ShellComponent
  * @since 2.0.0
  */
-@Command
+@Command(group = "admin commands")
 @SuppressWarnings("unused")
 public class AdminCommands extends AbstractCommandsSupport {
 
