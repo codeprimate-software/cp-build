@@ -52,7 +52,7 @@ import lombok.RequiredArgsConstructor;
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
-@Command(command = "source")
+@Command(command = "source", group = "source file commands")
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class SourceFileCommands extends AbstractCommandsSupport {
