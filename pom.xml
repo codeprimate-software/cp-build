@@ -94,7 +94,7 @@
   </modules>
 
   <properties>
-    <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
+    <asciidoctor-maven-plugin.version>3.0.0</asciidoctor-maven-plugin.version>
     <asciidoctorj-pdf.version>2.3.9</asciidoctorj-pdf.version>
     <assertj.version>3.24.2</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
