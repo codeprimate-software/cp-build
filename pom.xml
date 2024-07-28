@@ -297,6 +297,7 @@
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <compilerArgs>
+            <arg>-parameters</arg>
             <arg>-Xlint:unchecked</arg>
             <arg>-Xpkginfo:nonempty</arg>
             <!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
