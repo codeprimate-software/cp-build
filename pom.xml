@@ -123,7 +123,7 @@
     <maven-wrapper-plugin.version>3.3.2</maven-wrapper-plugin.version>
     <mockito.version>5.12.0</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
-    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+    <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>3.1.5</spring-boot.version>
     <spotbugs-maven-plugin.version>4.8.1.0</spotbugs-maven-plugin.version>
