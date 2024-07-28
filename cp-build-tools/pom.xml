@@ -70,7 +70,7 @@
   <properties>
     <java-module-name>cp.build.tools</java-module-name>
     <google-code-findbugs-jsr305.version>3.0.2</google-code-findbugs-jsr305.version>
-    <jgit.version>6.7.0.202309050840-r</jgit.version>
+    <jgit.version>6.10.0.202406032230-r</jgit.version>
     <maven.version>3.9.8</maven.version>
     <spring-shell.version>3.1.5</spring-shell.version>
   </properties>
