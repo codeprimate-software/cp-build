@@ -127,7 +127,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>3.3.2</spring-boot.version>
     <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
-    <testcontainers.version>1.19.3</testcontainers.version>
+    <testcontainers.version>1.20.0</testcontainers.version>
     <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
   </properties>
 
