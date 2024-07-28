@@ -77,7 +77,7 @@ import lombok.RequiredArgsConstructor;
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
  */
-@Command(command = "git")
+@Command(command = "git", group = "git commands")
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
