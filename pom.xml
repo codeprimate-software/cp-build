@@ -423,6 +423,9 @@
                     <!--  implementation is needed only for Maven 2  -->
                     <rule implementation="org.jacoco.maven.RuleConfiguration">
                       <element>BUNDLE</element>
+                      <excludes>
+                        <exclude>*Proto*</exclude>
+                      </excludes>
                       <limits>
                         <!--  implementation is needed only for Maven 2  -->
                         <limit implementation="org.jacoco.report.check.Limit">
