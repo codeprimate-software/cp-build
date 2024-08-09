@@ -103,6 +103,7 @@
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
     <java.version>17</java.version>
     <java-module-name/>
+    <jmeter-maven-plugin.version>3.8.0</jmeter-maven-plugin.version>
     <jmh.version>1.37</jmh.version>
     <junit.version>4.13.2</junit.version>
     <junit-bom.version>5.11.0-M2</junit-bom.version>
@@ -626,6 +627,41 @@
               <execution>
                 <goals>
                   <goal>toolchain</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>enable-jmeter</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.lazerycode.jmeter</groupId>
+            <artifactId>jmeter-maven-plugin</artifactId>
+            <version>${jmeter-maven-plugin.version}</version>
+            <executions>
+              <!-- Generate JMeter configuration -->
+              <execution>
+                <id>configuration</id>
+                <goals>
+                  <goal>configure</goal>
+                </goals>
+              </execution>
+              <!-- Run JMeter Tests -->
+              <execution>
+                <id>jmeter-tests</id>
+                <goals>
+                  <goal>jmeter</goal>
+                </goals>
+              </execution>
+              <!-- Fail build on errors in tests -->
+              <execution>
+                <id>jmeter-check-results</id>
+                <goals>
+                  <goal>results</goal>
                 </goals>
               </execution>
             </executions>
