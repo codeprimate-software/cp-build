@@ -131,7 +131,7 @@
     <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>3.3.4</spring-boot.version>
-    <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.8.6.4</spotbugs-maven-plugin.version>
     <testcontainers.version>1.20.0</testcontainers.version>
     <versions-maven-plugin.version>2.17.1</versions-maven-plugin.version>
   </properties>
