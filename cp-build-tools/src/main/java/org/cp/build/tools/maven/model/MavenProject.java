@@ -73,8 +73,8 @@ public class MavenProject extends Project {
 
     if (!isMavenPomPresent(location)) {
 
-      String message =
-        String.format("File [%s] must refer to a Maven POM file or directory containing a Maven POM file", location);
+      String message = "File [%s] must refer to a Maven POM file or directory containing a Maven POM file"
+        .formatted(location);
 
       throw new MavenPomNotFoundException(message);
     }
@@ -143,7 +143,7 @@ public class MavenProject extends Project {
         .inDirectory(pom.getParentFile());
     }
     catch (Exception cause) {
-      String message = String.format("Failed to read Maven POM from file [%s]", pom);
+      String message = "Failed to read Maven POM from file [%s]".formatted(pom);
       throw new IllegalStateException(message, cause);
     }
   }

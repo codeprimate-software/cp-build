@@ -61,8 +61,8 @@ public class ApplicationConfiguration {
     return (target, method, arguments) -> {
 
       Assert.isTrue(arguments.length > 0,
-        () -> String.format("Expected @Cacheable method [%1$s] on target [%2$s] to have at least 1 argument",
-          method.getName(), target.getClass().getName()));
+        () -> "Expected @Cacheable method [%1$s] on target [%2$s] to have at least 1 argument"
+          .formatted(method.getName(), target.getClass().getName()));
 
       Object firstArgument = arguments[0];
 
@@ -73,8 +73,8 @@ public class ApplicationConfiguration {
         return ProjectManager.CacheKey.of(name);
       }
 
-      throw new IllegalArgumentException(String.format("Cannot generate project cache key from arguments [%s]",
-        Arrays.toString(arguments)));
+      throw new IllegalArgumentException("Cannot generate project cache key from arguments [%s]"
+        .formatted(Arrays.toString(arguments)));
     };
   }
 }

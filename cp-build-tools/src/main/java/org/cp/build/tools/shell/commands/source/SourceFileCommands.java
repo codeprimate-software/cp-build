@@ -97,8 +97,8 @@ public class SourceFileCommands extends AbstractCommandsSupport {
         .map(projectDirectory -> new File(projectDirectory, resolvedSourceDirectoryName))
         .filter(File::exists)
         .orElseThrow(() ->
-          new IllegalStateException(String.format("Failed to resolve source directory [%1$s] from project [%2$s]",
-            resolvedSourceDirectoryName, project.getName()))))
+          new IllegalStateException("Failed to resolve source directory [%1$s] from project [%2$s]"
+            .formatted(resolvedSourceDirectoryName, project.getName()))))
       .findBy(fileFilterPredicate)
       .size();
   }
@@ -119,8 +119,8 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       .map(projectDirectory -> new File(projectDirectory, resolvedSourceDirectoryName))
       .filter(File::exists)
       .orElseThrow(() ->
-        new IllegalStateException(String.format("Failed to resolve source directory [%1$s] from project [%2$s]",
-          resolvedSourceDirectoryName, project.getName()))))
+        new IllegalStateException("Failed to resolve source directory [%1$s] from project [%2$s]"
+          .formatted(resolvedSourceDirectoryName, project.getName()))))
       .fileStream()
       .toList();
 
@@ -156,8 +156,8 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       .map(projectDirectory -> new File(projectDirectory, resolvedSourceDirectoryName))
       .filter(File::exists)
       .orElseThrow(() ->
-        new IllegalStateException(String.format("Failed to resource source directory [%1$s] from project [%2$s]",
-          resolvedSourceDirectoryName, project.getName()))));
+        new IllegalStateException("Failed to resource source directory [%1$s] from project [%2$s]"
+          .formatted(resolvedSourceDirectoryName, project.getName()))));
 
     return fileTree.render();
   }

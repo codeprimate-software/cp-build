@@ -70,7 +70,7 @@ public class GitProject {
         return new GitProject(newGit(it), it);
       }
       catch (IOException cause) {
-        String message = String.format("Failed to create GitProject from Project [%s]", it);
+        String message = "Failed to create GitProject from Project [%s]".formatted(it);
         throw new GitException(message, cause);
       }
     });
@@ -81,13 +81,13 @@ public class GitProject {
     File projectDirectory = project.getDirectory();
 
     Assert.isTrue(Utils.nullSafeIsDirectory(projectDirectory),
-      () -> String.format("Project directory [%s] must be an existing, valid directory", projectDirectory));
+      () -> "Project directory [%s] must be an existing, valid directory".formatted(projectDirectory));
 
     File gitDirectory = findGitDirectory(projectDirectory);
 
     Assert.notNull(gitDirectory,
-      () -> String.format("Project [%1$s] in directory [%2$s] must contain a [%3$s] directory",
-        project.getName(), projectDirectory, GIT_DIRECTORY_NAME));
+      () -> "Project [%1$s] in directory [%2$s] must contain a [%3$s] directory"
+        .formatted(project.getName(), projectDirectory, GIT_DIRECTORY_NAME));
 
     return new Git(FileRepositoryBuilder.create(gitDirectory));
   }

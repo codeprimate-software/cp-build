@@ -72,7 +72,7 @@ public class Project implements Comparable<Project> {
       return MavenProject.fromMavenPom(file);
     }
 
-    throw new IllegalArgumentException(String.format("Cannot create project from file [%s]", file));
+    throw new IllegalArgumentException("Cannot create project from file [%s]".formatted(file));
   }
 
   /**
@@ -84,7 +84,7 @@ public class Project implements Comparable<Project> {
    */
   public static @NonNull Project from(@NonNull String name) {
 
-    Assert.hasText(name, () -> String.format("Name [%s] for project is required", name));
+    Assert.hasText(name, () -> "Name [%s] for project is required".formatted(name));
 
     return new Project(name);
   }
@@ -155,7 +155,7 @@ public class Project implements Comparable<Project> {
    */
   @SuppressWarnings("unchecked")
   public @NonNull <T extends Project> T describedAs(@NonNull String description) {
-    Assert.hasText(description, () -> String.format("Description for Project [%s] is required", getName()));
+    Assert.hasText(description, () -> "Description for Project [%s] is required".formatted(getName()));
     setDescription(description);
     return (T) this;
   }
@@ -280,7 +280,7 @@ public class Project implements Comparable<Project> {
 
     protected Artifact(@NonNull Project project, @NonNull String id) {
 
-      Assert.hasText(id, () -> String.format("Artifact ID [%s] is required", id));
+      Assert.hasText(id, () -> "Artifact ID [%s] is required".formatted(id));
 
       this.project = Utils.requireObject(project, "Project is required");
       this.id = id;
@@ -367,7 +367,7 @@ public class Project implements Comparable<Project> {
 
       String uriString = Optional.ofNullable(getUri())
         .map(Object::toString)
-        .map(it -> String.format(" (%s)", it))
+        .map(" (%s)"::formatted)
         .orElse(Utils.EMPTY_STRING);
 
       return String.valueOf(getName()).concat(uriString);
@@ -497,7 +497,7 @@ public class Project implements Comparable<Project> {
 
       String uriString = Optional.ofNullable(getUri())
         .map(Object::toString)
-        .map(it -> String.format(" (%s)", it))
+        .map(" (%s)"::formatted)
         .orElse(Utils.EMPTY_STRING);
 
       return String.valueOf(getName()).concat(uriString);
@@ -531,7 +531,7 @@ public class Project implements Comparable<Project> {
 
       String originalVersion = version;
 
-      Assert.hasText(version, () -> String.format("Version string [%s] is required", originalVersion));
+      Assert.hasText(version, () -> "Version string [%s] is required".formatted(originalVersion));
 
       int versionQualifierIndex = version.indexOf(VERSION_QUALIFIER_SEPARATOR);
 
@@ -545,8 +545,8 @@ public class Project implements Comparable<Project> {
       String[] versionNumbers = version.split(VERSION_NUMBER_SEPARATOR);
 
       Assert.isTrue(versionNumbers.length >= 2,
-        () -> String.format("Version string [%s] must consist of at least major and minor version numbers",
-          originalVersion));
+        () -> "Version string [%s] must consist of at least major and minor version numbers"
+          .formatted(originalVersion));
 
       switch (versionNumbers.length) {
         case 2 -> {
@@ -559,7 +559,7 @@ public class Project implements Comparable<Project> {
         }
       }
 
-      throw new IllegalArgumentException(String.format("Version string [%s] to parse is not valid", version));
+      throw new IllegalArgumentException("Version string [%s] to parse is not valid".formatted(version));
     }
 
     private final int major;
@@ -675,7 +675,7 @@ public class Project implements Comparable<Project> {
     @Override
     public String toString() {
 
-      String versionString = String.format(VERSION_TO_STRING, getMajor(), getMinor(), getMaintenance());
+      String versionString = VERSION_TO_STRING.formatted(getMajor(), getMinor(), getMaintenance());
 
       return isQualifierPresent()
         ? versionString.concat(VERSION_QUALIFIER_SEPARATOR).concat(getQualifier())

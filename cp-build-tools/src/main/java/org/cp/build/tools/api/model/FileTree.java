@@ -60,7 +60,7 @@ public class FileTree implements Iterable<FileNode> {
   public static FileTree scan(@NonNull File location) {
 
     Assert.notNull(location, "Location is required");
-    Assert.isTrue(location.exists(), () -> String.format("Location [%s] must exist", location));
+    Assert.isTrue(location.exists(), () -> "Location [%s] must exist".formatted(location));
 
     File directory = location.isDirectory() ? location : location.getParentFile();
 
@@ -179,7 +179,7 @@ public class FileTree implements Iterable<FileNode> {
     public static DirectoryNode from(@NonNull File directory) {
 
       Assert.notNull(directory, "Directory is required");
-      Assert.isTrue(directory.isDirectory(), () ->  String.format("File [%s] must be a directory", directory));
+      Assert.isTrue(directory.isDirectory(), () -> "File [%s] must be a directory".formatted(directory));
 
       return new DirectoryNode(directory);
     }

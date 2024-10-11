@@ -163,7 +163,7 @@ public class ProjectManager implements Iterable<Project> {
 
   private static void assertOrMakeCodeprimateBuildToolsDirectory() {
     Assert.state(CODEPRIMATE_BUILD_TOOLS_DIRECTORY.isDirectory() || CODEPRIMATE_BUILD_TOOLS_DIRECTORY.mkdirs(),
-      () -> String.format("Directory [%s] not found", CODEPRIMATE_BUILD_TOOLS_DIRECTORY));
+      () -> "Directory [%s] not found".formatted(CODEPRIMATE_BUILD_TOOLS_DIRECTORY));
   }
 
   private @NonNull BufferedWriter newBufferedFileWriter(@NonNull File file) throws IOException {
@@ -352,8 +352,7 @@ public class ProjectManager implements Iterable<Project> {
 
     @Override
     public String toString() {
-      return String.format(PROJECT_CACHE_KEY_TO_STRING,
-        getClass().getName(), getProjectName(), getProjectLocation());
+      return PROJECT_CACHE_KEY_TO_STRING.formatted(getClass().getName(), getProjectName(), getProjectLocation());
     }
   }
 

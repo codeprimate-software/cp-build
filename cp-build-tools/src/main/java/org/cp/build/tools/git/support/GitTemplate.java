@@ -242,8 +242,8 @@ public class GitTemplate {
         @Nullable PersonIdent committerIdentity) {
 
       Assert.isTrue(authorIdentity != null || committerIdentity != null,
-        () -> String.format("Either Author Identity [%s] or Commit Identity [%s] is required",
-          authorIdentity, committerIdentity));
+        () -> "Either Author Identity [%s] or Commit Identity [%s] is required"
+          .formatted(authorIdentity, committerIdentity));
 
       return new CommitterIdentity(authorIdentity, committerIdentity);
     }

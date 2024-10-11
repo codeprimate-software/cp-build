@@ -66,7 +66,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   public SourceFile(@NonNull File file) {
 
     Assert.notNull(file, "File is required");
-    Assert.isTrue(file.isFile(), () -> String.format("File must exist [%s]", file));
+    Assert.isTrue(file.isFile(), () -> "File must exist [%s]".formatted(file));
 
     this.file = file;
   }
@@ -210,7 +210,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
     @Override
     public String toString() {
-      return String.format(AUTHOR_TO_STRING, getName(), getEmailAddress());
+      return AUTHOR_TO_STRING.formatted(getName(), getEmailAddress());
     }
   }
 

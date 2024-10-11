@@ -80,7 +80,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   public String current() {
 
     return currentProject()
-      .map(project -> String.format("Current project is [%s] located in [%s]", project, project.getDirectory()))
+      .map(project -> "Current project is [%s] located in [%s]".formatted(project, project.getDirectory()))
       .orElse("Project not set");
   }
 
@@ -229,7 +229,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
     Project project = projectManager.setCurrentProject(projectManager.resolveByLocation(location));
 
-    return String.format("Project set to [%s]", project);
+    return "Project set to [%s]".formatted(project);
   }
 
   @Command(command = "recent", description = "List all recent projects")
@@ -264,14 +264,14 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
     return projectManager.findProjectByName(projectName)
       .map(projectManager::setCurrentProject)
-      .map(project -> String.format("Project set to [%s]", project))
+      .map("Project set to [%s]"::formatted)
       .orElseGet(() -> projectManager.findRecentProjectByName(projectName)
         .filter(RecentProject::exists)
         .map(RecentProject::getLocation)
         .map(projectManager::resolveByLocation)
         .map(projectManager::setCurrentProject)
-        .map(project -> String.format("Project set to [%s]", project))
-        .orElseGet(() -> String.format("Project with name [%s] not found", projectName)));
+        .map("Project set to [%s]"::formatted)
+        .orElseGet(() -> "Project with name [%s] not found".formatted(projectName)));
   }
 
   @NonNull @Bean

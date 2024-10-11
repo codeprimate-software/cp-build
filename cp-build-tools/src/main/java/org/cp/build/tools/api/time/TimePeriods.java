@@ -148,7 +148,7 @@ public class TimePeriods implements Iterable<DateRange> {
         return from(start).to(end).build();
       }
       catch (DateTimeParseException cause) {
-        throw new IllegalArgumentException(String.format("Date(s) [%s] are not valid", date));
+        throw new IllegalArgumentException("Date(s) [%s] are not valid".formatted(date));
       }
     }
 
@@ -160,8 +160,8 @@ public class TimePeriods implements Iterable<DateRange> {
       Assert.notNull(start, "Start of DateRange is required");
       Assert.notNull(end, "End of DateRange is required");
 
-      Assert.isTrue(!start.isAfter(end), () -> String.format("Start Date [%s] must be on or before End Date [%s]",
-        start.format(DATE_FORMATTER), end.format(DATE_FORMATTER)));
+      Assert.isTrue(!start.isAfter(end), () -> "Start Date [%s] must be on or before End Date [%s]"
+        .formatted(start.format(DATE_FORMATTER), end.format(DATE_FORMATTER)));
 
       this.start = start;
       this.end = end;

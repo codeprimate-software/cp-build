@@ -179,7 +179,7 @@ public class GitCommands extends AbstractCommandsSupport {
         .flatMap(commitHistory -> commitHistory.findByHash(hash))
         .map(commitRecord -> showCommitRecord(commitRecord, showFiles))
         .map(Object::toString)
-        .orElseGet(() -> isProjectSet() ? String.format("Commit for hash ID [%s] not found", hash)
+        .orElseGet(() -> isProjectSet() ? "Commit for hash ID [%s] not found".formatted(hash)
           : PROJECT_NOT_FOUND);
     }
     else if (Utils.isSet(afterHash, beforeHash)) {
@@ -396,7 +396,7 @@ public class GitCommands extends AbstractCommandsSupport {
       .map(it -> showCommitRecord(it, showFiles))
       .map(Object::toString)
       .orElseGet(() -> isProjectSet()
-        ? String.format("No commit after date [%s] was found", sinceDate)
+        ? "No commit after date [%s] was found".formatted(sinceDate)
         : PROJECT_NOT_FOUND);
   }
 
@@ -421,7 +421,7 @@ public class GitCommands extends AbstractCommandsSupport {
       .map(it -> showCommitRecord(it, showFiles))
       .map(Object::toString)
       .orElseGet(() -> isProjectSet()
-        ? String.format("No commit before date [%s] was found", untilDate)
+        ? "No commit before date [%s] was found".formatted(untilDate)
         : PROJECT_NOT_FOUND);
   }
 
@@ -507,7 +507,7 @@ public class GitCommands extends AbstractCommandsSupport {
     GitStatus status = getGitTemplate().getCommitStatus();
 
     Function<Stream<String>, String> streamToString = stream -> stream
-      .map(it -> String.format("%s%n", it))
+      .map("%s%n"::formatted)
       .reduce(String::concat)
       .orElse(Utils.EMPTY_STRING);
 
@@ -734,7 +734,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   private String toCommitAuthorString(CommitRecord.Author author) {
-    return String.format(COMMIT_AUTHOR_TO_STRING, author.getName(), author.getEmailAddress());
+    return COMMIT_AUTHOR_TO_STRING.formatted(author.getName(), author.getEmailAddress());
   }
 
   private String toCommitDateString(CommitRecord commitRecord) {
