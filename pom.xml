@@ -102,6 +102,8 @@
     <asciidoctor-maven-plugin.version>3.0.0</asciidoctor-maven-plugin.version>
     <asciidoctorj-pdf.version>2.3.18</asciidoctorj-pdf.version>
     <assertj.version>3.26.3</assertj.version>
+    <changelog-start-date/>
+    <changelog-end-date/>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>5.4.0</easymock.version>
     <gatling.version>3.12.0</gatling.version>
@@ -550,6 +552,36 @@
           </plugin>
         </plugins>
       </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changelog-plugin</artifactId>
+            <version>${maven-changelog-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+                <id>all-reports</id>
+                <configuration>
+                  <type>date</type>
+                  <dates>
+                    <!-- Begin Date is inclusive -->
+                    <date implementation="java.lang.String">${changelog-start-date}</date>
+                    <!-- End Date is exclusive -->
+                    <date implementation="java.lang.String">${changelog-end-date}</date>
+                    <date implementation="java.lang.String">${changelog-end-date}</date>
+                  </dates>
+                  <dateFormat>yyyy-MM-dd</dateFormat>
+                </configuration>
+                <reports>
+                  <report>changelog</report>
+                  <report>dev-activity</report>
+                  <report>file-activity</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
     <profile>
       <id>release</id>
