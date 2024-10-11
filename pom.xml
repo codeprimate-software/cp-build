@@ -78,6 +78,11 @@
     </developer>
   </developers>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codeprimate-software/cp-build/issues</url>
+  </issueManagement>
+
   <scm>
     <connection>scm:git:git@github.com:codeprimate-software/cp-build.git</connection>
     <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build.git</developerConnection>
