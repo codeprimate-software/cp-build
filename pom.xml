@@ -99,7 +99,7 @@
     <assertj.version>3.26.3</assertj.version>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>5.4.0</easymock.version>
-    <gatling.version>3.11.5</gatling.version>
+    <gatling.version>3.12.0</gatling.version>
     <gatling-maven-plugin.version>4.9.6</gatling-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
