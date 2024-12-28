@@ -115,7 +115,7 @@
     <jmeter-maven-plugin.version>3.8.0</jmeter-maven-plugin.version>
     <jmh.version>1.37</jmh.version>
     <junit.version>4.13.2</junit.version>
-    <junit-bom.version>5.11.2</junit-bom.version>
+    <junit-bom.version>5.11.4</junit-bom.version>
     <lombok.version>1.18.34</lombok.version>
     <maven.version>3.9.9</maven.version>
     <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
