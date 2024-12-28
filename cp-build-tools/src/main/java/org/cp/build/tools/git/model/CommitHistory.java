@@ -459,6 +459,10 @@ public class CommitHistory implements Iterable<CommitRecord> {
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
   public static class Group implements Iterable<CommitRecord> {
 
+    public static @NotNull Group empty() {
+      return of();
+    }
+
     public static @NotNull Group of(CommitRecord... commitRecords) {
       return of(Arrays.asList(commitRecords));
     }
