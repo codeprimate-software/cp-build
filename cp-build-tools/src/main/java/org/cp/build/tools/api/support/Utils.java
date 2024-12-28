@@ -222,6 +222,10 @@ public abstract class Utils {
     return LocalDateTime.now();
   }
 
+  public static @NonNull LocalDateTime tomorrow() {
+    return LocalDateTime.now().plusDays(1L);
+  }
+
   public static @NonNull <T> Supplier<T> toSupplier(@Nullable T target) {
     return () -> target;
   }
