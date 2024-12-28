@@ -45,7 +45,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -322,7 +321,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see java.util.Set
    */
   @SuppressWarnings({ "all", "rawtypes", "unchecked" })
-  public Set<Group> groupBy(@NotNull Function<CommitRecord, Comparable<?>> groupByFunction) {
+  public Set<Group> groupBy(@NonNull Function<CommitRecord, Comparable<?>> groupByFunction) {
 
     Assert.notNull(groupByFunction, "Group By Function is required");
 
@@ -459,15 +458,15 @@ public class CommitHistory implements Iterable<CommitRecord> {
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
   public static class Group implements Iterable<CommitRecord> {
 
-    public static @NotNull Group empty() {
+    public static @NonNull Group empty() {
       return of();
     }
 
-    public static @NotNull Group of(CommitRecord... commitRecords) {
+    public static @NonNull Group of(CommitRecord... commitRecords) {
       return of(Arrays.asList(commitRecords));
     }
 
-    public static @NotNull Group of(Iterable<CommitRecord> commitRecords) {
+    public static @NonNull Group of(Iterable<CommitRecord> commitRecords) {
       Set<CommitRecord> commitRecordSet = Utils.stream(commitRecords).collect(Collectors.toSet());
       return new Group(commitRecordSet);
     }

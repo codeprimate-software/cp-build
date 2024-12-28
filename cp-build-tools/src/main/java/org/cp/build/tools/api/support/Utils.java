@@ -28,8 +28,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import jakarta.validation.constraints.NotNull;
-
 /**
  * Abstract utility class containing common functions used by the Maven-based Codeprimate Build project.
  *
@@ -163,7 +161,7 @@ public abstract class Utils {
   }
 
   @SuppressWarnings("all")
-  public static @NotNull String nullSafeFormatString(@Nullable String target, int length) {
+  public static @NonNull String nullSafeFormatString(@Nullable String target, int length) {
 
     String nonNullString = nullSafeTrimmedString(target);
 

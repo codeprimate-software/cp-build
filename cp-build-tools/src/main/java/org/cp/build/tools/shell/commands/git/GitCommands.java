@@ -58,7 +58,6 @@ import org.springframework.shell.command.annotation.CommandAvailability;
 import org.springframework.shell.command.annotation.Option;
 import org.springframework.util.StringUtils;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -122,7 +121,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commit-count-group", description = "Counts all commits grouped by a given time period")
-  public @NotNull String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
+  public @NonNull String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
       @Option(longNames = "by-day", defaultValue = "false") boolean groupedByDay,
       @Option(longNames = "by-month", defaultValue = "false") boolean groupedByMonth,
       @Option(longNames = "by-year", defaultValue = "false") boolean groupedByYear,
@@ -427,7 +426,7 @@ public class GitCommands extends AbstractCommandsSupport {
 
   @Command(command = "source-files", description = "Finds all source files with commit message like")
   @CommandAvailability(provider = "gitCommandsAvailability")
-  public @NotNull String sourceFilesWithCommitMessage(
+  public @NonNull String sourceFilesWithCommitMessage(
       @Option(description = "Commit message like; use '|' to (OR) multiple commit messages") String commitMessage,
       @Option(longNames = "exclude-filter") String excludeFilter,
       @Option(longNames = "include-filter") String includeFilter,
