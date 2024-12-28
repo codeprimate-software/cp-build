@@ -19,16 +19,22 @@ import java.io.File;
 import java.io.FileFilter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.service.ProjectManager.RecentProject;
 import org.cp.build.tools.api.support.Utils;
+import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.maven.model.MavenProject;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
@@ -36,6 +42,7 @@ import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.shell.Availability;
 import org.springframework.shell.AvailabilityProvider;
 import org.springframework.shell.CompletionProposal;
@@ -55,7 +62,11 @@ import lombok.RequiredArgsConstructor;
  *
  * @author John Blum
  * @see org.cp.build.tools.api.model.Project
+ * @see org.cp.build.tools.api.service.ProjectManager
  * @see org.cp.build.tools.api.model.Session
+ * @see org.cp.build.tools.git.model.CommitHistory
+ * @see org.cp.build.tools.git.model.CommitRecord
+ * @see org.cp.build.tools.maven.model.MavenProject
  * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
  * @see org.springframework.shell.command.annotation.Command
  * @since 2.0.0
@@ -70,9 +81,14 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
   protected static final BigDecimal DEFAULT_HOURLY_RATE = BigDecimal.valueOf(100.0d);
 
+  protected static final String COMMIT_DATE_PATTERN = "yyyy-MMM-dd";
   protected static final String DATE_TIME_PATTERN = "yyyy-MMMM-dd HH:mm:ss";
+  protected static final String INPUT_DATE_PATTERN = "yyyy-MM-dd";
+  protected static final String RELEASE_COMMIT_MESSAGE = "Release ";
 
+  protected static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_PATTERN);
   protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+  protected static final DateTimeFormatter INPUT_DATE_FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
 
   private final ProjectManager projectManager;
 
@@ -257,6 +273,52 @@ public class ProjectCommands extends AbstractCommandsSupport {
     return output.toString();
   }
 
+  @Command(command = "release-dates", description = "Lists all project release dates and version")
+  @SuppressWarnings("all")
+  public String releaseDates(
+      @Option(longNames = "since", shortNames = 's') String sinceDate,
+      @Option(longNames = "until", shortNames = 'u') String untilDate ) {
+
+    return currentProject()
+      .map(project -> {
+
+        Predicate<CommitRecord> commitMessagePredicate = commitRecord ->
+          commitRecord.getMessage().startsWith(RELEASE_COMMIT_MESSAGE);
+
+        Predicate<CommitRecord> sinceCommitDatePredicate =
+          commitDateQueryPredicate(sinceDate, () -> Utils.atEpoch().toLocalDate(), (commitDate, targetDate) ->
+            !commitDate.isBefore(targetDate));
+
+        Predicate<CommitRecord> untilCommitDatePredicate =
+          commitDateQueryPredicate(untilDate, () -> Utils.tomorrow().toLocalDate(), (commitDate, targetDate) ->
+            !commitDate.isAfter(targetDate));
+
+        Function<CommitRecord, String> releaseVersionFunction = commitRecord -> {
+          String commitMessage = commitRecord.getMessage();
+          String version = commitMessage.replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
+          return version;
+        };
+
+        CommitHistory commitHistory = project.getCommitHistory()
+          .findBy(sinceCommitDatePredicate)
+          .findBy(untilCommitDatePredicate)
+          .findBy(commitMessagePredicate);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("    RELEASE DATE    |    VERSION    ").append(Utils.newLine());
+        stringBuilder.append("------------------------------------").append(Utils.newLine());
+
+        commitHistory.forEach(commitRecord ->
+          stringBuilder.append(Utils.padRight(commitRecord.getDate().format(COMMIT_DATE_FORMATTER), 20))
+            .append(" | ").append(releaseVersionFunction.apply(commitRecord)).append(Utils.newLine()));
+
+        return stringBuilder.toString();
+
+      })
+      .orElseThrow(() -> new IllegalStateException("Project was not set"));
+  }
+
   @Command(command = "use", description = "Sets current project to the given name")
   public String use(@NonNull String projectName) {
 
@@ -297,6 +359,21 @@ public class ProjectCommands extends AbstractCommandsSupport {
         .map(File::getName)
         .map(CompletionProposal::new)
         .collect(Collectors.toList());
+    };
+  }
+
+  private static @NonNull Predicate<CommitRecord> commitDateQueryPredicate(@Nullable String targetDateString,
+      @NonNull Supplier<LocalDate> defaultTargetDate, @NonNull BiPredicate<LocalDate, LocalDate> commitDatePredicate) {
+
+    return commitRecord -> {
+
+      LocalDate targetDate = StringUtils.hasText(targetDateString)
+        ? LocalDate.parse(targetDateString, INPUT_DATE_FORMATTER)
+        : defaultTargetDate.get();
+
+      LocalDate commitDate = commitRecord.getDate();
+
+      return commitDatePredicate.test(commitDate, targetDate);
     };
   }
 }
