@@ -346,7 +346,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
     stream().forEach(commitRecord -> {
       Comparable key = groupByFunction.apply(commitRecord);
-      GroupByKey<?> groupByKey = GroupByKey.from(key);
+      GroupByKey<?> groupByKey = key instanceof GroupByKey groupKey ? groupKey : GroupByKey.from(key);
       Set<CommitRecord> set = map.computeIfAbsent(groupByKey, it -> new HashSet<>());
       set.add(commitRecord);
     });
