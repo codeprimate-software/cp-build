@@ -295,11 +295,13 @@ public class ProjectCommands extends AbstractCommandsSupport {
             !commitDate.isAfter(targetDate));
 
         Function<CommitRecord, String> releaseVersionFunction = commitRecord -> {
+
           String commitMessage = commitRecord.getMessage();
           String version = commitMessage.replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
-          while (version.endsWith(Utils.PERIOD)) {
-            version = version.substring(0, version.length() - 1);
-          }
+
+          version = version.indexOf(Utils.NEW_LINE) > -1 ? version.substring(0, version.length() - 1) : version;
+          version = version.endsWith(Utils.PERIOD) ? version.substring(0, version.length() - 1) : version;
+
           return version;
         };
 
