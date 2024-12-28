@@ -487,6 +487,14 @@ public class CommitHistory implements Iterable<CommitRecord> {
       return this;
     }
 
+    public boolean isEmpty() {
+      return size() == 0;
+    }
+
+    public boolean isNotEmpty() {
+      return !isEmpty();
+    }
+
     @Override
     public @NonNull Iterator<CommitRecord> iterator() {
       return getCommitRecords().iterator();
