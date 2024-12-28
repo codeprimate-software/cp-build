@@ -131,7 +131,7 @@
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>3.5.2</maven-surefire-report-plugin.version>
-    <maven-toolchaings-plugin.version>3.2.0</maven-toolchaings-plugin.version>
+    <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
     <maven-wrapper-plugin.version>3.3.2</maven-wrapper-plugin.version>
     <mockito.version>5.14.1</mockito.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
@@ -653,7 +653,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-toolchains-plugin</artifactId>
-            <version>${maven-toolchaings-plugin.version}</version>
+            <version>${maven-toolchains-plugin.version}</version>
             <configuration>
               <toolchains>
                 <jdk>
