@@ -309,7 +309,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
           .findBy(sinceCommitDatePredicate)
           .findBy(untilCommitDatePredicate)
           .findBy(commitMessagePredicate)
-          .sort(Comparator.comparing(CommitRecord::getDateTime).reversed());
+          .sort(Comparator.comparing(CommitRecord::getDateTime));
 
         StringBuilder stringBuilder = new StringBuilder();
 
