@@ -56,6 +56,7 @@ import lombok.ToString;
  * Abstract Data Type (ADT) modeling {@literal Git log}, or {@literal commit history}.
  *
  * @author John Blum
+ * @see java.lang.Iterable
  * @see org.cp.build.tools.git.model.CommitRecord
  * @since 2.0.0
  */
@@ -79,12 +80,13 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @param commitRecords array of {@link CommitRecord CommitRecords} used to initialize the new {@link CommitHistory}.
    * @return a new {@link CommitHistory} initialize with the given array of {@link CommitRecord CommitRecords}.
    * @see org.cp.build.tools.git.model.CommitRecord
+   * @see #of(Iterable)
    */
   public static @NonNull CommitHistory of(CommitRecord... commitRecords) {
 
     return of(Arrays.stream(commitRecords)
       .filter(Objects::nonNull)
-      .collect(Collectors.toList()));
+      .toList());
   }
 
   /**
@@ -96,6 +98,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @return a new {@link CommitHistory} initialize with the given {@link Iterable}
    * of {@link CommitRecord CommitRecords}.
    * @see org.cp.build.tools.git.model.CommitRecord
+   * @see #of(CommitRecord...)
    * @see java.lang.Iterable
    */
   public static @NonNull CommitHistory of(Iterable<CommitRecord> commitRecords) {
@@ -128,10 +131,23 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @return a boolean value indicating whether this {@link CommitHistory}
    * contains any {@link CommitRecord CommitRecords}.
    * @see #getCommitRecords()
+   * @see #isNotEmpty()
    * @see #size()
    */
   public boolean isEmpty() {
     return getCommitRecords().isEmpty();
+  }
+
+  /**
+   * Determines whether this {@link CommitHistory} contains any {@link CommitRecord CommitRecords}.
+   *
+   * @return a boolean value indicating whether this {@link CommitHistory}
+   * contains any {@link CommitRecord CommitRecords}.
+   * @see #getCommitRecords()
+   * @see #isEmpty()
+   */
+  public boolean isNotEmpty() {
+    return !isEmpty();
   }
 
   /**
@@ -361,12 +377,9 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see #groupBy(Function)
    * @see java.util.Set
    */
+  @SuppressWarnings("all")
   public Set<Group> groupByMonth() {
-
-    return groupBy(commitRecord -> {
-      LocalDate commitDate = commitRecord.getDate();
-      return YearMonth.of(commitDate.getYear(), commitDate.getMonth());
-    });
+    return groupBy(YearMonthGroupByKey::from);
   }
 
   /**
@@ -377,8 +390,9 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see #groupBy(Function)
    * @see java.util.Set
    */
+  @SuppressWarnings("all")
   public Set<Group> groupByYear() {
-    return groupBy(commitRecord -> Year.of(commitRecord.getDate().getYear()));
+    return groupBy(YearGroupByKey::from);
   }
 
   /**
@@ -524,6 +538,40 @@ public class CommitHistory implements Iterable<CommitRecord> {
     @Override
     public int compareTo(@NonNull GroupByKey<T> that) {
       return this.getKey().compareTo(that.getKey());
+    }
+  }
+
+  public static class YearMonthGroupByKey extends GroupByKey<YearMonth> {
+
+    public static @NonNull YearMonthGroupByKey from(@NonNull CommitRecord commitRecord) {
+
+      Assert.notNull(commitRecord, "CommitRecord is required");
+
+      LocalDate commitDate = commitRecord.getDate();
+      YearMonth yearMonth = YearMonth.from(commitDate);
+
+      return new YearMonthGroupByKey(yearMonth);
+    }
+
+    protected YearMonthGroupByKey(YearMonth key) {
+      super(key);
+    }
+  }
+
+  public static class YearGroupByKey extends GroupByKey<Year> {
+
+    public static @NonNull YearGroupByKey from(@NonNull CommitRecord commitRecord) {
+
+      Assert.notNull(commitRecord, "CommitRecord is required");
+
+      LocalDate commitDate = commitRecord.getDate();
+      Year year = Year.from(commitDate);
+
+      return new YearGroupByKey(year);
+    }
+
+    protected YearGroupByKey(Year year) {
+      super(year);
     }
   }
 }
