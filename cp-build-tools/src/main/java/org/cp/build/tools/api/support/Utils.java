@@ -50,6 +50,7 @@ public abstract class Utils {
   public static final String LINE_SEPARATOR = System.lineSeparator();
   public static final String NEW_LINE_REGEX = "\\n";
   public static final String PERCENT = "%";
+  public static final String PERIOD = ".";
   public static final String PIPE_SEPARATOR = "|";
   public static final String PIPE_SEPARATOR_REGEX = "\\|";
   public static final String SINGLE_SPACE = " ";
