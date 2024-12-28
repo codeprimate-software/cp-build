@@ -64,7 +64,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Spring Shell {@link Command Commands} for {@literal git}.
+ * Spring Shell {@link Command Commands} for {@literal Git}.
  *
  * @author John Blum
  * @see org.cp.build.tools.api.model.Project
