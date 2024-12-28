@@ -121,11 +121,13 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(command = "commit-count-group", description = "Counts all commits grouped by a given time period")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public @NonNull String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
       @Option(longNames = "by-day", defaultValue = "false") boolean groupedByDay,
       @Option(longNames = "by-month", defaultValue = "false") boolean groupedByMonth,
       @Option(longNames = "by-year", defaultValue = "false") boolean groupedByYear,
       @Option(longNames = "limit", shortNames = 'l', defaultValue = DEFAULT_COMMIT_COUNT_GROUP_BY_LIMIT_OPTION) int limit,
+      @Option(longNames = "order-by-date", shortNames = 'o', defaultValue = "false") boolean orderByDate,
       @Option(longNames = "since", shortNames = 's') String sinceDate,
       @Option(longNames = "until", shortNames = 'u') String untilDate) {
 
@@ -140,8 +142,12 @@ public class GitCommands extends AbstractCommandsSupport {
       : groupedByMonth ? commitRecords.groupByMonth()
       : commitRecords.groupByDay();
 
+    Comparator<CommitHistory.Group> groupComparator = orderByDate
+      ? (groupOne, groupTwo) -> ((Comparable) groupOne.getGroupedBy()).compareTo(groupTwo.getGroupedBy())
+      : Comparator.comparing(Group::size).reversed();
+
     List<CommitHistory.Group> limitedSortedCommitRecords = groupedCommitRecords.stream()
-      .sorted(Comparator.comparing(Group::size).reversed())
+      .sorted(groupComparator)
       .limit(limit)
       .toList();
 
