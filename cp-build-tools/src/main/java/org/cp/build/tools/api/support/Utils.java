@@ -218,6 +218,10 @@ public abstract class Utils {
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false);
   }
 
+  public static @NonNull LocalDateTime today() {
+    return LocalDateTime.now();
+  }
+
   public static @NonNull <T> Supplier<T> toSupplier(@Nullable T target) {
     return () -> target;
   }
