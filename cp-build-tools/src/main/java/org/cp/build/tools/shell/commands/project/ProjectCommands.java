@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -296,13 +297,15 @@ public class ProjectCommands extends AbstractCommandsSupport {
         Function<CommitRecord, String> releaseVersionFunction = commitRecord -> {
           String commitMessage = commitRecord.getMessage();
           String version = commitMessage.replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
+          version = version.endsWith(Utils.PERIOD) ? version.substring(0, version.length() - 1) : version;
           return version;
         };
 
         CommitHistory commitHistory = project.getCommitHistory()
           .findBy(sinceCommitDatePredicate)
           .findBy(untilCommitDatePredicate)
-          .findBy(commitMessagePredicate);
+          .findBy(commitMessagePredicate)
+          .sort(Comparator.comparing(CommitRecord::getDateTime).reversed());
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -311,7 +314,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
         commitHistory.forEach(commitRecord ->
           stringBuilder.append(Utils.padRight(commitRecord.getDate().format(COMMIT_DATE_FORMATTER), 20))
-            .append(" | ").append(releaseVersionFunction.apply(commitRecord)).append(Utils.newLine()));
+            .append("| ").append(releaseVersionFunction.apply(commitRecord)).append(Utils.newLine()));
 
         return stringBuilder.toString();
 
