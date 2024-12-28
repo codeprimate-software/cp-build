@@ -297,7 +297,9 @@ public class ProjectCommands extends AbstractCommandsSupport {
         Function<CommitRecord, String> releaseVersionFunction = commitRecord -> {
           String commitMessage = commitRecord.getMessage();
           String version = commitMessage.replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
-          version = version.endsWith(Utils.PERIOD) ? version.substring(0, version.length() - 1) : version;
+          while (version.endsWith(Utils.PERIOD)) {
+            version = version.substring(0, version.length() - 1);
+          }
           return version;
         };
 
@@ -309,12 +311,13 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("    RELEASE DATE    |    VERSION    ").append(Utils.newLine());
-        stringBuilder.append("------------------------------------").append(Utils.newLine());
+        stringBuilder.append("    RELEASE DATE    |    VERSION     |    COMMIT HASH    ").append(Utils.newLine());
+        stringBuilder.append("---------------------------------------------------------").append(Utils.newLine());
 
         commitHistory.forEach(commitRecord ->
           stringBuilder.append(Utils.padRight(commitRecord.getDate().format(COMMIT_DATE_FORMATTER), 20))
-            .append("| ").append(releaseVersionFunction.apply(commitRecord)).append(Utils.newLine()));
+            .append("| ").append(Utils.padRight(releaseVersionFunction.apply(commitRecord), 16))
+            .append("| ").append(commitRecord.getHash()).append(Utils.newLine()));
 
         return stringBuilder.toString();
 
