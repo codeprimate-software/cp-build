@@ -297,9 +297,9 @@ public class ProjectCommands extends AbstractCommandsSupport {
         Function<CommitRecord, String> releaseVersionFunction = commitRecord -> {
 
           String commitMessage = commitRecord.getMessage();
-          String version = commitMessage.replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
+          String[] multilineCommitMessage = commitMessage.split(Utils.NEW_LINE_REGEX);
+          String version = multilineCommitMessage[0].replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
 
-          version = version.indexOf(Utils.NEW_LINE) > -1 ? version.substring(0, version.length() - 1) : version;
           version = version.endsWith(Utils.PERIOD) ? version.substring(0, version.length() - 1) : version;
 
           return version;
