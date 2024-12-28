@@ -22,6 +22,7 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -416,6 +417,21 @@ public class CommitHistory implements Iterable<CommitRecord> {
    */
   public int size() {
     return getCommitRecords().size();
+  }
+
+  /**
+   * Sorts the {@link CommitRecord CommitRecords} in this {@link CommitHistory} using the given {@link Comparator}.
+   *
+   * @param comparator {@link Comparator} used to order the {@link CommitRecord CommitRecords}
+   * in this {@link CommitHistory}.
+   * @return this {@link CommitHistory}
+   * @throws IllegalArgumentException if {@link Comparator} is {@literal null}.
+   * @see java.util.Comparator
+   */
+  public @NonNull CommitHistory sort(@NonNull Comparator<CommitRecord> comparator) {
+    Assert.notNull(comparator, "Comparator is required");
+    this.commitRecords.sort(comparator);
+    return this;
   }
 
   /**
