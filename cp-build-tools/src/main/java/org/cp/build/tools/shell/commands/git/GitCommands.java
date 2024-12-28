@@ -148,7 +148,7 @@ public class GitCommands extends AbstractCommandsSupport {
     StringBuilder stringBuilder = new StringBuilder();
 
     stringBuilder.append("    TIME PERIOD    |    COUNT    ").append(Utils.newLine());
-    stringBuilder.append("--------------------------------").append(Utils.newLine());
+    stringBuilder.append("---------------------------------").append(Utils.newLine());
 
     limitedSortedCommitRecords.forEach(group ->
       stringBuilder.append(Utils.padRight(toCommitDateByCountString(group.getGroupedBy()), 19))
