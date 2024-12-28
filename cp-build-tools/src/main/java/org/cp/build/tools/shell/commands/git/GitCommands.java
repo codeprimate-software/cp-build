@@ -328,7 +328,7 @@ public class GitCommands extends AbstractCommandsSupport {
     return showCommitHistoryFunction(count, limit, showFiles).apply(commits);
   }
 
-  @Command(command = "commits-to", description = "Finds all commit to a source file or path")
+  @Command(command = "commits-to", description = "Finds all commits to a source file or path")
   @CommandAvailability(provider = "gitCommandsAvailability")
   public @NonNull String commitsTo(@Option(required = true) String sourceFilePath,
       @Option(longNames = "author", description = "By author") String author,
