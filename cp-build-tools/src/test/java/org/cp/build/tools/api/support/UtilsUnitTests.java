@@ -149,9 +149,9 @@ public class UtilsUnitTests {
   @Test
   public void invertIsCorrect() {
 
-    assertThat(Utils.invert(1)).isLessThan(0);
-    assertThat(Utils.invert(-1)).isGreaterThan(0);
-    assertThat(Utils.invert(0)).isZero();
+    assertThat(Utils.negate(1)).isLessThan(0);
+    assertThat(Utils.negate(-1)).isGreaterThan(0);
+    assertThat(Utils.negate(0)).isZero();
   }
 
   @Test

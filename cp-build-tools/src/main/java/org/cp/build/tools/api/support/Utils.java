@@ -110,16 +110,16 @@ public abstract class Utils {
     }
   }
 
-  public static int invert(int compareResult) {
-    return Integer.compare(0, compareResult);
+  public static boolean isSet(String... values) {
+    return Arrays.stream(values).anyMatch(StringUtils::hasText);
   }
 
   public static boolean isNotSet(String... values) {
     return !isSet(values);
   }
 
-  public static boolean isSet(String... values) {
-    return Arrays.stream(values).anyMatch(StringUtils::hasText);
+  public static int negate(int compareResult) {
+    return Integer.compare(0, compareResult);
   }
 
   public static @NonNull String newLine() {

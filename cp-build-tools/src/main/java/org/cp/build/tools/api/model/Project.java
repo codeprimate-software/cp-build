@@ -614,7 +614,7 @@ public class Project implements Comparable<Project> {
         () -> Utils.getInt(Integer.compare(quantifyQualifier(this), quantifyQualifier(version)),
           () -> Integer.compare(resolveQualifierNumber(this), resolveQualifierNumber(version))));
 
-      return Utils.invert(result);
+      return Utils.negate(result);
     }
 
     private int quantifyQualifier(@NonNull Version version) {
