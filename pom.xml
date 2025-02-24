@@ -577,7 +577,6 @@
                     <date implementation="java.lang.String">${changelog-start-date}</date>
                     <!-- End Date is exclusive -->
                     <date implementation="java.lang.String">${changelog-end-date}</date>
-                    <date implementation="java.lang.String">${changelog-end-date}</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
