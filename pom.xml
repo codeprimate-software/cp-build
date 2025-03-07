@@ -504,6 +504,9 @@
             <artifactId>maven-pmd-plugin</artifactId>
             <version>${maven-pmd-plugin.version}</version>
             <configuration>
+              <excludeRoots>
+                <excludeRoot>${project.basedir}/target</excludeRoot>
+              </excludeRoots>
               <failOnViolation>false</failOnViolation>
               <printFailingErrors>true</printFailingErrors>
               <rulesets>
