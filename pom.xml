@@ -326,7 +326,7 @@
           </annotationProcessorPaths>
           <compilerArgs>
             <arg>-parameters</arg>
-            <arg>-Xlint:unchecked</arg>
+            <arg>-Xlint:cast,deprecation,dep-ann,divzero,empty,fallthrough,finally,unchecked</arg>
             <arg>-Xpkginfo:nonempty</arg>
             <!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
           </compilerArgs>
