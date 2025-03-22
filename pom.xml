@@ -106,7 +106,7 @@
     <changelog-end-date/>
     <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
     <easymock.version>5.5.0</easymock.version>
-    <gatling.version>3.13.4</gatling.version>
+    <gatling.version>3.13.5</gatling.version>
     <gatling-maven-plugin.version>4.15.1</gatling-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
