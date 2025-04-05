@@ -110,8 +110,8 @@
     <gatling-maven-plugin.version>4.16.2</gatling-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <java.version>17</java.version>
-    <java-next.version>18</java-next.version>
+    <java.version>21</java.version>
+    <java-next.version>22</java-next.version>
     <java-module-name/>
     <jmeter-maven-plugin.version>3.8.0</jmeter-maven-plugin.version>
     <jmh.version>1.37</jmh.version>
