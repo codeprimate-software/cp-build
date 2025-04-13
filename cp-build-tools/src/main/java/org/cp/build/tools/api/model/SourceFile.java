@@ -62,6 +62,8 @@ import lombok.Setter;
 @SuppressWarnings("unused")
 public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.Revision> {
 
+  protected static final boolean DEFAUL_SKIP_BLANK_LINES = false;
+
   protected static final String SOURCE_MAIN = "src%smain".formatted(File.separator);
   protected static final String SOURCE_TEST = "src%stest".formatted(File.separator);
 
@@ -206,10 +208,15 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   public long lineCount() {
-    return this.lineCount.updateAndGet(count -> count != null && count > 0L ? count : countLines());
+    return lineCount(DEFAUL_SKIP_BLANK_LINES);
   }
 
-  private long countLines() {
+  public long lineCount(boolean skipBlankLines) {
+    return this.lineCount.updateAndGet(count -> count != null && count > 0L ? count : countLines(skipBlankLines));
+  }
+
+  @SuppressWarnings("all")
+  private long countLines(boolean skipBlankLines) {
 
     File file = getFile();
 
@@ -225,7 +232,10 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
           }
         }
 
-        return fileReader.getLineNumber();
+        int diff = skipBlankLines ? emptyLineCount : 0;
+        int lineCount = fileReader.getLineNumber() + diff;
+
+        return lineCount;
       }
     }
     catch (IOException cause) {
