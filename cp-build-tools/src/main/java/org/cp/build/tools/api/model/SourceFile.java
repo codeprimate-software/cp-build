@@ -149,6 +149,10 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return Collections.unmodifiableSet(getRevisions()).iterator();
   }
 
+  public long size() {
+    return getFile().length();
+  }
+
   public Stream<Revision> stream() {
     return Utils.stream(this);
   }
