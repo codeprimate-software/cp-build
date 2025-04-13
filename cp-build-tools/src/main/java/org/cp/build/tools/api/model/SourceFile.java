@@ -19,10 +19,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.Reader;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,7 +39,6 @@ import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
-import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -98,6 +99,14 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return getFirstRevision().map(Revision::getDateTime);
   }
 
+  public Instant getLastModified() {
+    return Instant.ofEpochMilli(getFile().lastModified());
+  }
+
+  public ZonedDateTime getLastModifiedZoned() {
+    return ZonedDateTime.ofInstant(getLastModified(), ZoneId.systemDefault());
+  }
+
   public Optional<Revision> getLastRevision() {
     List<Revision> revisions = stream().toList();
     Revision last = revisions.isEmpty() ? null : revisions.get(revisions.size() - 1);
@@ -156,7 +165,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   public long lineCount() {
-    return this.lineCount.updateAndGet(count -> count != null && count >= 0L ? count : countLine());
+    return this.lineCount.updateAndGet(count -> count != null && count >= 0L ? count : countLines());
   }
 
   private long countLines() {
