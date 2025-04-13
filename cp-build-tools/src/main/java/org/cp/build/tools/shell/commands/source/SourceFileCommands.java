@@ -112,7 +112,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
   @SuppressWarnings("all")
   public String lineCount(
       @Option(longNames = "count", shortNames = 'c') boolean count,
-      @Option(longNames = "gt", defaultValue = ""+Long.MAX_VALUE) long minimumLineCount,
+      @Option(longNames = "gt", defaultValue = "0") long minimumLineCount,
       @Option(longNames = "list", shortNames = 'l') boolean list,
       @Option(longNames = "main", shortNames = 'm') boolean main,
       @Option(longNames = "test", shortNames = 't') boolean test) {
