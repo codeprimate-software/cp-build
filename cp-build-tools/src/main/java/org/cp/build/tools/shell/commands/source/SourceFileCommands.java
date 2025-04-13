@@ -18,11 +18,14 @@ package org.cp.build.tools.shell.commands.source;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.cp.build.tools.api.model.FileTree;
 import org.cp.build.tools.api.model.FileTree.FileNode;
 import org.cp.build.tools.api.model.Project;
+import org.cp.build.tools.api.model.SourceFile;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
@@ -101,6 +104,35 @@ public class SourceFileCommands extends AbstractCommandsSupport {
             .formatted(resolvedSourceDirectoryName, project.getName()))))
       .findBy(fileFilterPredicate)
       .size();
+  }
+
+  @Command(command = "line-count")
+  @SuppressWarnings("all")
+  public long lineCount(
+      @Option(longNames = "main") boolean main,
+      @Option(longNames = "test") boolean test) {
+
+    String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
+      : test ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("test")
+      : SOURCE_DIRECTORY_NAME;
+
+    Project project = requireProject();
+
+    File sourceDirectory = new File(project.getDirectory(), sourceDirectoryName);
+
+    Set<SourceFile> sourceFiles = FileTree.scan(sourceDirectory)
+      .findBy(FileNode::isFile)
+      .stream()
+      .map(FileNode::getFile)
+      .map(SourceFile::from)
+      .collect(Collectors.toSet());
+
+    long lineCount = sourceFiles.parallelStream()
+      .map(SourceFile::lineCount)
+      .reduce(Long::sum)
+      .orElse(0L);
+
+    return lineCount;
   }
 
   @Command(command = "list")

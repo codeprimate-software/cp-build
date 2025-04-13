@@ -165,7 +165,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   public long lineCount() {
-    return this.lineCount.updateAndGet(count -> count != null && count >= 0L ? count : countLines());
+    return this.lineCount.updateAndGet(count -> count != null && count > 0L ? count : countLines());
   }
 
   private long countLines() {
