@@ -60,6 +60,7 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("unused")
 public class SourceFileCommands extends AbstractCommandsSupport {
 
+  protected static final String NEW_LINE = "\n";
   protected static final String SOURCE_DIRECTORY_NAME = "src";
 
   @Getter(AccessLevel.PROTECTED)
@@ -108,12 +109,15 @@ public class SourceFileCommands extends AbstractCommandsSupport {
 
   @Command(command = "line-count")
   @SuppressWarnings("all")
-  public long lineCount(
-      @Option(longNames = "main") boolean main,
-      @Option(longNames = "test") boolean test) {
+  public String lineCount(
+      @Option(longNames = "count", shortNames = 'c') boolean count,
+      @Option(longNames = "gt", defaultValue = ""+Long.MAX_VALUE) long minimumLineCount,
+      @Option(longNames = "list", shortNames = 'l') boolean list,
+      @Option(longNames = "main", shortNames = 'm') boolean main,
+      @Option(longNames = "test", shortNames = 't') boolean test) {
 
-    String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
-      : test ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("test")
+    String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.join(File.separator, "main")
+      : test ? SOURCE_DIRECTORY_NAME.join(File.separator, "test")
       : SOURCE_DIRECTORY_NAME;
 
     Project project = requireProject();
@@ -127,12 +131,23 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       .map(SourceFile::from)
       .collect(Collectors.toSet());
 
-    long lineCount = sourceFiles.parallelStream()
-      .map(SourceFile::lineCount)
-      .reduce(Long::sum)
-      .orElse(0L);
+    if (list) {
+      List<String> sourceFilesPlusLineCount = sourceFiles.parallelStream()
+        .filter(sourceFile -> sourceFile.lineCount() > minimumLineCount)
+        .map(sourceFile -> "%d: %s".formatted(sourceFile.lineCount(), sourceFile.getRelativePath()))
+        .toList();
 
-    return lineCount;
+        return String.join(NEW_LINE, sourceFilesPlusLineCount.toArray(String[]::new));
+    }
+    else  {
+      long lineCount = sourceFiles.parallelStream()
+        .map(SourceFile::lineCount)
+        .filter(sourceFileLineCount -> sourceFileLineCount > minimumLineCount)
+        .reduce(Long::sum)
+        .orElse(0L);
+
+      return String.valueOf(lineCount);
+    }
   }
 
   @Command(command = "list")
