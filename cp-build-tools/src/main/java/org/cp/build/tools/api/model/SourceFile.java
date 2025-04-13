@@ -252,7 +252,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
         }
 
         int diff = skipBlankLines ? emptyLineCount : 0;
-        int lineCount = fileReader.getLineNumber() + diff;
+        int lineCount = fileReader.getLineNumber() - diff;
 
         return lineCount;
       }
