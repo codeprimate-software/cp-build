@@ -145,6 +145,14 @@ public class SourceFileCommands extends AbstractCommandsSupport {
 
         return String.join(NEW_LINE, sourceFilesPlusLineCount.toArray(String[]::new));
     }
+    else if (count) {
+      long fileCount = sourceFiles.parallelStream()
+        .map(SourceFile::lineCount)
+        .filter(sourceFileLineCount -> sourceFileLineCount > minimumLineCount)
+        .count();
+
+      return String.valueOf(fileCount);
+    }
     else  {
       long lineCount = sourceFiles.parallelStream()
         .map(SourceFile::lineCount)
