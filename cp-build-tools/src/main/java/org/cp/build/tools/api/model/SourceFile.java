@@ -66,7 +66,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   public SourceFile(@NonNull File file) {
 
     Assert.notNull(file, "File is required");
-    Assert.isTrue(file.isFile(), () -> "File must exist [%s]".formatted(file));
+    Assert.isTrue(file.isFile(), () -> "File [%s] must exist".formatted(file));
 
     this.file = file;
   }
@@ -131,6 +131,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   @Override
+  @SuppressWarnings("all")
   public Iterator<Revision> iterator() {
     return Collections.unmodifiableSet(getRevisions()).iterator();
   }
