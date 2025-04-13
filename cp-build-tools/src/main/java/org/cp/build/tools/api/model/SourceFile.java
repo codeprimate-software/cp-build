@@ -66,20 +66,32 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return new SourceFile(file);
   }
 
+  public static @NonNull SourceFile from(@NonNull File file, @Nullable Project project) {
+    return new SourceFile(file, project);
+  }
+
   private final AtomicReference<Long> lineCount = new AtomicReference<>(0L);
+  private final AtomicReference<String> relativePath = new AtomicReference<>(null);
   private final AtomicReference<Type> type = new AtomicReference<>(null);
 
   private final File file;
+
+  private final Project project;
 
   @Getter(AccessLevel.PROTECTED)
   private final Set<Revision> revisions = new TreeSet<>();
 
   public SourceFile(@NonNull File file) {
+    this(file, null);
+  }
+
+  public SourceFile(@NonNull File file, @Nullable Project project) {
 
     Assert.notNull(file, "File is required");
     Assert.isTrue(file.isFile(), () -> "File [%s] must exist".formatted(file));
 
     this.file = file;
+    this.project = project;
   }
 
   public Set<Author> getAuthors() {
@@ -115,6 +127,10 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   public Optional<LocalDateTime> getLastRevisionDateTime() {
     return getLastRevision().map(Revision::getDateTime);
+  }
+
+  protected Optional<Project> getProject() {
+    return Optional.ofNullable(this.project);
   }
 
   public Optional<Revision> getRevision(@NonNull String id) {
