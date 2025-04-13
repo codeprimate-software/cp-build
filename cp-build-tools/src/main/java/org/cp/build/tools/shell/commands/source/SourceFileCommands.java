@@ -115,6 +115,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       @Option(longNames = "gt", defaultValue = "0") long minimumLineCount,
       @Option(longNames = "list", shortNames = 'l') boolean list,
       @Option(longNames = "main", shortNames = 'm') boolean main,
+      @Option(longNames = "skip-blank-lines", shortNames = 's') boolean skipBlankLines,
       @Option(longNames = "test", shortNames = 't') boolean test) {
 
     Project project = requireProject();
@@ -140,7 +141,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       List<String> sourceFilesPlusLineCount = sourceFiles.parallelStream()
         .filter(sourceFile -> sourceFile.lineCount() > minimumLineCount)
         .sorted(sourceFileOrder)
-        .map(sourceFile -> "%d: %s".formatted(sourceFile.lineCount(), sourceFile.getRelativePath()))
+        .map(sourceFile -> "%d: %s".formatted(sourceFile.lineCount(skipBlankLines), sourceFile.getRelativePath()))
         .toList();
 
         return String.join(NEW_LINE, sourceFilesPlusLineCount.toArray(String[]::new));
@@ -155,7 +156,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     }
     else  {
       long lineCount = sourceFiles.parallelStream()
-        .map(SourceFile::lineCount)
+        .map(sourceFile -> sourceFile.lineCount(skipBlankLines))
         .filter(sourceFileLineCount -> sourceFileLineCount > minimumLineCount)
         .reduce(Long::sum)
         .orElse(0L);
