@@ -115,7 +115,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return Instant.ofEpochMilli(getFile().lastModified());
   }
 
-  public ZonedDateTime getLastModifiedZoned() {
+  public ZonedDateTime getLastModifiedDateTime() {
     return ZonedDateTime.ofInstant(getLastModified(), ZoneId.systemDefault());
   }
 
