@@ -19,6 +19,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,6 +60,8 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return new SourceFile(file);
   }
 
+  private final AtomicReference<Type> type = new AtomicReference<>(null);
+
   private final File file;
 
   @Getter(AccessLevel.PROTECTED)
@@ -73,6 +77,11 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   public Set<Author> getAuthors() {
     return stream().map(Revision::getAuthor).collect(Collectors.toSet());
+  }
+
+  @SuppressWarnings("all")
+  public File getFile() {
+    return this.file;
   }
 
   public Optional<Revision> getFirstRevision() {
@@ -128,6 +137,10 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return timePeriods != null
       ? stream().filter(revision -> timePeriods.isDuring(revision.getDate())).collect(Collectors.toSet())
       : Collections.emptySet();
+  }
+
+  public Type getType() {
+    return this.type.updateAndGet(it -> it != null ? it : WellKnownTypes.from(getFile()));
   }
 
   @Override
@@ -242,6 +255,61 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     @Override
     public String toString() {
       return getId();
+    }
+  }
+
+  @FunctionalInterface
+  public interface Type {
+    String getExtension();
+  }
+
+  public enum WellKnownTypes implements Type {
+
+    C("c"),
+    C_PLUS_PLUS("c++"),
+    GROOVY("groovy"),
+    JAVA("java"),
+    JAVASCRIPT("js"),
+    KOTLIN("kt"),
+    PROPERTIES("properties"),
+    UNKNOWN("");
+
+    public static WellKnownTypes from(File file) {
+
+      if (file != null) {
+        String filename = file.getName();
+        int index = (int) Math.max(0, Math.min(filename.lastIndexOf("."), file.length()));
+        String extension = filename.substring(index);
+        return from(extension);
+      }
+
+      return WellKnownTypes.UNKNOWN;
+    }
+
+    public static WellKnownTypes from(String extension) {
+
+      return Arrays.stream(values())
+        .filter(type -> type.getExtension().equalsIgnoreCase(extension))
+        .findFirst()
+        .orElse(WellKnownTypes.UNKNOWN);
+    }
+
+    private final String extension;
+
+    WellKnownTypes(String extension) {
+      Assert.hasText(extension, () -> "Extension [%s] is required".formatted(extension));
+      this.extension = extension;
+    }
+
+    @Override
+    public String getExtension() {
+      return this.extension;
+    }
+
+
+    @Override
+    public String toString() {
+      return getExtension();
     }
   }
 }
