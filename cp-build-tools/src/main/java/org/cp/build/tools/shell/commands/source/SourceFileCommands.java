@@ -16,6 +16,7 @@
 package org.cp.build.tools.shell.commands.source;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -116,11 +117,11 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       @Option(longNames = "main", shortNames = 'm') boolean main,
       @Option(longNames = "test", shortNames = 't') boolean test) {
 
+    Project project = requireProject();
+
     String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.join(File.separator, "main")
       : test ? SOURCE_DIRECTORY_NAME.join(File.separator, "test")
       : SOURCE_DIRECTORY_NAME;
-
-    Project project = requireProject();
 
     File sourceDirectory = new File(project.getDirectory(), sourceDirectoryName);
 
@@ -131,9 +132,14 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       .map(SourceFile::from)
       .collect(Collectors.toSet());
 
+    Comparator<SourceFile> sourceFileOrder = Comparator.<SourceFile, Long>comparing(SourceFile::lineCount).reversed()
+      .thenComparing(SourceFile::getPackage)
+      .thenComparing(SourceFile::getName);
+
     if (list) {
       List<String> sourceFilesPlusLineCount = sourceFiles.parallelStream()
         .filter(sourceFile -> sourceFile.lineCount() > minimumLineCount)
+        .sorted(sourceFileOrder)
         .map(sourceFile -> "%d: %s".formatted(sourceFile.lineCount(), sourceFile.getRelativePath()))
         .toList();
 
