@@ -64,7 +64,8 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   protected static final boolean DEFAULT_SKIP_BLANK_LINES = false;
 
-  protected static final String PACKAGE_SEPARATOR = ".";
+  protected static final String DOT_SEPARATOR = ".";
+  protected static final String PACKAGE_SEPARATOR = DOT_SEPARATOR;
   protected static final String PATH_SEPARATOR = File.separator;
   protected static final String SOURCE_MAIN = "src%smain".formatted(File.separator);
   protected static final String SOURCE_TEST = "src%stest".formatted(File.separator);
@@ -137,12 +138,21 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   @SuppressWarnings("all")
+  public String getName() {
+    String filename = getFile().getName();
+    int index = filename.indexOf(DOT_SEPARATOR);
+    String resolvedFilename = index > -1 ? filename.substring(0, index) : filename;
+    return resolvedFilename;
+  }
+
+  @SuppressWarnings("all")
   public String getPackage() {
     String relativePath = getRelativePath();
     int index = relativePath.lastIndexOf(PATH_SEPARATOR);
     String packageName = relativePath.substring(0, index).replaceAll(PATH_SEPARATOR, PACKAGE_SEPARATOR);
     return packageName;
   }
+
   protected Optional<Project> getProject() {
     return Optional.ofNullable(this.project);
   }
