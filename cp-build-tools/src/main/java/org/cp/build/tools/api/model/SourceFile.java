@@ -62,6 +62,9 @@ import lombok.Setter;
 @SuppressWarnings("unused")
 public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.Revision> {
 
+  protected static final String SOURCE_MAIN = "src%smain".formatted(File.separator);
+  protected static final String SOURCE_TEST = "src%stest".formatted(File.separator);
+
   public static @NonNull SourceFile from(@NonNull File file) {
     return new SourceFile(file);
   }
@@ -131,6 +134,28 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   protected Optional<Project> getProject() {
     return Optional.ofNullable(this.project);
+  }
+
+  public String getRelativePath() {
+
+    File file = getFile();
+
+    Assert.isTrue(file.isFile(), "File [%s] no longer exists");
+
+    String pathname = file.getAbsolutePath();
+    int index = pathname.indexOf(SOURCE_MAIN);
+
+    index = index > -1 ? index : pathname.indexOf(SOURCE_TEST);
+
+    index = index > -1 ? index : getProject()
+      .map(Project::getDirectory)
+      .map(File::getAbsolutePath)
+      .map(String::length)
+      .orElse(index);
+
+    return index > -1
+      ? pathname.substring(index + SOURCE_MAIN.length())
+      : pathname;
   }
 
   public Optional<Revision> getRevision(@NonNull String id) {
