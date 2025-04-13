@@ -62,8 +62,10 @@ import lombok.Setter;
 @SuppressWarnings("unused")
 public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.Revision> {
 
-  protected static final boolean DEFAUL_SKIP_BLANK_LINES = false;
+  protected static final boolean DEFAULT_SKIP_BLANK_LINES = false;
 
+  protected static final String PACKAGE_SEPARATOR = ".";
+  protected static final String PATH_SEPARATOR = File.separator;
   protected static final String SOURCE_MAIN = "src%smain".formatted(File.separator);
   protected static final String SOURCE_TEST = "src%stest".formatted(File.separator);
 
@@ -134,6 +136,13 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return getLastRevision().map(Revision::getDateTime);
   }
 
+  @SuppressWarnings("all")
+  public String getPackage() {
+    String relativePath = getRelativePath();
+    int index = relativePath.lastIndexOf(PATH_SEPARATOR);
+    String packageName = relativePath.substring(0, index).replaceAll(PATH_SEPARATOR, PACKAGE_SEPARATOR);
+    return packageName;
+  }
   protected Optional<Project> getProject() {
     return Optional.ofNullable(this.project);
   }
@@ -208,7 +217,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   public long lineCount() {
-    return lineCount(DEFAUL_SKIP_BLANK_LINES);
+    return lineCount(DEFAULT_SKIP_BLANK_LINES);
   }
 
   public long lineCount(boolean skipBlankLines) {
