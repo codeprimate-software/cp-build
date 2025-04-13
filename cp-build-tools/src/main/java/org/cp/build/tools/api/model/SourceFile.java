@@ -16,6 +16,10 @@
 package org.cp.build.tools.api.model;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,6 +37,7 @@ import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
+import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
@@ -60,6 +65,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return new SourceFile(file);
   }
 
+  private final AtomicReference<Long> lineCount = new AtomicReference<>(0L);
   private final AtomicReference<Type> type = new AtomicReference<>(null);
 
   private final File file;
@@ -148,6 +154,35 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   public Iterator<Revision> iterator() {
     return Collections.unmodifiableSet(getRevisions()).iterator();
   }
+
+  public long lineCount() {
+    return this.lineCount.updateAndGet(count -> count != null && count >= 0L ? count : countLine());
+  }
+
+  private long countLines() {
+
+    File file = getFile();
+
+    Assert.isTrue(file.isFile(), () -> "File [%s] must exist".formatted(file.getAbsolutePath()));
+
+    int emptyLineCount = 0;
+
+    try {
+      try (LineNumberReader fileReader = new LineNumberReader(new FileReader(file))) {
+        for (String line = fileReader.readLine(); line != null; line = fileReader.readLine()) {
+          if (line.isBlank()) {
+            emptyLineCount++;
+          }
+        }
+
+        return fileReader.getLineNumber();
+      }
+    }
+    catch (IOException cause) {
+      throw new IllegalStateException("Failed to count the number of lines in file [%s]".formatted(file), cause);
+    }
+  }
+
 
   public long size() {
     return getFile().length();
