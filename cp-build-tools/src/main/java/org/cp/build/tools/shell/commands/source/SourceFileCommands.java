@@ -120,8 +120,8 @@ public class SourceFileCommands extends AbstractCommandsSupport {
 
     Project project = requireProject();
 
-    String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.join(File.separator, "main")
-      : test ? SOURCE_DIRECTORY_NAME.join(File.separator, "test")
+    String sourceDirectoryName =  main ? String.join(File.separator, SOURCE_DIRECTORY_NAME, "main")
+      : test ? String.join(File.separator, SOURCE_DIRECTORY_NAME, "test")
       : SOURCE_DIRECTORY_NAME;
 
     File sourceDirectory = new File(project.getDirectory(), sourceDirectoryName);
