@@ -139,7 +139,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
 
     if (list) {
       List<String> sourceFilesPlusLineCount = sourceFiles.parallelStream()
-        .filter(sourceFile -> sourceFile.lineCount() > minimumLineCount)
+        .filter(sourceFile -> sourceFile.lineCount(skipBlankLines) > minimumLineCount)
         .sorted(sourceFileOrder)
         .map(sourceFile -> "%d: %s".formatted(sourceFile.lineCount(skipBlankLines), sourceFile.getRelativePath()))
         .toList();
