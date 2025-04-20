@@ -15,7 +15,7 @@
     Codeprimate Build is the Maven parent project for all Codeprimate software projects
     used to build and release Codeprimate software.
   </description>
-  <url>http://www.codeprimate.org/projects/cp-core</url>
+  <url>https://github.com/codeprimate-software/cp-build</url>
 
   <licenses>
     <license>

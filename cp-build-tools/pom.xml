@@ -18,6 +18,7 @@
     Codpeprimate Build Tools is a Spring Shell application and command-line interface (CLI), REPL program
     encapsulating common software project management and build functions.
   </description>
+  <url>https://github.com/codeprimate-software/cp-build/tree/main/cp-build-tools</url>
 
   <licenses>
     <license>
