@@ -9,10 +9,9 @@ used to build and release all Codeprimate software.
 [[requirements]]
 == Requirements
 
-1. Baseline is Java SE (JDK/JRE) 17.
-2. Built with Oracle JDK 17.0.14 2025-01-21 LTS (17.0.14+8-LTS-191)
-2.1 Builds with Oracle JDK 21 2025-01-21 LTS (build 21.0.6+8-LTS-188)
-2.2 Builds with Oracle JDK 23 2025-01-21 (build 23.0.2+7-58)
+1. Baseline is Java SE (JDK/JRE) 21.
+2. Builds with Oracle JDK 21 2025-01-21 LTS (build 21.0.6+8-LTS-188)
+3. Builds with Oracle JDK 23 2025-01-21 (build 23.0.2+7-58)
 
 [[license]]
 == License
