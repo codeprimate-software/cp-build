@@ -44,6 +44,7 @@ import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.shell.core.command.annotation.Argument;
 import org.springframework.shell.core.command.annotation.Command;
 import org.springframework.shell.core.command.annotation.CommandGroup;
 import org.springframework.shell.core.command.annotation.Option;
@@ -246,7 +247,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "load", description = "Loads project from the given location", completionProvider = "projectLoadCompletionProvider")
-  public String load(@NonNull File location) {
+  public String load(@NonNull @Argument(index = 0) File location) {
 
     ProjectManager projectManager = getProjectManager();
 
@@ -334,7 +335,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "use", description = "Sets current project to the given name")
-  public String use(@NonNull String projectName) {
+  public String use(@NonNull @Argument(index = 0) String projectName) {
 
     ProjectManager projectManager = getProjectManager();
 

@@ -22,9 +22,10 @@ import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
+import org.springframework.shell.core.command.annotation.Argument;
+import org.springframework.shell.core.command.annotation.Arguments;
 import org.springframework.shell.core.command.annotation.Command;
 import org.springframework.shell.core.command.annotation.CommandGroup;
-import org.springframework.shell.core.command.annotation.Option;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -49,7 +50,7 @@ public class AdminCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "add")
-  public String add(@Option(required = true) int... numbers) {
+  public String add(@Arguments int... numbers) {
 
     int sum = Arrays.stream(numbers)
       .reduce(Integer::sum)
@@ -64,7 +65,7 @@ public class AdminCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "hello")
-  public String hello(@Option String user) {
+  public String hello(@Argument(index = 0) String user) {
 
     String resolvedUser = StringUtils.hasText(user) ? user
       : System.getProperty("user.name");
@@ -78,7 +79,7 @@ public class AdminCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "percent")
-  public String percent(@Option(required = true) String ratio) {
+  public String percent(@Argument(index = 0) String ratio) {
 
     String[] numbers = ratio.split(Utils.FORWARD_SLASH);
 
