@@ -100,7 +100,7 @@
 
   <properties>
     <asciidoctor-maven-plugin.version>3.2.0</asciidoctor-maven-plugin.version>
-    <asciidoctorj-pdf.version>2.3.19</asciidoctorj-pdf.version>
+    <asciidoctorj-pdf.version>2.3.23</asciidoctorj-pdf.version>
     <assertj.version>3.27.3</assertj.version>
     <changelog-start-date/>
     <changelog-end-date/>
