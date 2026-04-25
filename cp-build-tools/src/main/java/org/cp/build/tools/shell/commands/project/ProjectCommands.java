@@ -44,14 +44,13 @@ import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.shell.Availability;
-import org.springframework.shell.AvailabilityProvider;
-import org.springframework.shell.CompletionProposal;
-import org.springframework.shell.command.annotation.Command;
-import org.springframework.shell.command.annotation.CommandAvailability;
-import org.springframework.shell.command.annotation.Option;
-import org.springframework.shell.command.annotation.OptionValues;
-import org.springframework.shell.completion.CompletionProvider;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.shell.core.command.availability.Availability;
+import org.springframework.shell.core.command.availability.AvailabilityProvider;
+import org.springframework.shell.core.command.completion.CompletionProposal;
+import org.springframework.shell.core.command.completion.CompletionProvider;
 import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
@@ -69,10 +68,11 @@ import lombok.RequiredArgsConstructor;
  * @see org.cp.build.tools.git.model.CommitRecord
  * @see org.cp.build.tools.maven.model.MavenProject
  * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
- * @see org.springframework.shell.command.annotation.Command
+ * @see org.springframework.shell.core.command.annotation.Command
+ * @see org.springframework.shell.core.command.annotation.CommandGroup
  * @since 2.0.0
  */
-@Command(command = "project", group = "project commands")
+@CommandGroup(name = "project commands", prefix = "project")
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
@@ -93,7 +93,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
   private final ProjectManager projectManager;
 
-  @Command(command = "current", description = "Shows the current project")
+  @Command(name = "current", description = "Shows the current project")
   public String current() {
 
     return currentProject()
@@ -101,9 +101,12 @@ public class ProjectCommands extends AbstractCommandsSupport {
       .orElse("Project not set");
   }
 
+  @Command(
+    name = "describe",
+    description = "Describes the current project",
+    availabilityProvider = "projectCommandsAvailabilityProvider"
+  )
   @SuppressWarnings("all")
-  @Command(command = "describe", description = "Describes the current project")
-  @CommandAvailability(provider = "projectCommandsAvailabilityProvider")
   public String describe() {
 
     return currentProject()
@@ -141,9 +144,12 @@ public class ProjectCommands extends AbstractCommandsSupport {
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
 
-  @Command(command = "development", description="Details the project's development effort and activity")
-  @CommandAvailability(provider = "projectCommandsAvailabilityProvider")
-  public String development(@Option(longNames = "hourly-rate", defaultValue = "100.0") BigDecimal hourlyRate) {
+  @Command(
+    name = "development",
+    description="Details the project's development effort and activity",
+    availabilityProvider = "projectCommandsAvailabilityProvider"
+  )
+  public String development(@Option(longName = "hourly-rate", defaultValue = "100.0") BigDecimal hourlyRate) {
 
     return currentProject()
       .map(project -> {
@@ -210,7 +216,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
     return dayCount;
   }
 
-  @Command(command = "list", description = "List all loaded projects")
+  @Command(name = "list", description = "List all loaded projects")
   public String list() {
 
     List<Project> projects = projects();
@@ -239,8 +245,8 @@ public class ProjectCommands extends AbstractCommandsSupport {
     return output.toString();
   }
 
-  @Command(command = "load", description = "Loads project from the given location")
-  public String load(@NonNull @OptionValues(provider = "projectLoadCompletionProvider") File location) {
+  @Command(name = "load", description = "Loads project from the given location", completionProvider = "projectLoadCompletionProvider")
+  public String load(@NonNull File location) {
 
     ProjectManager projectManager = getProjectManager();
 
@@ -249,7 +255,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
     return "Project set to [%s]".formatted(project);
   }
 
-  @Command(command = "recent", description = "List all recent projects")
+  @Command(name = "recent", description = "List all recent projects")
   public String recent() {
 
     List<ProjectManager.RecentProject> recentProjects = recentProjects();
@@ -274,11 +280,11 @@ public class ProjectCommands extends AbstractCommandsSupport {
     return output.toString();
   }
 
-  @Command(command = "release-dates", description = "Lists all project release dates and version")
+  @Command(name = "release-dates", description = "Lists all project release dates and version")
   @SuppressWarnings("all")
   public String releaseDates(
-      @Option(longNames = "since", shortNames = 's') String sinceDate,
-      @Option(longNames = "until", shortNames = 'u') String untilDate ) {
+      @Option(longName = "since", shortName = 's') String sinceDate,
+      @Option(longName = "until", shortName = 'u') String untilDate ) {
 
     return currentProject()
       .map(project -> {
@@ -327,7 +333,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
   }
 
-  @Command(command = "use", description = "Sets current project to the given name")
+  @Command(name = "use", description = "Sets current project to the given name")
   public String use(@NonNull String projectName) {
 
     ProjectManager projectManager = getProjectManager();

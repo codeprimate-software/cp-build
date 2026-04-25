@@ -15,10 +15,8 @@
  */
 package org.cp.build.tools;
 
-import org.cp.build.tools.shell.commands.NonCommandType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.shell.command.annotation.CommandScan;
 
 /**
  * {@link SpringBootApplication} for Codeprimate Build Tools.
@@ -26,11 +24,9 @@ import org.springframework.shell.command.annotation.CommandScan;
  * @author John Blum
  * @see org.springframework.boot.SpringApplication
  * @see org.springframework.boot.autoconfigure.SpringBootApplication
- * @see org.springframework.shell.command.annotation.CommandScan
  * @since 2.0.0
  */
 @SpringBootApplication
-@CommandScan(basePackageClasses = NonCommandType.class)
 public class CodeprimateBuildToolsApplication {
 
   public static void main(String[] args) {

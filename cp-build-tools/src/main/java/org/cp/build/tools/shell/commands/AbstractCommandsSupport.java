@@ -25,12 +25,13 @@ import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStyle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.shell.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.Command;
 
 /**
  * Abstract base class for all Spring Shell {@link Command} classes.
  *
  * @author John Blum
+ * @see org.springframework.shell.core.command.annotation.Command
  * @since 2.0.0
  */
 @SuppressWarnings("unused")

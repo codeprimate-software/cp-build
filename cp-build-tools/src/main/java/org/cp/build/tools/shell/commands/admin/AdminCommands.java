@@ -22,22 +22,24 @@ import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
-import org.springframework.shell.command.CommandRegistration.OptionArity;
-import org.springframework.shell.command.annotation.Command;
-import org.springframework.shell.command.annotation.Option;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
- * Spring Shell {@link Command} class supplying {@link Command administrative commands} to the shell.
+ * Spring Shell {@link Command} class supplying {@link CommandGroup administrative commands} to the shell.
  *
  * @author John Blum
  * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
- * @see org.springframework.shell.command.annotation.Command
- * @see org.springframework.shell.command.annotation.Option
- * @see org.springframework.shell.standard.ShellComponent
+ * @see org.springframework.shell.core.command.annotation.Command
+ * @see org.springframework.shell.core.command.annotation.CommandGroup
+ * @see org.springframework.stereotype.Component
  * @since 2.0.0
  */
-@Command(group = "admin commands")
+@Component
+@CommandGroup(name = "admin commands")
 @SuppressWarnings("unused")
 public class AdminCommands extends AbstractCommandsSupport {
 
@@ -46,8 +48,8 @@ public class AdminCommands extends AbstractCommandsSupport {
     return null;
   }
 
-  @Command(command = "add")
-  public String add(@Option(arity = OptionArity.ONE_OR_MORE, required = true) int... numbers) {
+  @Command(name = "add")
+  public String add(@Option(required = true) int... numbers) {
 
     int sum = Arrays.stream(numbers)
       .reduce(Integer::sum)
@@ -61,7 +63,7 @@ public class AdminCommands extends AbstractCommandsSupport {
       .toAnsi();
   }
 
-  @Command(command = "hello")
+  @Command(name = "hello")
   public String hello(@Option String user) {
 
     String resolvedUser = StringUtils.hasText(user) ? user
@@ -75,7 +77,7 @@ public class AdminCommands extends AbstractCommandsSupport {
       .toAnsi();
   }
 
-  @Command(command = "percent")
+  @Command(name = "percent")
   public String percent(@Option(required = true) String ratio) {
 
     String[] numbers = ratio.split(Utils.FORWARD_SLASH);

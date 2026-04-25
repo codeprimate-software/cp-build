@@ -32,11 +32,11 @@ import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.NonNull;
-import org.springframework.shell.Availability;
-import org.springframework.shell.AvailabilityProvider;
-import org.springframework.shell.command.annotation.Command;
-import org.springframework.shell.command.annotation.CommandAvailability;
-import org.springframework.shell.command.annotation.Option;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.CommandGroup;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.shell.core.command.availability.Availability;
+import org.springframework.shell.core.command.availability.AvailabilityProvider;
 import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
@@ -53,10 +53,11 @@ import lombok.RequiredArgsConstructor;
  * @see org.cp.build.tools.api.service.ProjectManager
  * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
  * @see org.springframework.context.annotation.Bean
- * @see org.springframework.shell.command.annotation.Command
+ * @see org.springframework.shell.core.command.annotation.Command
+ * @see org.springframework.shell.core.command.annotation.CommandGroup
  * @since 2.0.0
  */
-@Command(command = "source", group = "source file commands")
+@CommandGroup(name = "source file commands", prefix = "source")
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class SourceFileCommands extends AbstractCommandsSupport {
@@ -67,14 +68,13 @@ public class SourceFileCommands extends AbstractCommandsSupport {
   @Getter(AccessLevel.PROTECTED)
   private final ProjectManager projectManager;
 
-  @Command(command = "count")
-  @CommandAvailability(provider = "sourceCommandsAvailability")
+  @Command(name = "count", availabilityProvider = "sourceCommandsAvailability")
   public int count(
-      @Option(longNames = "exclude-filter") String excludeFilter,
-      @Option(longNames = "include-filter") String includeFilter,
-      @Option(longNames = "location", shortNames = 'l') String location,
-      @Option(longNames = "main") boolean main,
-      @Option(longNames = "test") boolean test) {
+      @Option(longName = "exclude-filter") String excludeFilter,
+      @Option(longName = "include-filter") String includeFilter,
+      @Option(longName = "location", shortName = 'l') String location,
+      @Option(longName = "main") boolean main,
+      @Option(longName = "test") boolean test) {
 
     String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
       : test ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("test")
@@ -108,15 +108,15 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       .size();
   }
 
-  @Command(command = "line-count")
+  @Command(name = "line-count")
   @SuppressWarnings("all")
   public String lineCount(
-      @Option(longNames = "count", shortNames = 'c') boolean count,
-      @Option(longNames = "gt", defaultValue = "0") long minimumLineCount,
-      @Option(longNames = "list", shortNames = 'l') boolean list,
-      @Option(longNames = "main", shortNames = 'm') boolean main,
-      @Option(longNames = "skip-blank-lines", shortNames = 's') boolean skipBlankLines,
-      @Option(longNames = "test", shortNames = 't') boolean test) {
+      @Option(longName = "count", shortName = 'c') boolean count,
+      @Option(longName = "gt", defaultValue = "0") long minimumLineCount,
+      @Option(longName = "list", shortName = 'l') boolean list,
+      @Option(longName = "main", shortName = 'm') boolean main,
+      @Option(longName = "skip-blank-lines", shortName = 's') boolean skipBlankLines,
+      @Option(longName = "test", shortName = 't') boolean test) {
 
     Project project = requireProject();
 
@@ -165,9 +165,8 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     }
   }
 
-  @Command(command = "list")
-  @CommandAvailability(provider = "sourceCommandsAvailability")
-  public @NonNull String list(@Option(longNames = "location", shortNames = 'l') String location) {
+  @Command(name = "list", availabilityProvider = "sourceCommandsAvailability")
+  public @NonNull String list(@Option(longName = "location", shortName = 'l') String location) {
 
     String sourceDirectoryName = SOURCE_DIRECTORY_NAME;
 
@@ -197,12 +196,11 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     return output.toString();
   }
 
-  @Command(command = "tree")
-  @CommandAvailability(provider = "sourceCommandsAvailability")
+  @Command(name = "tree", availabilityProvider = "sourceCommandsAvailability")
   public @NonNull String tree(
-      @Option(longNames = "location", shortNames = 'l') String location,
-      @Option(longNames = "main") boolean main,
-      @Option(longNames = "test") boolean test) {
+      @Option(longName = "location", shortName = 'l') String location,
+      @Option(longName = "main") boolean main,
+      @Option(longName = "test") boolean test) {
 
     String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
       : test ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("test")
