@@ -285,8 +285,9 @@ public class ProjectCommands extends AbstractCommandsSupport {
   @Command(name = "release-dates", description = "Lists all project release dates and version")
   @SuppressWarnings("all")
   public String releaseDates(
+      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
       @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate ) {
+      @Option(longName = "until", shortName = 'u') String untilDate) {
 
     return currentProject()
       .map(project -> {
@@ -324,13 +325,20 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("    RELEASE DATE    |    VERSION     |    COMMIT HASH    ").append(Utils.newLine());
-        stringBuilder.append("---------------------------------------------------------").append(Utils.newLine());
+        if (count) {
+          stringBuilder.append("Found [%d] release(s)".formatted(commitHistory.size()));
+        }
+        else {
+          stringBuilder.append("    RELEASE DATE    |    VERSION     |    COMMIT HASH    ").append(Utils.newLine());
+          stringBuilder.append("---------------------------------------------------------").append(Utils.newLine());
 
-        commitHistory.forEach(commitRecord ->
-          stringBuilder.append(Utils.padRight(commitRecord.getDate().format(COMMIT_DATE_FORMATTER), 20))
-            .append("| ").append(Utils.padRight(releaseVersionFunction.apply(commitRecord), 16))
-            .append("| ").append(commitRecord.getHash()).append(Utils.newLine()));
+          commitHistory.forEach(commitRecord ->
+            stringBuilder.append(Utils.padRight(commitRecord.getDate().format(COMMIT_DATE_FORMATTER), 20))
+              .append("| ").append(Utils.padRight(releaseVersionFunction.apply(commitRecord), 16))
+              .append("| ").append(commitRecord.getHash()).append(Utils.newLine()));
+
+          stringBuilder.append(Utils.newLineBeforeAfter("[%d] release(s)".formatted(commitHistory.size())));
+        }
 
         return stringBuilder.toString();
 
