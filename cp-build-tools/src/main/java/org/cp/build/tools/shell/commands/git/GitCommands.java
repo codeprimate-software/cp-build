@@ -480,7 +480,22 @@ public class GitCommands extends AbstractCommandsSupport {
         else {
           return "Commit history has already been loaded; use `reload-commit-history` to reset";
         }
+      })
+      .orElse(PROJECT_NOT_FOUND);
+  }
 
+  @Command(
+    name = "reload-commit-history",
+    description = "Reloads the Git commit history",
+    availabilityProvider = "gitCommandsAvailability"
+  )
+  @SuppressWarnings("all")
+  public @NonNull String reloadCommitHistory() {
+
+    return currentProject()
+      .map(project -> {
+        CommitHistory commitHistory = queryCommitHistory();
+        return "Commit history loaded; found [%d] commit(s)".formatted(commitHistory.size());
       })
       .orElse(PROJECT_NOT_FOUND);
   }
