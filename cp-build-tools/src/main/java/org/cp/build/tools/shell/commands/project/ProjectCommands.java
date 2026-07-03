@@ -87,6 +87,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   protected static final String DATE_TIME_PATTERN = "yyyy-MMMM-dd HH:mm:ss";
   protected static final String INPUT_DATE_PATTERN = "yyyy-MM-dd";
   protected static final String RELEASE_COMMIT_MESSAGE = "Release ";
+  protected static final String RELEASE_VERSION_COMMIT_MESSAGE = "Release version ";
 
   protected static final DateTimeFormatter COMMIT_DATE_FORMATTER = DateTimeFormatter.ofPattern(COMMIT_DATE_PATTERN);
   protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
@@ -305,7 +306,10 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
           String commitMessage = commitRecord.getMessage();
           String[] multilineCommitMessage = commitMessage.split(Utils.NEW_LINE_REGEX);
-          String version = multilineCommitMessage[0].replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING).trim();
+          String version = multilineCommitMessage[0]
+            .replace(RELEASE_VERSION_COMMIT_MESSAGE, Utils.EMPTY_STRING)
+            .replace(RELEASE_COMMIT_MESSAGE, Utils.EMPTY_STRING)
+            .trim();
 
           version = version.endsWith(Utils.PERIOD) ? version.substring(0, version.length() - 1) : version;
 
