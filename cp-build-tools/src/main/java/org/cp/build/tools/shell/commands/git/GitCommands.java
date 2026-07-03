@@ -464,6 +464,28 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @Command(
+    name = "load-commit-history",
+    description = "Loads the Git commit history",
+    availabilityProvider = "gitCommandsAvailability"
+  )
+  @SuppressWarnings("all")
+  public @NonNull String loadCommitHistory() {
+
+    return currentProject()
+      .map(project -> {
+        if (project.getCommitHistory() == null) {
+          CommitHistory commitHistory = queryCommitHistory();
+          return "Commit history loaded; found [%d] commit(s)".formatted(commitHistory.size());
+        }
+        else {
+          return "Commit history has already been loaded; use `reload-commit-history` to reset";
+        }
+
+      })
+      .orElse(PROJECT_NOT_FOUND);
+  }
+
+  @Command(
     name = "source-files",
     description = "Finds all source files with commit message like",
     availabilityProvider = "gitCommandsAvailability"
