@@ -68,7 +68,11 @@ public class SourceFileCommands extends AbstractCommandsSupport {
   @Getter(AccessLevel.PROTECTED)
   private final ProjectManager projectManager;
 
-  @Command(name = "count", availabilityProvider = "sourceCommandsAvailability")
+  @Command(
+    name = "count",
+    description = "Counts all source files at location",
+    availabilityProvider = "sourceCommandsAvailability"
+  )
   public int count(
       @Option(longName = "exclude-filter") String excludeFilter,
       @Option(longName = "include-filter") String includeFilter,
@@ -108,7 +112,10 @@ public class SourceFileCommands extends AbstractCommandsSupport {
       .size();
   }
 
-  @Command(name = "line-count")
+  @Command(
+    name = "line-count",
+    description = "Counts the number of lines in a source file"
+  )
   @SuppressWarnings("all")
   public String lineCount(
       @Option(longName = "count", shortName = 'c') boolean count,
@@ -165,7 +172,11 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     }
   }
 
-  @Command(name = "list", availabilityProvider = "sourceCommandsAvailability")
+  @Command(
+    name = "list",
+    description = "List all source files at location",
+    availabilityProvider = "sourceCommandsAvailability"
+  )
   public @NonNull String list(@Option(longName = "location", shortName = 'l') String location) {
 
     String sourceDirectoryName = SOURCE_DIRECTORY_NAME;
@@ -196,7 +207,11 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     return output.toString();
   }
 
-  @Command(name = "tree", availabilityProvider = "sourceCommandsAvailability")
+  @Command(
+    name = "tree",
+    description = "Renders all source files at location using a tree structure",
+    availabilityProvider = "sourceCommandsAvailability"
+  )
   public @NonNull String tree(
       @Option(longName = "location", shortName = 'l') String location,
       @Option(longName = "main") boolean main,
@@ -226,7 +241,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
   AvailabilityProvider sourceCommandsAvailability() {
 
     return isProjectSet() ? Availability::available
-      : () -> Availability.unavailable("the current project is not set;"
+      : () -> Availability.unavailable("The current project is not set;"
       + " please call 'project load <location>' or 'project use <name>'");
   }
 }
