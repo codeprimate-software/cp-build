@@ -118,7 +118,7 @@
     <junit.version>4.13.2</junit.version>
     <junit-bom.version>6.0.3</junit-bom.version>
     <lombok.version>1.18.46</lombok.version>
-    <maven.version>3.9.15</maven.version>
+    <maven.version>3.9.16</maven.version>
     <maven-changelog-plugin.version>3.0.0-M1</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
