@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codeprimate.build</groupId>
+    <artifactId>build-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>maven-build</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Codeprimate Maven Build</name>
+  <description>
+    Codeprimate Maven Build is the Maven parent project for all Codeprimate software projects
+    used to build and release Codeprimate software using Apache Maven.
+  </description>
+  <url>https://github.com/codeprimate-software/cp-build/maven-build</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <comments>
+        Copyright 2011-present the original author or authors.
+
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+        implied. See the License for the specific language governing
+        permissions and limitations under the License.
+      </comments>
+    </license>
+    <license>
+      <name>Codeprimate License, Version 1.0</name>
+      <url>http://www.codeprimate.org/licenses/LICENSE-1.0</url>
+      <comments>
+        Copyright (c) 2011-Present. Codeprimate, LLC and Authors. All Rights Reserved.
+
+        This software is licensed under the Codeprimate End User License Agreement (EULA).
+        This software is proprietary and confidential in addition to an intellectual asset
+        of the aforementioned authors.
+
+        By using the software, the end-user implicitly consents to and agrees to be in compliance
+        with all terms and conditions of the EULA. Failure to comply with the EULA will result in
+        the maximum penalties permissible by law.
+
+        In short, this software may not be reverse engineered, reproduced, copied, modified
+        or distributed without prior authorization of the aforementioned authors, permissible
+        and expressed only in writing. The authors grant the end-user non-exclusive, non-negotiable
+        and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
+        EXTENSIONS or CONDITIONS of any kind.
+
+        For further information on the software license, the end user is encouraged to read
+        the EULA @ ...
+      </comments>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Codeprimate, LLC</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jxblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate, LLC</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codeprimate-software/cp-build/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-build.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-build</url>
+  </scm>
+
+  <properties>
+    <asciidoctor-maven-plugin.version>3.2.0</asciidoctor-maven-plugin.version>
+    <asciidoctorj-pdf.version>2.3.23</asciidoctorj-pdf.version>
+    <assertj.version>3.27.7</assertj.version>
+    <changelog-start-date/>
+    <changelog-end-date/>
+    <debugger.configuration>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</debugger.configuration>
+    <easymock.version>5.6.0</easymock.version>
+    <gatling.version>3.15.1</gatling.version>
+    <gatling-maven-plugin.version>4.21.7</gatling-maven-plugin.version>
+    <gpg.keyname>Codeprimate Software</gpg.keyname>
+    <java-module-name/>
+    <java-compiler-debug>true</java-compiler-debug>
+    <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+    <jmeter-maven-plugin.version>3.8.0</jmeter-maven-plugin.version>
+    <jmh.version>1.37</jmh.version>
+    <junit.version>4.13.2</junit.version>
+    <junit-bom.version>6.0.3</junit-bom.version>
+    <lombok.version>1.18.46</lombok.version>
+    <maven-changelog-plugin.version>3.0.0-M2</maven-changelog-plugin.version>
+    <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+    <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+    <maven-jxr-plugin.version>3.6.0</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+    <maven-site-plugin.version>4.0.0-M16</maven-site-plugin.version>
+    <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+    <maven-surefire-report-plugin.version>3.5.6</maven-surefire-report-plugin.version>
+    <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
+    <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
+    <maven-wrapper-plugin.version>3.3.4</maven-wrapper-plugin.version>
+    <mockito.version>5.23.0</mockito.version>
+    <multithreadedtc.version>1.01</multithreadedtc.version>
+    <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-boot.version>3.5.16</spring-boot.version>
+    <spring-cloud.version>2025.1.2</spring-cloud.version>
+    <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
+    <testcontainers.version>2.0.5</testcontainers.version>
+    <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>${easymock.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit-bom.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>edu.umd.cs.mtc</groupId>
+        <artifactId>multithreadedtc</artifactId>
+        <version>${multithreadedtc.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>edu.umd.cs.mtc</groupId>
+      <artifactId>multithreadedtc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>${asciidoctor-maven-plugin.version}</version>
+          <configuration>
+            <attributes>
+              <basedocdir>${project.basedir}/src/docs/asciidoc</basedocdir>
+              <doctype>book</doctype>
+              <numbered>true</numbered>
+              <sectnums>true</sectnums>
+              <toclevels>2</toclevels>
+              <version>${project.version}</version>
+            </attributes>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj-pdf</artifactId>
+              <version>${asciidoctorj-pdf.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>html</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>process-asciidoc</goal>
+              </goals>
+              <configuration>
+                <backend>html5</backend>
+                <outputDirectory>${project.basedir}/target/site/reference/html</outputDirectory>
+                <attributes>
+                  <icons>font</icons>
+                  <linkcss>true</linkcss>
+                  <sectanchors>true</sectanchors>
+                </attributes>
+              </configuration>
+            </execution>
+            <execution>
+              <id>pdf</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>process-asciidoc</goal>
+              </goals>
+              <configuration>
+                <backend>pdf</backend>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-parameters</arg>
+            <arg>-Xlint:cast,deprecation,dep-ann,divzero,empty,fallthrough,finally,unchecked</arg>
+            <arg>-Xpkginfo:nonempty</arg>
+            <!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
+          </compilerArgs>
+          <debug>${java-compiler-debug}</debug>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-maven-build-environment</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${java.version}</version>
+                </requireJavaVersion>
+                <requireMavenVersion>
+                  <version>${maven.version}</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Automatic-Module-Name>${java-module-name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>${debugger.configuration}</argLine>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-wrapper-plugin</artifactId>
+        <version>${maven-wrapper-plugin.version}</version>
+        <configuration>
+          <distributionType>bin</distributionType>
+          <includeDebugScript>false</includeDebugScript>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>${versions-maven-plugin.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>java8</id>
+      <activation>
+        <jdk>(, 8]</jdk>
+      </activation>
+      <properties>
+        <mockito.version>4.11.0</mockito.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>java9+</id>
+      <activation>
+        <jdk>[9, )</jdk>
+      </activation>
+      <properties>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+      </properties>
+    </profile>
+    <profile>
+      <id>code-analysis</id>
+      <!-- $ mvn -P code-analysis install site -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>custom-report</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>custom-check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <!--  implementation is needed only for Maven 2  -->
+                    <rule implementation="org.jacoco.maven.RuleConfiguration">
+                      <element>BUNDLE</element>
+                      <excludes>
+                        <exclude>*Proto*</exclude>
+                      </excludes>
+                      <limits>
+                        <!--  implementation is needed only for Maven 2  -->
+                        <limit implementation="org.jacoco.report.check.Limit">
+                          <counter>INSTRUCTION</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.70</minimum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>${maven-site-plugin.version}</version>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <debugger.configuration> </debugger.configuration>
+      </properties>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>${maven-surefire-report-plugin.version}</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>${maven-jxr-plugin.version}</version>
+            <configuration>
+              <javadocDir>${project.build.directory}/apidocs</javadocDir>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${maven-checkstyle-plugin.version}</version>
+            <configuration>
+              <configLocation>${project.basedir}/etc/checkstyle/config/codeprimate_checkstyle_checks.xml</configLocation>
+              <excludes>**\/package-info.*</excludes>
+              <failsOnError>true</failsOnError>
+              <headerLocation>${project.basedir}/etc/checkstyle/config/java.header</headerLocation>
+              <suppressionsLocation>${project.basedir}/etc/checkstyle/config/codeprimate_checkstyle_suppressions.xml</suppressionsLocation>
+              <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>${maven-pmd-plugin.version}</version>
+            <configuration>
+              <excludeRoots>
+                <excludeRoot>${project.basedir}/target</excludeRoot>
+              </excludeRoots>
+              <failOnViolation>false</failOnViolation>
+              <printFailingErrors>true</printFailingErrors>
+              <rulesets>
+                <ruleset>${project.basedir}/etc/pmd/config/codeprimate_pmd_ruleset.xml</ruleset>
+              </rulesets>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
+            <configuration>
+              <excludeFilterFile>${project.basedir}/etc/spotbugs/config/codeprimate_spotbugs_excludes.xml</excludeFilterFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>prepare-release</id>
+      <!-- $ mvn -P prepare-release install site -->
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <configuration>
+              <sourcepath>src/main/java</sourcepath>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changelog-plugin</artifactId>
+            <version>${maven-changelog-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+                <id>all-reports</id>
+                <configuration>
+                  <type>date</type>
+                  <dates>
+                    <!-- Begin Date is inclusive -->
+                    <date implementation="java.lang.String">${changelog-start-date}</date>
+                    <!-- End Date is exclusive -->
+                    <date implementation="java.lang.String">${changelog-end-date}</date>
+                  </dates>
+                  <dateFormat>yyyy-MM-dd</dateFormat>
+                </configuration>
+                <reports>
+                  <report>changelog</report>
+                  <report>dev-activity</report>
+                  <report>file-activity</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>use-toolchains</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-toolchains-plugin</artifactId>
+            <version>${maven-toolchains-plugin.version}</version>
+            <configuration>
+              <toolchains>
+                <jdk>
+                  <version>${java.version}</version>
+                  <vendor>oracle</vendor>
+                </jdk>
+              </toolchains>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>toolchain</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>enable-gatling</id>
+      <dependencies>
+        <dependency>
+          <groupId>io.gatling.highcharts</groupId>
+          <artifactId>gatling-charts-highcharts</artifactId>
+          <version>${gatling.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-maven-plugin</artifactId>
+            <version>${gatling-maven-plugin.version}</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>enable-jmeter</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.lazerycode.jmeter</groupId>
+            <artifactId>jmeter-maven-plugin</artifactId>
+            <version>${jmeter-maven-plugin.version}</version>
+            <executions>
+              <!-- Generate JMeter configuration -->
+              <execution>
+                <id>configuration</id>
+                <goals>
+                  <goal>configure</goal>
+                </goals>
+              </execution>
+              <!-- Run JMeter Tests -->
+              <execution>
+                <id>jmeter-tests</id>
+                <goals>
+                  <goal>jmeter</goal>
+                </goals>
+              </execution>
+              <!-- Fail build on errors in tests -->
+              <execution>
+                <id>jmeter-check-results</id>
+                <goals>
+                  <goal>results</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>enable-jmh</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.openjdk.jmh</groupId>
+          <artifactId>jmh-core</artifactId>
+          <version>${jmh.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.openjdk.jmh</groupId>
+          <artifactId>jmh-generator-annprocess</artifactId>
+          <version>${jmh.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>

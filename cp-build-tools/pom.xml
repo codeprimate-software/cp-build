@@ -15,7 +15,7 @@
 
   <name>Codeprimate Build Tools</name>
   <description>
-    Codpeprimate Build Tools is a Spring Shell application and command-line interface (CLI), REPL program
+    Codpeprimate Build Tools is a Spring Shell application and command-line interface (CLI), REPL Java program
     encapsulating common software project management and build functions.
   </description>
   <url>https://github.com/codeprimate-software/cp-build/tree/main/cp-build-tools</url>
@@ -43,16 +43,16 @@
   </licenses>
 
   <organization>
-    <name>Codeprimate.org</name>
+    <name>Codeprimate, LLC</name>
     <url>http://www.codeprimate.org/</url>
   </organization>
 
   <developers>
     <developer>
-      <id>jblum</id>
+      <id>jxblum</id>
       <name>John J. Blum</name>
       <email>john dot blum at codeprimate dot org</email>
-      <organization>Codeprimate.org</organization>
+      <organization>Codeprimate, LLC</organization>
       <organizationUrl>http://www.codeprimate.org</organizationUrl>
     </developer>
   </developers>
@@ -72,7 +72,6 @@
     <java-module-name>cp.build.tools</java-module-name>
     <google-code-findbugs-jsr305.version>3.0.2</google-code-findbugs-jsr305.version>
     <jgit.version>7.7.0.202606012155-r</jgit.version>
-    <maven.version>3.9.16</maven.version>
     <spring-shell.version>4.0.3</spring-shell.version>
   </properties>
 
