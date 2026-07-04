@@ -112,6 +112,7 @@
     <junit.version>4.13.2</junit.version>
     <junit-bom.version>6.0.3</junit-bom.version>
     <kotlin.version>2.4.0</kotlin.version>
+    <kotlinx-coroutines-bom.version>1.11.0</kotlinx-coroutines-bom.version>
     <lombok.version>1.18.46</lombok.version>
     <maven-changelog-plugin.version>3.0.0-M2</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
@@ -168,6 +169,13 @@
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-bom</artifactId>
         <version>${kotlin.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>kotlinx-coroutines-bom</artifactId>
+        <version>${kotlinx-coroutines-bom.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
