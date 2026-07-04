@@ -111,6 +111,7 @@
     <jmh.version>1.37</jmh.version>
     <junit.version>4.13.2</junit.version>
     <junit-bom.version>6.0.3</junit-bom.version>
+    <kotlin.version>2.4.0</kotlin.version>
     <lombok.version>1.18.46</lombok.version>
     <maven-changelog-plugin.version>3.0.0-M2</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
@@ -310,6 +311,12 @@
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
@@ -328,6 +335,7 @@
             <!-- <classpath>${java.home}/lib/tools.jar</classpath> -->
           </compilerArgs>
           <debug>${java-compiler-debug}</debug>
+          <release>${java.version}</release>
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
