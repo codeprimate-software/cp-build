@@ -9,6 +9,7 @@
     <groupId>org.codeprimate.build</groupId>
     <artifactId>maven-build</artifactId>
     <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../maven-build</relativePath>
   </parent>
 
   <artifactId>starters</artifactId>
