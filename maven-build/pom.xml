@@ -155,13 +155,11 @@
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
         <version>${easymock.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -210,31 +208,26 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-junit-jupiter</artifactId>
         <version>${mockito.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito.kotlin</groupId>
         <artifactId>mockito-kotlin</artifactId>
         <version>${mockito-kotlin.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>io.mockk</groupId>
         <artifactId>mockk</artifactId>
         <version>${mockk.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>edu.umd.cs.mtc</groupId>
         <artifactId>multithreadedtc</artifactId>
         <version>${multithreadedtc.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
