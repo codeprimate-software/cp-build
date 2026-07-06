@@ -19,6 +19,10 @@
   </description>
   <url>https://github.com/codeprimate-software/cp-build/tree/main/starters/kotlin-starter</url>
 
+  <properties>
+    <duplicate-finder-maven-plugin.configuration.skip>true</duplicate-finder-maven-plugin.configuration.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>

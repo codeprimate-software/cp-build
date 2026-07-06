@@ -24,6 +24,7 @@
 
   <properties>
     <duplicate-finder-maven-plugin.version>2.0.1</duplicate-finder-maven-plugin.version>
+    <duplicate-finder-maven-plugin.configuration.skip>false</duplicate-finder-maven-plugin.configuration.skip>
   </properties>
 
   <modules>
@@ -53,6 +54,7 @@
               <ignoredClassPatterns>
                 <ignoredClassPattern>module-info</ignoredClassPattern>
               </ignoredClassPatterns>
+              <skip>${duplicate-finder-maven-plugin.configuration.skip}</skip>
             </configuration>
           </execution>
         </executions>
