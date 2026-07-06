@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codeprimate.build</groupId>
+    <artifactId>maven-build</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>starters</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Codeprimate Build Starters</name>
+  <description>
+    Codeprimate Build Starters are a set of Maven POMs declaring a set of dependencies used to develop
+    different functional aspects of software.
+  </description>
+  <url>https://github.com/codeprimate-software/cp-build/tree/main/starters</url>
+
+  <properties>
+    <duplicate-finder-maven-plugin.version>2.0.1</duplicate-finder-maven-plugin.version>
+  </properties>
+
+  <modules>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
+        <version>${duplicate-finder-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>duplicate-dependencies</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <failBuildInCaseOfConflict>true</failBuildInCaseOfConflict>
+              <ignoredResourcePatterns>
+                <ignoredResourcePattern>changelog.txt</ignoredResourcePattern>
+              </ignoredResourcePatterns>
+              <ignoredClassPatterns>
+                <ignoredClassPattern>module-info</ignoredClassPattern>
+              </ignoredClassPatterns>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

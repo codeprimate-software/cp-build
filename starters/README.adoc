@@ -1,0 +1,4 @@
+[[codeprimate-build-starters]]
+= Codeprimate Build Starters
+
+Starters include a set of Maven POMs declaring a set of dependencies used to develop different aspects of software.
