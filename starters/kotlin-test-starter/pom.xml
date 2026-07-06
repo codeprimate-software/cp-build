@@ -12,13 +12,12 @@
   </parent>
 
   <artifactId>kotlin-test-starter</artifactId>
-  <packaging>pom</packaging>
 
   <name>Codeprimate Build Kotlin Test Starter</name>
   <description>
-
+    Starter used to write Unit, Integration, and Functional/Acceptance Tests in Kotlin.
   </description>
-  <url></url>
+  <url>https://github.com/codeprimate-software/cp-build/tree/main/starters/kotlin-test-starter</url>
 
   <dependencies>
     <dependency>

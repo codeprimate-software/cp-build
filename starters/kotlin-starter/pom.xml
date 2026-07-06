@@ -12,7 +12,6 @@
   </parent>
 
   <artifactId>kotlin-starter</artifactId>
-  <packaging>pom</packaging>
 
   <name>Codeprimate Build Kotlin Starter</name>
   <description>
