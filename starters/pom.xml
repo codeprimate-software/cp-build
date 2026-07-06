@@ -27,6 +27,7 @@
 
   <modules>
     <module>kotlin-starter</module>
+    <module>kotlin-test-starter</module>
     <module>test-starter</module>
   </modules>
 
