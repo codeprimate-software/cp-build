@@ -26,6 +26,7 @@
   </properties>
 
   <modules>
+    <module>test-starter</module>
   </modules>
 
   <build>
