@@ -114,6 +114,7 @@
     <kotlin.version>2.4.0</kotlin.version>
     <kotlinx-coroutines-bom.version>1.11.0</kotlinx-coroutines-bom.version>
     <kotlinx-datetime.version>0.8.0</kotlinx-datetime.version>
+    <kotlinx-io.version>0.9.1</kotlinx-io.version>
     <kotlinx-serialization-bom.version>1.11.0</kotlinx-serialization-bom.version>
     <lombok.version>1.18.46</lombok.version>
     <maven-changelog-plugin.version>3.0.0-M2</maven-changelog-plugin.version>
@@ -187,6 +188,11 @@
         <groupId>org.jetbrains.kotlinx</groupId>
         <artifactId>kotlinx-datetime</artifactId>
         <version>${kotlinx-datetime.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlinx</groupId>
+        <artifactId>kotlinx-io-core</artifactId>
+        <version>${kotlinx-io.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlinx</groupId>
