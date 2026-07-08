@@ -2,9 +2,7 @@
 = Codeprimate Build
 :version: 3.0.0
 
-
-The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project
-used to build and release all Codeprimate software.
+The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project used to build and release all Codeprimate software.
 
 [[requirements]]
 == Requirements
@@ -37,16 +35,13 @@ used to build and release all Codeprimate software.
 [[issues]]
 == Issues
 
-Please use https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] to report any bugs, improvements
-or feature requests.
+Please use https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] to report any bugs, improvements or feature requests.
 
 [[contributions]]
 == Contributions
 
-Thank you for your interests in contributing to the *Codeprimate Build* project.  A full *contributor license agreement*
-(CLA) along with details on how to contribute to this project will be provided shortly.
+Thank you for your interests in contributing to the *Codeprimate Build* project.  A full *contributor license agreement* (CLA) along with details on how to contribute to this project will be provided shortly.
 
-In the meantime, please submit tickets using https://github.com/codeprimate-software/cp-build/issues[GitHub Issues]
-or PRs using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
+In the meantime, please submit tickets using https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] or PRs using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
 
 **Thank you!**
