@@ -1,0 +1,53 @@
+[[codprimate-maven-build]]
+= Codeprimate Maven Build
+:version: 3.0.0
+
+The Codeprimate Maven Build is the Maven parent project for all Codeprimate software projects using Apache Maven to build and release Codeprimate software.
+
+[[codprimate-maven-build-features]]
+== Maven Build Features
+
+* Based on Java (JDK/JRE) `21`
+* Based on Kotlin `2.4.0`
+* Dependency Management provided by Kotlin BOM, Spring Boot, Spring Cloud and Testcontainers BOM
+* Performs Code Analysis using Checkstyle, Jacoco, PMD and SpotBugs
+* Generates Project Source and Javadoc JAR files
+* Generates Project Documentation using Asciidoc
+* Generates Project Site using Maven Site Plugin
+* Generates Changelog using Maven Changelog Plugin
+* Enables the use of the Gatling Highchart Plugin
+* Enables the use of JMeter Maven PLugin
+* Enables the use of JMH Benchmarks for performance engineering
+* Allows use of Maven Toolchains
+* Release software artifacts to Maven Central
+
+[[codprimate-maven-build-use]]
+== Use Maven Build
+
+.Using Maven Build in Project Maven POM
+====
+[source,xml]
+[subs="verbatim,attributes"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codeprimate.build</groupId>
+    <artifactId>maven-build</artifactId>
+    <version>{version}</version>
+  </parent>
+
+  <groupId>com.example</groupId>
+  <artifactId>my-project</artifactId>
+  <version>1.0.0</version>
+
+  <!-- build configuration -->
+
+</project>
+----
+====
