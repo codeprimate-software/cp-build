@@ -9,17 +9,17 @@ The Codeprimate Maven Build is the Maven parent project for all Codeprimate soft
 
 * Based on Java (JDK/JRE) `21`
 * Based on Kotlin `2.4.0`
-* Dependency Management provided by Kotlin BOM, Spring Boot, Spring Cloud and Testcontainers BOM
-* Performs Code Analysis using Checkstyle, Jacoco, PMD and SpotBugs
+* Dependency Management provided by Codeprimate Maven Build, Kotlin BOM, Spring Boot, Spring Cloud and Testcontainers BOM
+* Performs code analysis using Checkstyle, Jacoco, PMD and SpotBugs
 * Generates Project Source and Javadoc JAR files
 * Generates Project Documentation using Asciidoc
 * Generates Project Site using Maven Site Plugin
 * Generates Changelog using Maven Changelog Plugin
-* Enables the use of the Gatling Highchart Plugin
-* Enables the use of JMeter Maven PLugin
-* Enables the use of JMH Benchmarks for performance engineering
-* Allows use of Maven Toolchains
-* Release software artifacts to Maven Central
+* Enables the use of the Gatling Plugin for Performance Testing
+* Enables the use of JMeter Maven Plugin for JVM Performance Monitoring
+* Enables the use of JMH Benchmarks for Performance Engineering
+* Enables the use of Maven Toolchains
+* Releases software artifacts to Maven Central
 
 [[codprimate-maven-build-use]]
 == Use Maven Build
@@ -46,6 +46,9 @@ The Codeprimate Maven Build is the Maven parent project for all Codeprimate soft
   <artifactId>my-project</artifactId>
   <version>1.0.0</version>
 
+  <name>My Project</name>
+  <description>Description of My Project</description>
+  <url>https://example.com</url>
   <!-- build configuration -->
 
 </project>
