@@ -40,7 +40,11 @@ Please use https://github.com/codeprimate-software/cp-build/issues[GitHub Issues
 [[contributions]]
 == Contributions
 
-Thank you for your interests in contributing to the *Codeprimate Build* project.  A full *contributor license agreement* (CLA) along with details on how to contribute to this project will be provided shortly.
+Thank you for your interests in contributing to the *Codeprimate Build* project.
+
+You may open a pull request (PR) using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
+
+A full *contributor license agreement* (CLA) along with details on how to contribute to this project will be provided shortly.
 
 In the meantime, please submit tickets using https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] or PRs using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
 
