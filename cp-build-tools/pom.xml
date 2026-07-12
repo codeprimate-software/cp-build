@@ -72,7 +72,7 @@
     <google-code-findbugs-jsr305.version>3.0.2</google-code-findbugs-jsr305.version>
     <jgit.version>7.7.0.202606012155-r</jgit.version>
     <maven.version>3.9.16</maven.version>
-    <spring-shell.version>3.4.0</spring-shell.version>
+    <spring-shell.version>3.4.3</spring-shell.version>
   </properties>
 
   <dependencyManagement>
