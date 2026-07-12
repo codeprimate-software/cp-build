@@ -13,7 +13,7 @@
   <name>Codeprimate Build</name>
   <description>
     Codeprimate Build Parent is the Maven parent project for all Codeprimate software projects
-    used to build and release Codeprimate software.
+    using Apache Maven to build and release Codeprimate software.
   </description>
   <url>https://github.com/codeprimate-software/cp-build</url>
 
