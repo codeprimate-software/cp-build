@@ -2,4 +2,4 @@
 
 export CP_BUILD_TOOLS_HOME=${CP_BUILD_TOOLS_HOME:-$HOME/cpdev/Codeprimate/projects/cp-core-workspace/cp-build/cp-build-tools}
 
-java -jar ${CP_BUILD_TOOLS_HOME}/target/build-tools-2.1.0.jar
+java -jar ${CP_BUILD_TOOLS_HOME}/target/build-tools-2.1.1-SNAPSHOT.jar
