@@ -3,16 +3,15 @@
 :version: 2.0.0
 
 
-The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project
-used to build and release all Codeprimate software.
+The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project using Apache Maven to build and release all Codeprimate software.
 
 [[requirements]]
 == Requirements
 
 1. Baseline is Java SE (JDK/JRE) 17.
-2. Built with Oracle JDK 17.0.14 2025-01-21 LTS (17.0.14+8-LTS-191)
-2.1 Builds with Oracle JDK 21 2025-01-21 LTS (build 21.0.6+8-LTS-188)
-2.2 Builds with Oracle JDK 23 2025-01-21 (build 23.0.2+7-58)
+2. Built with Oracle JDK 17.0.18 2026-01-20 LTS LTS (build 17.0.18+8-LTS-264)
+3. Builds with Oracle JDK 21 2026-04-21 LTS (build 21.0.11+9-LTS-211)
+4. Builds with Apache Maven 3.9.16 (Apache Maven Wrapper 3.3.4)
 
 [[license]]
 == License
@@ -38,16 +37,13 @@ used to build and release all Codeprimate software.
 [[issues]]
 == Issues
 
-Please use https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] to report any bugs, improvements
-or feature requests.
+Please use https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] to report any bugs, improvements or feature requests.
 
 [[contributions]]
 == Contributions
 
-Thank you for your interests in contributing to the *Codeprimate Build* project.  A full *contributor license agreement*
-(CLA) along with details on how to contribute to this project will be provided shortly.
+Thank you for your interests in contributing to the *Codeprimate Build* project.  A full *contributor license agreement* (CLA) along with details on how to contribute to this project will be provided shortly.
 
-In the meantime, please submit tickets using https://github.com/codeprimate-software/cp-build/issues[GitHub Issues]
-or PRs using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
+In the meantime, please submit tickets using https://github.com/codeprimate-software/cp-build/issues[GitHub Issues] or PRs using https://github.com/codeprimate-software/cp-build/pulls[GitHub Pull Requests].
 
 **Thank you!**
