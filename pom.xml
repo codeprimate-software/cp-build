@@ -64,14 +64,14 @@
   </licenses>
 
   <organization>
-    <name>Codeprimate.org</name>
+    <name>Codeprimate, LLC</name>
     <url>http://www.codeprimate.org/</url>
   </organization>
 
   <developers>
     <developer>
-      <id>jblum</id>
-      <name>John J. Blum</name>
+      <id>jxblum</id>
+      <name>John Blum</name>
       <email>john dot blum at codeprimate dot org</email>
       <organization>Codeprimate, LLC.</organization>
       <organizationUrl>http://www.codeprimate.org</organizationUrl>
@@ -88,15 +88,6 @@
     <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build.git</developerConnection>
     <url>https://github.com/codeprimate-software/cp-build</url>
   </scm>
-
-  <modules>
-    <!--<module>../cp-elements</module>-->
-    <!--<module>../cp-domain</module>-->
-    <!--<module>../cp-extensions</module>-->
-    <!--<module>../cp-desktop</module>-->
-    <!--<module>../cp-labs</module>-->
-    <!--<module>cp-build-tools</module>-->
-  </modules>
 
   <properties>
     <asciidoctor-maven-plugin.version>3.2.0</asciidoctor-maven-plugin.version>
