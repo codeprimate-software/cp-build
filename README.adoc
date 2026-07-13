@@ -1,8 +1,8 @@
 [[codeprimate-build]]
 = Codeprimate Build
-:version: 3.0.0-SNAPSHOT
+:version: 3.0.0-RC1
 
-The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project used to build and release all Codeprimate software.
+The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:maven-build`) is a Maven project using Apache Maven to build and release all Codeprimate software.
 
 [[requirements]]
 == Requirements
