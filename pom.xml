@@ -78,6 +78,14 @@
     </developer>
   </developers>
 
+  <distributionManagement>
+    <repository>
+      <id>central</id>
+      <name>Maven Central Repository</name>
+      <url>https://central.sonatype.com</url>
+    </repository>
+  </distributionManagement>
+
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/codeprimate-software/cp-build/issues</url>
@@ -154,11 +162,11 @@
                   <goal>flatten</goal>
                 </goals>
                 <configuration>
-                  <updatePomFile>true</updatePomFile>
                   <flattenMode>oss</flattenMode>
+                  <updatePomFile>true</updatePomFile>
                   <pomElements>
                     <parent>expand</parent>
-                    <distributionManagement>remove</distributionManagement>
+                    <profiles>keep</profiles>
                     <repositories>remove</repositories>
                   </pomElements>
                 </configuration>
@@ -195,13 +203,6 @@
           </plugin>
         </plugins>
       </build>
-      <distributionManagement>
-        <repository>
-          <id>central</id>
-          <name>Maven Central Repository</name>
-          <url>https://central.sonatype.com</url>
-        </repository>
-      </distributionManagement>
     </profile>
     <profile>
       <id>auto-release</id>
