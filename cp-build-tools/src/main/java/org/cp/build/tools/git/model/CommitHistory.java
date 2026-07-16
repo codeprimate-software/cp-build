@@ -262,7 +262,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * Finds all {@link CommitRecord CommitRecords} contained in this {@link CommitHistory}
    * on the given {@link LocalDate} regardless of time.
    *
-   * @param author {@link LocalDate} used to match and return {@link CommitRecord CommitRecords} on a particular day.
+   * @param date {@link LocalDate} used to match and return {@link CommitRecord CommitRecords} on a particular day.
    * @return a new {@link CommitHistory} containin all {@link CommitRecord CommitRecords}
    * from this {@link CommitHistory} on the given {@link LocalDate}.
    * @see java.time.LocalDate

@@ -55,7 +55,7 @@ public class Project implements Comparable<Project> {
 
   /**
    * Factory method used to construct a new {@link Project} from the given {@link File}.
-   * <p/>
+   * <p>
    * In this case, the {@link File} may either refer to the {@link File working directory} of the {@link Project}
    * or a {@link File Maven POM} specifying the metadata for the {@link Project}.
    *
@@ -239,12 +239,12 @@ public class Project implements Comparable<Project> {
   }
 
   /**
-   * Compares and sorts a collection of {@link Project Projects} by {@link #getName() name} in ascending order.
+   * Compares and sorts a collection of {@link Project Projects} by {@link #name} in ascending order.
    *
    * @param project {@link Project} compared for order with this {@link Project}; must not be null.
    * @return an {@link Integer value} specifying relative ordering between this {@link Project}
    * and the given {@link Project}.
-   * @see #getName()
+   * @see #name
    */
   @Override
   public int compareTo(@NonNull Project project) {
@@ -252,10 +252,10 @@ public class Project implements Comparable<Project> {
   }
 
   /**
-   * Returns the {@link #getName() name} of this {@link Project}.
+   * Returns the {@link #name} of this {@link Project}.
    *
-   * @return the {@link #getName() name} of this {@link Project}.
-   * @see #getName()
+   * @return the {@link #name} of this {@link Project}.
+   * @see #name
    */
   @Override
   public String toString() {

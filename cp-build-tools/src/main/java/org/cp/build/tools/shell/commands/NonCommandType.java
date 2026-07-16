@@ -16,12 +16,13 @@
 package org.cp.build.tools.shell.commands;
 
 /**
- * Marker interface used to scan for {@link org.springframework.shell.command.annotation.Command} classes
+ * Marker interface used to scan for {@link org.springframework.shell.core.command.Command} classes
  * for Codeprimate Build Tools.
  *
  * @author John Blum
  * @since 2.0.0
  */
+@SuppressWarnings("unused")
 public interface NonCommandType {
 
 }

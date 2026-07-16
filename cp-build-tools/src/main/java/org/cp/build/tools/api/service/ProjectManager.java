@@ -186,7 +186,7 @@ public class ProjectManager implements Iterable<Project> {
    * Sets a reference to the current (active) {@link Project}.
    *
    * @param project current, activated {@link Project}; must not bw {@literal null}.
-   * @return the given {@linbk Project}.
+   * @return the given {@link Project}.
    * @see org.cp.build.tools.api.model.Session#setProject(Project)
    * @see org.cp.build.tools.api.model.Project
    * @see #getSession()
