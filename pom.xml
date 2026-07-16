@@ -78,6 +78,17 @@
     </developer>
   </developers>
 
+  <scm>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-build.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-build</url>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codeprimate-software/cp-build/issues</url>
+  </issueManagement>
+
   <distributionManagement>
     <repository>
       <id>central</id>
@@ -86,20 +97,9 @@
     </repository>
   </distributionManagement>
 
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/codeprimate-software/cp-build/issues</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:git:git@github.com:codeprimate-software/cp-build.git</connection>
-    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-build.git</developerConnection>
-    <url>https://github.com/codeprimate-software/cp-build</url>
-  </scm>
-
   <modules>
-    <module>maven-build</module>
     <module>cp-build-tools</module>
+    <module>maven-build</module>
     <module>starters</module>
   </modules>
 
