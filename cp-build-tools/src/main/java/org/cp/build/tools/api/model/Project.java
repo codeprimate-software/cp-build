@@ -131,6 +131,27 @@ public class Project implements Comparable<Project> {
   }
 
   /**
+   * Gets the {@link File directory location} in the filesystem for this {@link Project}.
+   *
+   * @return the {@link File directory location} in the filesystem for this {@link Project}.
+   * @see java.io.File
+   */
+  @SuppressWarnings("all")
+  public File getDirectory() {
+    return directory;
+  }
+
+  /**
+   * Gets the {@link String name} of this {@link Project}.
+   *
+   * @return the {@link String name} of this {@link Project}.
+   */
+  @SuppressWarnings("all")
+  public String getName() {
+    return this.name;
+  }
+
+  /**
    * Builder method used to configure the {@link Artifact} built by this {@link Project}.
    *
    * @param <T> {@link Class concrete type} of {@link Project}.
