@@ -43,7 +43,6 @@ import org.springframework.util.Assert;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +60,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-@Getter(AccessLevel.PROTECTED)
 @SuppressWarnings("unused")
 public class ProjectManager implements Iterable<Project> {
 
@@ -96,6 +94,38 @@ public class ProjectManager implements Iterable<Project> {
   public void onInitialization() {
     activateProjectInWorkingDirectory();
     loadRecentProjects();
+  }
+
+  /**
+   * Gets all managed {@link Project Projects}.
+   *
+   * @return all managed {@link Project Projects}.
+   * @see org.cp.build.tools.api.model.Project
+   * @see Set
+   */
+  protected Set<Project> getProjects() {
+    return projects;
+  }
+
+  /**
+   * Gets all recently used {@link Project Projects}.
+   *
+   * @return all recently used {@link Project Projects}.
+   * @see RecentProject
+   * @see Set
+   */
+  protected Set<RecentProject> getRecentProjects() {
+    return recentProjects;
+  }
+
+  /**
+   * Gets the current {@link Session} for the shell.
+   *
+   * @return the current {@link Session} for the shell.
+   * @see org.cp.build.tools.api.model.Session
+   */
+  protected Session getSession() {
+    return this.session;
   }
 
   private void activateProjectInWorkingDirectory() {
