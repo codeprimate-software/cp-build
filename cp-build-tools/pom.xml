@@ -73,6 +73,7 @@
     <java-module-name>cp.build.tools</java-module-name>
     <google-code-findbugs-jsr305.version>3.0.2</google-code-findbugs-jsr305.version>
     <jgit.version>7.7.0.202606012155-r</jgit.version>
+    <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
     <spring-shell.version>4.0.3</spring-shell.version>
   </properties>
 
@@ -153,6 +154,19 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-maven-plugin</artifactId>
+        <version>${lombok-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>delombok</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
