@@ -24,7 +24,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2.0.0
  */
 @Slf4j
-@Getter
 @Service
 @SuppressWarnings("unused")
 public class Session {
@@ -53,6 +51,17 @@ public class Session {
 
   protected Logger getLogger() {
     return log;
+  }
+
+  /**
+   * Returns the current (active) {@link Project} for this {@link Session}.
+   *
+   * @return the current (active) {@link Project} for this {@link Session};
+   * returns {@literal null} if no {@link Project} has been set.
+   * @see org.cp.build.tools.api.model.Project
+   */
+  public @Nullable Project getProject() {
+    return project;
   }
 
   public boolean isProjectSet() {
