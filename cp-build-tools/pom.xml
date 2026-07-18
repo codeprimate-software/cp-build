@@ -71,6 +71,7 @@
 
   <properties>
     <java-module-name>cp.build.tools</java-module-name>
+    <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <google-code-findbugs-jsr305.version>3.0.2</google-code-findbugs-jsr305.version>
     <jgit.version>7.7.0.202606012155-r</jgit.version>
     <lombok.skip>true</lombok.skip>
@@ -186,5 +187,43 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${build-helper-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${project.build.directory}/${project.artifactId}-${project.version}-javadoc.jar</file>
+                      <type>jar</type>
+                      <classifier>javadoc</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${project.build.directory}/${project.artifactId}-${project.version}-sources.jar</file>
+                      <type>jar</type>
+                      <classifier>sources</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
