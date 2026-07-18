@@ -15,6 +15,8 @@
  */
 package org.cp.build.tools.git.support;
 
+import org.springframework.util.Assert;
+
 /**
  * Java {@link RuntimeException} used to classify general {@literal Git} exceptions.
  *
@@ -25,7 +27,14 @@ package org.cp.build.tools.git.support;
 @SuppressWarnings("unused")
 public class GitException extends RuntimeException {
 
-  public GitException() { }
+  public static GitException because(String message) {
+    Assert.hasText(message, "Exception message is required");
+    return new GitException(message);
+  }
+
+  public GitException() {
+
+  }
 
   public GitException(String message) {
     super(message);
@@ -37,5 +46,10 @@ public class GitException extends RuntimeException {
 
   public GitException(String message, Throwable cause) {
     super(message, cause);
+  }
+
+  public GitException causedBy(Throwable cause) {
+    initCause(cause);
+    return this;
   }
 }
