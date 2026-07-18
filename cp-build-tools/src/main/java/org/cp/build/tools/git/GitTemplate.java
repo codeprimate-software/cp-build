@@ -59,9 +59,9 @@ import lombok.Setter;
  * Data Access Object (DAO) and Template for {@link Git}.
  *
  * @author John Blum
- * @see org.cp.build.tools.git.model.CommitHistory
- * @see org.cp.build.tools.git.model.CommitRecord
  * @see org.eclipse.jgit.api.Git
+ * @see CommitHistory
+ * @see CommitRecord
  * @since 2.0.0
  */
 @Getter(AccessLevel.PROTECTED)
@@ -73,7 +73,8 @@ public class GitTemplate {
   protected static final String MASTER_BRANCH_NAME = "master";
 
   public static @NonNull GitTemplate from(@NonNull Supplier<Git> gitSupplier) {
-    return new GitTemplate(Utils.requireObject(gitSupplier, "Supplier for Git is required"));
+    Utils.requireObject(gitSupplier, "Supplier for Git is required");
+    return new GitTemplate(gitSupplier);
   }
 
   @NonNull
@@ -84,16 +85,6 @@ public class GitTemplate {
 
   protected @NonNull Git git() {
     return getGit().get();
-  }
-
-  @SuppressWarnings("all")
-  public @NonNull GitTemplate usingSourceFilesDirectoryResolver(@NonNull Supplier<File> sourceFilesDirectoryResolver) {
-
-    if (sourceFilesDirectoryResolver != null) {
-      setSourceFilesDirectoryResolver(sourceFilesDirectoryResolver);
-    }
-
-    return this;
   }
 
   public @NonNull CommitHistory getCommitHistory() {
@@ -149,38 +140,54 @@ public class GitTemplate {
     }
   }
 
-  private @NonNull CommitRecord newCommitRecord(@NonNull RevCommit commit) {
+  @SuppressWarnings("all")
+  public @NonNull GitTemplate usingSourceFilesDirectoryResolver(@NonNull Supplier<File> sourceFilesDirectoryResolver) {
+
+    if (sourceFilesDirectoryResolver != null) {
+      setSourceFilesDirectoryResolver(sourceFilesDirectoryResolver);
+    }
+
+    return this;
+  }
+
+  private CommitRecord newCommitRecord(RevCommit commit) {
 
     CommitterIdentity committerIdentity = resolveCommitAuthor(commit);
 
     LocalDateTime dateTime = resolveCommitDateTime(commit, committerIdentity);
 
     String hash = resolveCommitHash(commit);
+    String message = resolveCommitMessage(commit);
 
     CommitRecord.Author author = newCommitRecordAuthor(committerIdentity);
 
-    return CommitRecord.of(author, dateTime, hash)
-      .withMessage(commit.getFullMessage());
+    return CommitRecord.of(author, dateTime, hash).withMessage(message);
   }
 
-  private @NonNull CommitRecord.Author newCommitRecordAuthor(@NonNull CommitterIdentity committerIdentity) {
-    return CommitRecord.Author.as(committerIdentity.getName()).withEmailAddress(committerIdentity.getEmailAddress());
+  private CommitRecord.Author newCommitRecordAuthor(CommitterIdentity committerIdentity) {
+    return CommitRecord.Author.as(committerIdentity.getName())
+      .withEmailAddress(committerIdentity.getEmailAddress());
   }
 
-  private CommitterIdentity resolveCommitAuthor(@NonNull RevCommit commit) {
+  private CommitterIdentity resolveCommitAuthor(RevCommit commit) {
     return CommitterIdentity.of(commit.getAuthorIdent(), commit.getCommitterIdent());
   }
 
-  private LocalDateTime resolveCommitDateTime(@NonNull RevCommit commit, @NonNull CommitterIdentity committerIdentity) {
+  private LocalDateTime resolveCommitDateTime(RevCommit commit, CommitterIdentity committerIdentity) {
     return committerIdentity.resolveCommitDateTime(commit);
   }
 
-  private String resolveCommitHash(@NonNull RevCommit commit) {
+  private String resolveCommitHash(RevCommit commit) {
     return commit.name();
   }
 
-  private @NonNull CommitRecord resolveCommittedSourceFiles(@NonNull Repository repository, @NonNull RevCommit commit,
-      @NonNull CommitRecord commitRecord) throws Exception {
+  private String resolveCommitMessage(RevCommit commit) {
+    return commit.getFullMessage();
+    //return commit.getShortMessage();
+  }
+
+  private CommitRecord resolveCommittedSourceFiles(Repository repository, RevCommit commit, CommitRecord commitRecord)
+      throws Exception {
 
     List<File> sourceFiles = resolveCommittedSourceFilesUsingDiffFormatter(repository, commit);
 
@@ -207,7 +214,7 @@ public class GitTemplate {
     return sourceFiles;
   }
 
-  private static @NonNull DiffFormatter newDiffFormatter(@NonNull Repository repository) {
+  private DiffFormatter newDiffFormatter(Repository repository) {
 
     DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);
 
@@ -218,19 +225,24 @@ public class GitTemplate {
     return diffFormatter;
   }
 
-  private static @NonNull RevCommit resolvePreviousCommit(@NonNull Repository repository, @NonNull RevCommit commit)
-      throws Exception {
+  private String previousCommitReference(RevCommit commit) {
+    return commit.name().concat("~1");
+  }
+
+  private RevCommit resolvePreviousCommit(Repository repository, RevCommit commit) throws Exception {
 
     Supplier<ObjectId> headObjectIdSupplier = () -> {
       try {
         return repository.resolve(Constants.HEAD);
       }
       catch (Exception cause) {
-        throw new GitException("Failed to resolve ObjectId for HEAD", cause);
+        throw GitException.because("Failed to resolve ObjectId for HEAD").causedBy(cause);
       }
     };
 
-    ObjectId previousCommitId = Utils.get(repository.resolve(commit.name().concat("~1")), headObjectIdSupplier);
+    String previousCommitRef = previousCommitReference(commit);
+
+    ObjectId previousCommitId = Utils.get(repository.resolve(previousCommitRef), headObjectIdSupplier);
 
     return new RevWalk(repository).parseCommit(previousCommitId);
   }
@@ -239,11 +251,10 @@ public class GitTemplate {
   @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
   static class CommitterIdentity {
 
-    static @NonNull CommitterIdentity of(@Nullable PersonIdent authorIdentity,
-        @Nullable PersonIdent committerIdentity) {
+    static CommitterIdentity of(@Nullable PersonIdent authorIdentity, @Nullable PersonIdent committerIdentity) {
 
       Assert.isTrue(authorIdentity != null || committerIdentity != null,
-        () -> "Either Author Identity [%s] or Commit Identity [%s] is required"
+        () -> "Either Author Identity [%s] or Committer Identity [%s] is required"
           .formatted(authorIdentity, committerIdentity));
 
       return new CommitterIdentity(authorIdentity, committerIdentity);
@@ -253,7 +264,8 @@ public class GitTemplate {
     private final PersonIdent committerIdentity;
 
     protected @NonNull PersonIdent resolveIdentity() {
-      return this.committerIdentity != null ? this.committerIdentity : this.authorIdentity;
+      PersonIdent committerIdentity = this.committerIdentity;
+      return committerIdentity != null ? committerIdentity : this.authorIdentity;
     }
 
     public String getEmailAddress() {
@@ -287,11 +299,17 @@ public class GitTemplate {
     }
 
     private @NonNull LocalDateTime nullSafeIdentityTime(@Nullable PersonIdent personIdentity) {
-      return personIdentity != null ? toLocalDateTime(personIdentity.getWhenAsInstant()) : LocalDateTime.now();
+
+      return personIdentity != null
+        ? toLocalDateTime(personIdentity.getWhenAsInstant())
+        : LocalDateTime.now();
     }
 
     private @NonNull LocalDateTime toLocalDateTime(@Nullable Instant instant) {
-      return instant != null ? toLocalDateTime(instant.getEpochSecond()) : LocalDateTime.now();
+
+      return instant != null
+        ? toLocalDateTime(instant.getEpochSecond())
+        : LocalDateTime.now();
     }
 
     private @NonNull LocalDateTime toLocalDateTime(long seconds) {
