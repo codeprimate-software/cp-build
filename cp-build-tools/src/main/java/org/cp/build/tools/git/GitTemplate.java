@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.build.tools.git.support;
+package org.cp.build.tools.git;
 
 import java.io.File;
 import java.time.Instant;
@@ -31,6 +31,7 @@ import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.model.GitStatus;
+import org.cp.build.tools.git.support.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.Status;

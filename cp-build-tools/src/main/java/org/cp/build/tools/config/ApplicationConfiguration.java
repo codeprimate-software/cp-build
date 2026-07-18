@@ -20,8 +20,8 @@ import java.util.Arrays;
 
 import org.cp.build.tools.api.model.Session;
 import org.cp.build.tools.api.service.ProjectManager;
+import org.cp.build.tools.git.GitTemplate;
 import org.cp.build.tools.git.model.GitProject;
-import org.cp.build.tools.git.support.GitTemplate;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
 /**
- * Spring {@link Configuration} class used to configure and enable additional application services.
+ * Spring {@link Configuration} used to configure and enable additional application services of the CLI.
  *
  * @author John Blum
  * @see org.springframework.cache.annotation.EnableCaching

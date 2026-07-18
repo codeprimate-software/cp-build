@@ -38,13 +38,13 @@ import org.cp.build.tools.api.model.SourceFileSet;
 import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
+import org.cp.build.tools.git.GitTemplate;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.git.model.CommitHistory.Group;
 import org.cp.build.tools.git.model.CommitRecord;
 import org.cp.build.tools.git.model.CommitRecord.Author;
 import org.cp.build.tools.git.model.GitStatus;
 import org.cp.build.tools.git.model.support.CommitRecordComparator;
-import org.cp.build.tools.git.support.GitTemplate;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
@@ -66,13 +66,12 @@ import lombok.RequiredArgsConstructor;
  * Spring Shell {@link Command Commands} for {@literal Git}.
  *
  * @author John Blum
- * @see org.cp.build.tools.api.model.Project
- * @see org.cp.build.tools.api.service.ProjectManager
- * @see org.cp.build.tools.git.model.CommitHistory
- * @see org.cp.build.tools.git.model.CommitRecord
- * @see org.cp.build.tools.git.model.GitStatus
- * @see org.cp.build.tools.git.support.GitTemplate
- * @see org.cp.build.tools.shell.commands.AbstractCommandsSupport
+ * @see AbstractCommandsSupport
+ * @see CommitHistory
+ * @see CommitRecord
+ * @see GitStatus
+ * @see GitTemplate
+ * @see Project
  * @see org.springframework.shell.core.command.annotation.Command
  * @see org.springframework.shell.core.command.annotation.CommandGroup
  * @since 2.0.0
