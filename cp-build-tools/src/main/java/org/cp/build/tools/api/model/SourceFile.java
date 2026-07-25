@@ -70,11 +70,11 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   protected static final String SOURCE_MAIN = "src%smain".formatted(File.separator);
   protected static final String SOURCE_TEST = "src%stest".formatted(File.separator);
 
-  public static @NonNull SourceFile from(@NonNull File file) {
+  public static SourceFile from(File file) {
     return new SourceFile(file);
   }
 
-  public static @NonNull SourceFile from(@NonNull File file, @Nullable Project project) {
+  public static SourceFile from(File file, @Nullable Project project) {
     return new SourceFile(file, project);
   }
 
@@ -89,11 +89,11 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   @Getter(AccessLevel.PROTECTED)
   private final Set<Revision> revisions = new TreeSet<>();
 
-  public SourceFile(@NonNull File file) {
+  public SourceFile(File file) {
     this(file, null);
   }
 
-  public SourceFile(@NonNull File file, @Nullable Project project) {
+  public SourceFile(File file, @Nullable Project project) {
 
     Assert.notNull(file, "File is required");
     Assert.isTrue(file.isFile(), () -> "File [%s] must exist".formatted(file));
@@ -103,7 +103,9 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   public Set<Author> getAuthors() {
-    return stream().map(Revision::getAuthor).collect(Collectors.toSet());
+    return stream()
+      .map(Revision::getAuthor)
+      .collect(Collectors.toSet());
   }
 
   @SuppressWarnings("all")
@@ -129,7 +131,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
   public Optional<Revision> getLastRevision() {
     List<Revision> revisions = stream().toList();
-    Revision last = revisions.isEmpty() ? null : revisions.get(revisions.size() - 1);
+    Revision last = revisions.isEmpty() ? null : revisions.getLast();
     return Optional.ofNullable(last);
   }
 
@@ -179,7 +181,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
       : pathname;
   }
 
-  public Optional<Revision> getRevision(@NonNull String id) {
+  public Optional<Revision> getRevision(String id) {
     return stream().filter(revision -> revision.getId().equals(id)).findFirst();
   }
 
@@ -191,12 +193,12 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return stream().map(Revision::getId).collect(Collectors.toSet());
   }
 
-  public Set<Revision> getRevisions(@NonNull Author author) {
+  public Set<Revision> getRevisions(Author author) {
     return stream().filter(revision -> revision.getAuthor().equals(author)).collect(Collectors.toSet());
   }
 
   // Find (Query) by Author name or email address
-  public Set<Revision> getRevisions(@NonNull String author) {
+  public Set<Revision> getRevisions(String author) {
 
     return stream().filter(revision -> {
 
@@ -209,7 +211,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
   }
 
   @SuppressWarnings("all")
-  public Set<Revision> getRevisions(@NonNull TimePeriods timePeriods) {
+  public Set<Revision> getRevisions(TimePeriods timePeriods) {
 
     return timePeriods != null
       ? stream().filter(revision -> timePeriods.isDuring(revision.getDate())).collect(Collectors.toSet())
@@ -271,26 +273,26 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return Utils.stream(this);
   }
 
-  public boolean wasModifiedBy(@NonNull Author author) {
+  public boolean wasModifiedBy(Author author) {
     return !getRevisions(author).isEmpty();
   }
 
   // Evaluate by Author name or email address
-  public boolean wasModifiedBy(@NonNull String author) {
+  public boolean wasModifiedBy(String author) {
     return !getRevisions(author).isEmpty();
   }
 
-  public boolean wasModifiedDuring(@NonNull TimePeriods timePeriods) {
+  public boolean wasModifiedDuring(TimePeriods timePeriods) {
     return !getRevisions(timePeriods).isEmpty();
   }
 
-  public SourceFile withRevision(@NonNull Revision revision) {
+  public SourceFile withRevision(Revision revision) {
     this.revisions.add(Objects.requireNonNull(revision, "Revision is required"));
     return this;
   }
 
   @Override
-  public int compareTo(@NonNull SourceFile that) {
+  public int compareTo(SourceFile that) {
     return this.getFile().compareTo(that.getFile());
   }
 
@@ -318,6 +320,12 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return getFile().getAbsolutePath();
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@link SourceFile} {@literal Author}.
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   */
   @Getter
   @EqualsAndHashCode
   @RequiredArgsConstructor(staticName = "as")
@@ -346,6 +354,12 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the {@link SourceFile} {@literal revision},
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   */
   @Getter
   @EqualsAndHashCode(of = "id")
   @RequiredArgsConstructor(staticName = "of")
@@ -376,6 +390,12 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     }
   }
 
+  /**
+   * {@link Enum Enumeration} of {@link SourceFile} {@link Type types}.
+   *
+   * @author John Blum
+   * @see java.lang.FunctionalInterface
+   */
   @FunctionalInterface
   public interface Type {
     String getExtension();
