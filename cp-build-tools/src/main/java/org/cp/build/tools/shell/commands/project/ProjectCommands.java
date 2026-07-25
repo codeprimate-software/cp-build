@@ -42,7 +42,6 @@ import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.shell.core.command.annotation.Argument;
 import org.springframework.shell.core.command.annotation.Command;
@@ -248,7 +247,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "load", description = "Loads project from the given location", completionProvider = "projectLoadCompletionProvider")
-  public String load(@NonNull @Argument(index = 0) File location) {
+  public String load(@Argument(index = 0) File location) {
 
     ProjectManager projectManager = getProjectManager();
 
@@ -347,7 +346,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
   }
 
   @Command(name = "use", description = "Sets current project to the given name")
-  public String use(@NonNull @Argument(index = 0) String projectName) {
+  public String use(@Argument(index = 0) String projectName) {
 
     ProjectManager projectManager = getProjectManager();
 
@@ -363,7 +362,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
         .orElseGet(() -> "Project with name [%s] not found".formatted(projectName)));
   }
 
-  @NonNull @Bean
+  @Bean
   AvailabilityProvider projectCommandsAvailabilityProvider() {
 
     return isProjectSet() ? Availability::available
@@ -371,7 +370,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
         + " please call 'project load <location>' or 'project use <name>'");
   }
 
-  @NonNull @Bean
+  @Bean
   CompletionProvider projectLoadCompletionProvider() {
 
     return completionContext -> {
@@ -389,8 +388,8 @@ public class ProjectCommands extends AbstractCommandsSupport {
     };
   }
 
-  private static @NonNull Predicate<CommitRecord> commitDateQueryPredicate(@Nullable String targetDateString,
-      @NonNull Supplier<LocalDate> defaultTargetDate, @NonNull BiPredicate<LocalDate, LocalDate> commitDatePredicate) {
+  private static Predicate<CommitRecord> commitDateQueryPredicate(@Nullable String targetDateString,
+      Supplier<LocalDate> defaultTargetDate, BiPredicate<LocalDate, LocalDate> commitDatePredicate) {
 
     return commitRecord -> {
 
