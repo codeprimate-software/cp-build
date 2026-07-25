@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.ComparableComparator;
 import org.cp.build.tools.api.support.Utils;
@@ -66,7 +67,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.maven.model.MavenProject
    * @see java.io.File
    */
-  public static @NonNull Project from(@NonNull File file) {
+  public static Project from(File file) {
 
     if (MavenProject.isMavenPomPresent(file)) {
       return MavenProject.fromMavenPom(file);
@@ -82,7 +83,7 @@ public class Project implements Comparable<Project> {
    * @return a new {@link Project} with the given {@link String name}.
    * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
    */
-  public static @NonNull Project from(@NonNull String name) {
+  public static Project from(String name) {
 
     Assert.hasText(name, () -> "Name [%s] for project is required".formatted(name));
 
@@ -283,12 +284,18 @@ public class Project implements Comparable<Project> {
     return getName();
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@literal software artifact}.
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   */
   @Getter
   public static class Artifact implements Comparable<Artifact> {
 
     protected static final String ARTIFACT_COMPONENT_SEPARATOR = ":";
 
-    public static @NonNull Artifact from(@NonNull Project project, @NonNull String id) {
+    public static Artifact from(Project project, String id) {
       return new Artifact(project, id);
     }
 
@@ -299,7 +306,7 @@ public class Project implements Comparable<Project> {
 
     private final String id;
 
-    protected Artifact(@NonNull Project project, @NonNull String id) {
+    protected Artifact(Project project, String id) {
 
       Assert.hasText(id, () -> "Artifact ID [%s] is required".formatted(id));
 
@@ -320,13 +327,13 @@ public class Project implements Comparable<Project> {
       return getProject().getVersion();
     }
 
-    public @NonNull Artifact withGroupId(@Nullable String groupId) {
+    public Artifact withGroupId(@Nullable String groupId) {
       setGroupId(groupId);
       return this;
     }
 
     @Override
-    public int compareTo(@NonNull Artifact artifact) {
+    public int compareTo(Artifact artifact) {
 
       int result = Utils.getInt(ComparableComparator.INSTANCE.compare(this.getGroupId(), artifact.getGroupId()),
         () -> this.getId().compareTo(artifact.getId()));
@@ -368,6 +375,11 @@ public class Project implements Comparable<Project> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@literal software license}.
+   *
+   * @author John Blum
+   */
   @Getter
   @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "from")
@@ -378,7 +390,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public @NonNull License withUri(@Nullable URI uri) {
+    public License withUri(@Nullable URI uri) {
       setUri(uri);
       return this;
     }
@@ -395,13 +407,20 @@ public class Project implements Comparable<Project> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a collection of {@literal software licenses}.
+   *
+   * @author John Blum
+   * @see java.lang.Iterable
+   * @see License
+   */
   @Getter(AccessLevel.PROTECTED)
   public static class Licenses implements Iterable<License> {
 
     private final Set<License> licenses = new HashSet<>();
 
     @SuppressWarnings("all")
-    public boolean add(@NonNull License license) {
+    public boolean add(License license) {
       return license != null && getLicenses().add(license);
     }
 
@@ -410,8 +429,13 @@ public class Project implements Comparable<Project> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public Iterator<License> iterator() {
       return Collections.unmodifiableSet(this.licenses).iterator();
+    }
+
+    public Stream<License> stream() {
+      return Utils.stream(this);
     }
 
     @Override
@@ -420,6 +444,12 @@ public class Project implements Comparable<Project> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@literal software developer}.
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   */
   @Getter
   @Setter(AccessLevel.PROTECTED)
   @EqualsAndHashCode(of = "name")
@@ -428,7 +458,6 @@ public class Project implements Comparable<Project> {
 
     private Organization organization;
 
-    @NonNull
     private final String name;
 
     private String emailAddress;
@@ -436,28 +465,28 @@ public class Project implements Comparable<Project> {
 
     private URI uri;
 
-    public @NonNull Developer identifiedBy(@Nullable String id) {
+    public Developer identifiedBy(@Nullable String id) {
       setId(id);
       return this;
     }
 
-    public @NonNull Developer withEmailAddress(@Nullable String emailAddress) {
+    public Developer withEmailAddress(@Nullable String emailAddress) {
       setEmailAddress(emailAddress);
       return this;
     }
 
-    public @NonNull Developer withOrganization(@Nullable Organization organization) {
+    public Developer withOrganization(@Nullable Organization organization) {
       setOrganization(organization);
       return this;
     }
 
-    public @NonNull Developer withUri(@Nullable URI uri) {
+    public Developer withUri(@Nullable URI uri) {
       setUri(uri);
       return this;
     }
 
     @Override
-    public int compareTo(@NonNull Developer developer) {
+    public int compareTo(Developer developer) {
       return this.getName().compareTo(developer.getName());
     }
 
@@ -467,6 +496,13 @@ public class Project implements Comparable<Project> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a collection of {@literal software developers}.
+   *
+   * @author John Blum
+   * @see java.lang.Iterable
+   * @see Developer
+   */
   @Getter(AccessLevel.PROTECTED)
   public static class Developers implements Iterable<Developer> {
 
@@ -482,8 +518,13 @@ public class Project implements Comparable<Project> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public Iterator<Developer> iterator() {
       return Collections.unmodifiableSet(this.developers).iterator();
+    }
+
+    public Stream<Developer> stream() {
+      return Utils.stream(this);
     }
 
     @Override
@@ -493,6 +534,12 @@ public class Project implements Comparable<Project> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@literal software orgnization}.
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   */
   @Getter
   @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "as")
@@ -503,13 +550,13 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public @NonNull Organization withUri(@Nullable URI uri) {
+    public Organization withUri(@Nullable URI uri) {
       setUri(uri);
       return this;
     }
 
     @Override
-    public int compareTo(@NonNull Organization organization) {
+    public int compareTo(Organization organization) {
       return this.getName().compareTo(organization.getName());
     }
 
@@ -525,6 +572,12 @@ public class Project implements Comparable<Project> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@literal software version}.
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   */
   @Getter
   public static class Version implements Comparable<Version> {
 
@@ -540,15 +593,15 @@ public class Project implements Comparable<Project> {
 
     private static final String VERSION_TO_STRING = "%1$d.%2$d.%3$d";
 
-    public static @NonNull Version of(int major, int minor) {
+    public static Version of(int major, int minor) {
       return new Version(major, minor, DEFAULT_MAINTENANCE_VERSION);
     }
 
-    public static @NonNull Version of(int major, int minor, int maintenance) {
+    public static Version of(int major, int minor, int maintenance) {
       return new Version(major, minor, maintenance);
     }
 
-    public static @NonNull Version parse(@NonNull String version) {
+    public static Version parse(String version) {
 
       String originalVersion = version;
 
@@ -653,12 +706,12 @@ public class Project implements Comparable<Project> {
         : 0;
     }
 
-    private int resolveQualifierNumber(@NonNull Version version) {
+    private int resolveQualifierNumber(Version version) {
       return resolveQualifierNumber(version.getQualifier());
     }
 
     @SuppressWarnings("all")
-    private int resolveQualifierNumber(@Nullable String qualifier) {
+    private int resolveQualifierNumber(String qualifier) {
 
       String number = "";
 
