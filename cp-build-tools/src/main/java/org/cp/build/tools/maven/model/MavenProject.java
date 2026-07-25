@@ -31,7 +31,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.support.MavenPomNotFoundException;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -69,7 +68,7 @@ public class MavenProject extends Project {
    * @see #isMavenPomPresent(File)
    * @see java.io.File
    */
-  public static @NonNull File assertMavenPomIsPresent(@NonNull File location) {
+  public static File assertMavenPomIsPresent(File location) {
 
     if (!isMavenPomPresent(location)) {
 
@@ -129,7 +128,7 @@ public class MavenProject extends Project {
    * @see #assertMavenPomIsPresent(File)
    * @see java.io.File
    */
-  public static @NonNull MavenProject fromMavenPom(@NonNull File pom) {
+  public static MavenProject fromMavenPom(File pom) {
 
     pom = resolvePomXml(assertMavenPomIsPresent(pom));
 
@@ -148,7 +147,7 @@ public class MavenProject extends Project {
     }
   }
 
-  private static @NonNull File resolvePomXml(@NonNull File file) {
+  private static File resolvePomXml(File file) {
     return isPomXml(file) ? file : new File(file, POM_XML);
   }
 
@@ -166,7 +165,7 @@ public class MavenProject extends Project {
    * @param mavenProject {@link org.apache.maven.project.MavenProject} backing this {@link Project}.
    * @see org.apache.maven.project.MavenProject
    */
-  private MavenProject(@NonNull org.apache.maven.project.MavenProject mavenProject) {
+  private MavenProject(org.apache.maven.project.MavenProject mavenProject) {
     super(mavenProject.getName());
     this.mavenProject = mavenProject;
   }
@@ -177,11 +176,11 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @NonNull Artifact getArtifact() {
+  public Artifact getArtifact() {
     return this.artifactReference.updateAndGet(artifact -> artifact != null ? artifact : buildArtifact());
   }
 
-  private @NonNull Artifact buildArtifact() {
+  private Artifact buildArtifact() {
 
     org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
@@ -190,11 +189,16 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @NonNull Developers getDevelopers() {
+  public @Nullable String getDescription() {
+    return getMavenProject().getDescription();
+  }
+
+  @Override
+  public Developers getDevelopers() {
     return this.developersReference.updateAndGet(developers -> developers != null ? developers : buildDevelopers());
   }
 
-  private @NonNull Developers buildDevelopers() {
+  private Developers buildDevelopers() {
 
     org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
@@ -222,11 +226,6 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @Nullable String getDescription() {
-    return getMavenProject().getDescription();
-  }
-
-  @Override
   public @Nullable URI getIssueTracker() {
 
     return Optional.ofNullable(getMavenProject())
@@ -241,7 +240,7 @@ public class MavenProject extends Project {
     return this.licensesReference.updateAndGet(licenses -> licenses != null ? licenses : buildLicenses());
   }
 
-  private @NonNull Licenses buildLicenses() {
+  private Licenses buildLicenses() {
 
     org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
@@ -283,7 +282,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @NonNull Version getVersion() {
+  public Version getVersion() {
     return Version.parse(getMavenProject().getVersion());
   }
 
