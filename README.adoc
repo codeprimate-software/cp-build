@@ -7,10 +7,9 @@ The Codeprimate Build project (or simply, "The Build"; `org.codeprimate.build:ma
 [[requirements]]
 == Requirements
 
-1. Baseline is Java SE (JDK/JRE) 21.
-2. Builds with Oracle JDK 21 2026-04-21 LTS (build 21.0.11+9-LTS-211)
-3. Builds with Oracle JDK 25 2026-04-21 LTS (build 25.0.3+9-LTS-195)
-4. Builds with Apache Maven 3.9.16 (Maven Wrapper 3.3.4)
+1. Baseline is Java SE (JDK/JRE) 25.
+2. Builds with Oracle JDK 25 2026-04-21 LTS (build 25.0.3+9-LTS-195)
+3. Builds with Apache Maven 3.9.16 (Maven Wrapper 3.3.4)
 
 [[license]]
 == License
