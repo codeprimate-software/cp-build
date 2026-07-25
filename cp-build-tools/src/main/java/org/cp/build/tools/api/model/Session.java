@@ -61,7 +61,7 @@ public class Session {
    * @see org.cp.build.tools.api.model.Project
    */
   public @Nullable Project getProject() {
-    return project;
+    return this.project;
   }
 
   public boolean isProjectSet() {
@@ -72,16 +72,16 @@ public class Session {
     return Utils.requireState(getProject(), "Project has not be set");
   }
 
-  public @NonNull Session setProject(@Nullable Project project) {
+  public Session setProject(@Nullable Project project) {
     this.project = project;
     return this;
   }
 
-  public @NonNull String getUsername() {
+  public String getUsername() {
     return System.getProperty("user.name");
   }
 
-  public @NonNull String getWorkingDirectory() {
+  public String getWorkingDirectory() {
     return Utils.WORKING_DIRECTORY.getAbsolutePath();
   }
 }
