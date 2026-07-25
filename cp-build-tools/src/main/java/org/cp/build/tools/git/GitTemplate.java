@@ -72,7 +72,7 @@ public class GitTemplate {
   protected static final String MAIN_BRANCH_NAME = "main";
   protected static final String MASTER_BRANCH_NAME = "master";
 
-  public static @NonNull GitTemplate from(@NonNull Supplier<Git> gitSupplier) {
+  public static GitTemplate from(Supplier<Git> gitSupplier) {
     Utils.requireObject(gitSupplier, "Supplier for Git is required");
     return new GitTemplate(gitSupplier);
   }
@@ -83,11 +83,11 @@ public class GitTemplate {
   @Setter(AccessLevel.PROTECTED)
   private Supplier<File> sourceFilesDirectoryResolver = () -> Utils.WORKING_DIRECTORY;
 
-  protected @NonNull Git git() {
+  protected Git git() {
     return getGit().get();
   }
 
-  public @NonNull CommitHistory getCommitHistory() {
+  public CommitHistory getCommitHistory() {
 
     try (Git git = git()){
 
@@ -114,7 +114,7 @@ public class GitTemplate {
     }
   }
 
-  public @NonNull GitStatus getCommitStatus() {
+  public GitStatus getCommitStatus() {
 
     try (Git git = git()) {
 
@@ -141,7 +141,7 @@ public class GitTemplate {
   }
 
   @SuppressWarnings("all")
-  public @NonNull GitTemplate usingSourceFilesDirectoryResolver(@NonNull Supplier<File> sourceFilesDirectoryResolver) {
+  public GitTemplate usingSourceFilesDirectoryResolver(Supplier<File> sourceFilesDirectoryResolver) {
 
     if (sourceFilesDirectoryResolver != null) {
       setSourceFilesDirectoryResolver(sourceFilesDirectoryResolver);
@@ -247,6 +247,12 @@ public class GitTemplate {
     return new RevWalk(repository).parseCommit(previousCommitId);
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling the identity of the {@literal committer (commit author)}.
+   *
+   * @author John Blum
+   * @see PersonIdent
+   */
   @Getter
   @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
   static class CommitterIdentity {
@@ -263,7 +269,7 @@ public class GitTemplate {
     private final PersonIdent authorIdentity;
     private final PersonIdent committerIdentity;
 
-    protected @NonNull PersonIdent resolveIdentity() {
+    protected PersonIdent resolveIdentity() {
       PersonIdent committerIdentity = this.committerIdentity;
       return committerIdentity != null ? committerIdentity : this.authorIdentity;
     }
@@ -280,7 +286,9 @@ public class GitTemplate {
       return resolveIdentity().getWhenAsInstant();
     }
 
-    public LocalDateTime resolveCommitDateTime(@NonNull RevCommit commit) {
+    public LocalDateTime resolveCommitDateTime(RevCommit commit) {
+
+      Assert.notNull(commit, "Commit is required");
 
       LocalDateTime authorDateTime = nullSafeIdentityTime(getAuthorIdentity());
       LocalDateTime committerDateTime = nullSafeIdentityTime(getCommitterIdentity());
@@ -289,7 +297,7 @@ public class GitTemplate {
       return earliest(authorDateTime, committerDateTime, commitDateTime);
     }
 
-    private @NonNull LocalDateTime earliest(LocalDateTime... datesTimes) {
+    private LocalDateTime earliest(LocalDateTime... datesTimes) {
 
       return Arrays.stream(datesTimes)
         .reduce((one, two) -> one.isBefore(two) ? one : two)
@@ -298,21 +306,21 @@ public class GitTemplate {
         .orElseThrow();
     }
 
-    private @NonNull LocalDateTime nullSafeIdentityTime(@Nullable PersonIdent personIdentity) {
+    private LocalDateTime nullSafeIdentityTime(@Nullable PersonIdent personIdentity) {
 
       return personIdentity != null
         ? toLocalDateTime(personIdentity.getWhenAsInstant())
         : LocalDateTime.now();
     }
 
-    private @NonNull LocalDateTime toLocalDateTime(@Nullable Instant instant) {
+    private LocalDateTime toLocalDateTime(@Nullable Instant instant) {
 
       return instant != null
         ? toLocalDateTime(instant.getEpochSecond())
         : LocalDateTime.now();
     }
 
-    private @NonNull LocalDateTime toLocalDateTime(long seconds) {
+    private LocalDateTime toLocalDateTime(long seconds) {
 
       return Instant.ofEpochMilli(TimeUnit.SECONDS.toMillis(seconds))
         .atZone(ZoneOffset.systemDefault())
