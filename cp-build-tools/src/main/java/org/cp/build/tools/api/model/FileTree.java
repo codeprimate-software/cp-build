@@ -45,6 +45,7 @@ import lombok.Setter;
  *
  * @author John Blum
  * @see java.io.File
+ * @see java.lang.Iterable
  * @since 0.1.0
  */
 @Getter
@@ -62,7 +63,8 @@ public class FileTree implements Iterable<FileNode> {
     Assert.notNull(location, "Location is required");
     Assert.isTrue(location.exists(), () -> "Location [%s] must exist".formatted(location));
 
-    File directory = location.isDirectory() ? location : location.getParentFile();
+    File directory = location.isDirectory() ? location
+      : location.getParentFile();
 
     DirectoryNode directoryNode = DirectoryNode.from(directory);
 
@@ -173,6 +175,13 @@ public class FileTree implements Iterable<FileNode> {
     return getRoot().getPath();
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@link File Directory} node in a tree data structure.
+   *
+   * @author John Blum
+   * @see java.lang.Iterable
+   * @see FileNode
+   */
   @Getter
   public static class DirectoryNode extends FileNode implements Iterable<FileNode> {
 
@@ -186,17 +195,17 @@ public class FileTree implements Iterable<FileNode> {
 
     private final Set<FileNode> files = new TreeSet<>();
 
-    public DirectoryNode(@NonNull File file) {
+    public DirectoryNode(File file) {
       super(file);
     }
 
     @Override
-    public @NonNull String getPath() {
+    public String getPath() {
       return getFile().getAbsolutePath();
     }
 
     @SuppressWarnings("all")
-    public DirectoryNode add(@NonNull FileNode fileNode) {
+    public DirectoryNode add(FileNode fileNode) {
 
       if (fileNode != null) {
         this.files.add(fileNode);
@@ -206,6 +215,7 @@ public class FileTree implements Iterable<FileNode> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public Iterator<FileNode> iterator() {
       return Collections.unmodifiableSet(getFiles()).iterator();
     }
@@ -215,6 +225,13 @@ public class FileTree implements Iterable<FileNode> {
     }
   }
 
+  /**
+   * Abstract Data Type (ADT) modeling a {@link File} node in a tree data structure.
+   *
+   * @author John Blum
+   * @see java.lang.Comparable
+   * @see java.io.File
+   */
   @Getter
   @EqualsAndHashCode
   @RequiredArgsConstructor(staticName = "as")
@@ -229,14 +246,16 @@ public class FileTree implements Iterable<FileNode> {
     private final File file;
 
     public boolean isDirectory() {
-      return getFile().isDirectory();
+      File file = getFile();
+      return file != null && file.isDirectory();
     }
 
     public boolean isFile() {
-      return getFile().isFile();
+      File file = getFile();
+      return file != null && file.isFile();
     }
 
-    public @NonNull String getExtension() {
+    public String getExtension() {
 
       String name = getName();
 
@@ -247,21 +266,21 @@ public class FileTree implements Iterable<FileNode> {
         : Utils.EMPTY_STRING;
     }
 
-    public @NonNull String getName() {
+    public String getName() {
       return getFile().getName();
     }
 
-    public @NonNull String getPath() {
+    public String getPath() {
       return getFile().getParentFile().getAbsolutePath();
     }
 
-    public @NonNull FileNode in(@Nullable DirectoryNode directory) {
+    public FileNode in(@Nullable DirectoryNode directory) {
       setDirectory(directory);
       return this;
     }
 
     @Override
-    public int compareTo(@NonNull FileNode that) {
+    public int compareTo(FileNode that) {
 
       File thisFile = this.getFile();
       File thatFile = that.getFile();
