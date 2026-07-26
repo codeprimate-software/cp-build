@@ -18,6 +18,9 @@
   <description>
     Codeprimate Maven Build is the Maven parent project for all Codeprimate software projects
     using Apache Maven to build and release Codeprimate software.
+
+    The Codeprimate Maven Build is also the Codepriate Maven BOM (POM) governining all dependencies
+    used by Codeprimate software projects.
   </description>
   <url>https://github.com/codeprimate-software/cp-build/maven-build</url>
 
