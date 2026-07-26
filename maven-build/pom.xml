@@ -112,7 +112,7 @@
     <jmeter-maven-plugin.version>3.8.0</jmeter-maven-plugin.version>
     <jmh.version>1.37</jmh.version>
     <junit.version>4.13.2</junit.version>
-    <junit-bom.version>6.0.3</junit-bom.version>
+    <junit-bom.version>6.1.2</junit-bom.version>
     <kotlin.version>2.4.0</kotlin.version>
     <kotlinx-coroutines-bom.version>1.11.0</kotlinx-coroutines-bom.version>
     <kotlinx-datetime.version>0.8.0</kotlinx-datetime.version>
