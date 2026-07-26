@@ -19,8 +19,6 @@ import java.util.Objects;
 
 import org.cp.build.tools.api.support.Utils;
 import org.slf4j.Logger;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -40,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("unused")
 public class Session {
 
-  @Nullable
+
   private volatile Project project;
 
   @PostConstruct
@@ -60,7 +58,7 @@ public class Session {
    * returns {@literal null} if no {@link Project} has been set.
    * @see org.cp.build.tools.api.model.Project
    */
-  public @Nullable Project getProject() {
+  public  Project getProject() {
     return this.project;
   }
 
@@ -68,11 +66,11 @@ public class Session {
     return Objects.nonNull(getProject());
   }
 
-  public @NonNull Project requireProject() {
+  public Project requireProject() {
     return Utils.requireState(getProject(), "Project has not be set");
   }
 
-  public Session setProject(@Nullable Project project) {
+  public Session setProject( Project project) {
     this.project = project;
     return this;
   }

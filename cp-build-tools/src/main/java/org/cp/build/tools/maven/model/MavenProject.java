@@ -89,7 +89,7 @@ public class MavenProject extends Project {
    * @see #isPomXml(File)
    * @see java.io.File
    */
-  public static boolean isMavenPom(@Nullable File pom) {
+  public static boolean isMavenPom( File pom) {
     return isPomXml(pom);
   }
 
@@ -104,11 +104,11 @@ public class MavenProject extends Project {
    * @see #isPomXml(File)
    * @see java.io.File
    */
-  public static boolean isMavenPomPresent(@Nullable File location) {
+  public static boolean isMavenPomPresent( File location) {
     return containsPomXml(location) || isPomXml(location);
   }
 
-  private static boolean containsPomXml(@Nullable File location) {
+  private static boolean containsPomXml( File location) {
 
     return Utils.nullSafeIsDirectory(location)
       && Arrays.stream(Utils.nullSafeFileArray(location.listFiles(POM_XML_FILE_FILTER)))
@@ -116,7 +116,7 @@ public class MavenProject extends Project {
         .isPresent();
   }
 
-  private static boolean isPomXml(@Nullable File file) {
+  private static boolean isPomXml( File file) {
     return POM_XML_FILE_FILTER.accept(file);
   }
 
@@ -189,7 +189,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @Nullable String getDescription() {
+  public  String getDescription() {
     return getMavenProject().getDescription();
   }
 
@@ -216,7 +216,7 @@ public class MavenProject extends Project {
     return developers;
   }
 
-  private @Nullable Organization buildDeveloperOrganization(org.apache.maven.model.Developer developer) {
+  private  Organization buildDeveloperOrganization(org.apache.maven.model.Developer developer) {
 
     String developerOrganization = developer.getOrganization();
 
@@ -226,7 +226,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @Nullable URI getIssueTracker() {
+  public  URI getIssueTracker() {
 
     return Optional.ofNullable(getMavenProject())
       .map(org.apache.maven.project.MavenProject::getIssueManagement)
@@ -256,12 +256,12 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @Nullable Organization getOrganization() {
+  public  Organization getOrganization() {
     return this.organizationReference.updateAndGet(organization -> organization != null ? organization
       : buildOrganization());
   }
 
-  private @Nullable Organization buildOrganization() {
+  private  Organization buildOrganization() {
 
     org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
@@ -272,7 +272,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public @Nullable URI getSourceRepository() {
+  public  URI getSourceRepository() {
 
     return Optional.ofNullable(getMavenProject())
       .map(org.apache.maven.project.MavenProject::getScm)
@@ -286,7 +286,7 @@ public class MavenProject extends Project {
     return Version.parse(getMavenProject().getVersion());
   }
 
-  private @Nullable URI nullSafeUriCreate(@Nullable String url) {
+  private  URI nullSafeUriCreate( String url) {
     return StringUtils.hasText(url) ? URI.create(url) : null;
   }
 }

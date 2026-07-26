@@ -42,7 +42,6 @@ import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.lang.Nullable;
 import org.springframework.shell.core.command.annotation.Argument;
 import org.springframework.shell.core.command.annotation.Command;
 import org.springframework.shell.core.command.annotation.CommandGroup;
@@ -388,7 +387,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
     };
   }
 
-  private static Predicate<CommitRecord> commitDateQueryPredicate(@Nullable String targetDateString,
+  private static Predicate<CommitRecord> commitDateQueryPredicate( String targetDateString,
       Supplier<LocalDate> defaultTargetDate, BiPredicate<LocalDate, LocalDate> commitDatePredicate) {
 
     return commitRecord -> {

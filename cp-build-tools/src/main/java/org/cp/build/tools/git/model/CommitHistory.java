@@ -41,7 +41,6 @@ import org.cp.build.tools.api.model.SourceFile.Revision;
 import org.cp.build.tools.api.model.SourceFileSet;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitRecord.Author;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -70,7 +69,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @return a new, empty {@link CommitHistory}.
    * @see #of(CommitRecord...)
    */
-  public static @NonNull CommitHistory empty() {
+  public static CommitHistory empty() {
     return of();
   }
 
@@ -83,7 +82,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see org.cp.build.tools.git.model.CommitRecord
    * @see #of(Iterable)
    */
-  public static @NonNull CommitHistory of(CommitRecord... commitRecords) {
+  public static CommitHistory of(CommitRecord... commitRecords) {
 
     return of(Arrays.stream(commitRecords)
       .filter(Objects::nonNull)
@@ -102,7 +101,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see #of(CommitRecord...)
    * @see java.lang.Iterable
    */
-  public static @NonNull CommitHistory of(Iterable<CommitRecord> commitRecords) {
+  public static CommitHistory of(Iterable<CommitRecord> commitRecords) {
     return new CommitHistory(commitRecords);
   }
 
@@ -117,7 +116,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see org.cp.build.tools.git.model.CommitRecord
    * @see java.lang.Iterable
    */
-  private CommitHistory(@NonNull Iterable<CommitRecord> commitRecords) {
+  private CommitHistory(Iterable<CommitRecord> commitRecords) {
 
     Utils.stream(commitRecords)
       .filter(Objects::nonNull)
@@ -173,7 +172,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * since, including and after the {@link CommitRecord commit} with the given {@link String hash ID}.
    * @see #findAllCommitsBeforeHash(String)
    */
-  public @NonNull CommitHistory findAllCommitsAfterHash(@NonNull String hash) {
+  public CommitHistory findAllCommitsAfterHash(String hash) {
 
     if (StringUtils.hasText(hash)) {
 
@@ -201,7 +200,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * until, including and before the {@link CommitRecord commit} with the given {@link String hash ID}.
    * @see #findAllCommitsAfterHash(String)
    */
-  public @NonNull CommitHistory findAllCommitsBeforeHash(@NonNull String hash) {
+  public CommitHistory findAllCommitsBeforeHash(String hash) {
 
     if (StringUtils.hasText(hash)) {
 
@@ -238,7 +237,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see #getCommitRecords()
    * @see #of(Iterable)
    */
-  public @NonNull CommitHistory findBy(@NonNull Predicate<CommitRecord> predicate) {
+  public CommitHistory findBy(Predicate<CommitRecord> predicate) {
 
     return CommitHistory.of(getCommitRecords().stream()
       .filter(Utils.nullSafeNonMatchingPredicate(predicate))
@@ -254,7 +253,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see org.cp.build.tools.git.model.CommitRecord.Author
    * @see #findBy(Predicate)
    */
-  public @NonNull CommitHistory findByAuthor(@NonNull Author author) {
+  public CommitHistory findByAuthor(Author author) {
     return findBy(commitRecord -> commitRecord.getAuthor().equals(author));
   }
 
@@ -269,7 +268,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see #findBy(Predicate)
    */
   @SuppressWarnings("all")
-  public @NonNull CommitHistory findByDate(@NonNull LocalDate date) {
+  public CommitHistory findByDate(LocalDate date) {
 
     LocalDate resolvedDate = date != null ? date : LocalDate.now();
 
@@ -288,7 +287,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see java.util.Optional
    * @see #findBy(Predicate)
    */
-  public Optional<CommitRecord> findByHash(@NonNull String hash) {
+  public Optional<CommitRecord> findByHash(String hash) {
     return findBy(commitRecord -> commitRecord.getHash().equalsIgnoreCase(hash)).stream().findFirst();
   }
 
@@ -303,7 +302,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see #findBy(Predicate)
    * @see java.io.File
    */
-  public @NonNull CommitHistory findBySourceFile(@NonNull File sourceFile) {
+  public CommitHistory findBySourceFile(File sourceFile) {
     return findBy(commitRecord -> commitRecord.contains(sourceFile));
   }
 
@@ -338,7 +337,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see java.util.Set
    */
   @SuppressWarnings({ "all", "rawtypes", "unchecked" })
-  public Set<Group> groupBy(@NonNull Function<CommitRecord, Comparable<?>> groupByFunction) {
+  public Set<Group> groupBy(Function<CommitRecord, Comparable<?>> groupByFunction) {
 
     Assert.notNull(groupByFunction, "Group By Function is required");
 
@@ -405,7 +404,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see java.util.Iterator
    */
   @Override
-  public @NonNull Iterator<CommitRecord> iterator() {
+  public Iterator<CommitRecord> iterator() {
     return getCommitRecords().iterator();
   }
 
@@ -428,7 +427,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @throws IllegalArgumentException if {@link Comparator} is {@literal null}.
    * @see java.util.Comparator
    */
-  public @NonNull CommitHistory sort(@NonNull Comparator<CommitRecord> comparator) {
+  public CommitHistory sort(Comparator<CommitRecord> comparator) {
     Assert.notNull(comparator, "Comparator is required");
     this.commitRecords.sort(comparator);
     return this;
@@ -441,7 +440,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see org.cp.build.tools.git.model.CommitRecord
    * @see java.util.stream.Stream
    */
-  public @NonNull Stream<CommitRecord> stream() {
+  public Stream<CommitRecord> stream() {
     return Utils.stream(this);
   }
 
@@ -452,7 +451,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
    * @see org.cp.build.tools.api.model.SourceFileSet
    * @see org.cp.build.tools.api.model.SourceFile
    */
-  public @NonNull SourceFileSet toSourceFileSet() {
+  public SourceFileSet toSourceFileSet() {
 
     SourceFileSet sourceFileSet = SourceFileSet.empty();
 
@@ -471,7 +470,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
     return sourceFileSet;
   }
 
-  private @NonNull Revision toSourceFileRevision(CommitRecord commitRecord) {
+  private Revision toSourceFileRevision(CommitRecord commitRecord) {
 
     return SourceFile.Revision.of(
       toSourceFileAuthor(commitRecord.getAuthor()),
@@ -488,15 +487,15 @@ public class CommitHistory implements Iterable<CommitRecord> {
   @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
   public static class Group implements Iterable<CommitRecord> {
 
-    public static @NonNull Group empty() {
+    public static Group empty() {
       return of();
     }
 
-    public static @NonNull Group of(CommitRecord... commitRecords) {
+    public static Group of(CommitRecord... commitRecords) {
       return of(Arrays.asList(commitRecords));
     }
 
-    public static @NonNull Group of(Iterable<CommitRecord> commitRecords) {
+    public static Group of(Iterable<CommitRecord> commitRecords) {
       Set<CommitRecord> commitRecordSet = Utils.stream(commitRecords).collect(Collectors.toSet());
       return new Group(commitRecordSet);
     }
@@ -510,7 +509,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
       return Collections.unmodifiableSet(this.commitRecords);
     }
 
-    public @NonNull Group groupedBy(@NonNull Comparable<?> groupedBy) {
+    public Group groupedBy(Comparable<?> groupedBy) {
       Assert.notNull(groupedBy, "Grouped By is required");
       setGroupedBy(groupedBy);
       return this;
@@ -525,7 +524,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
     }
 
     @Override
-    public @NonNull Iterator<CommitRecord> iterator() {
+    public Iterator<CommitRecord> iterator() {
       return getCommitRecords().iterator();
     }
 
@@ -533,7 +532,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
       return getCommitRecords().size();
     }
 
-    public @NonNull Stream<CommitRecord> stream() {
+    public Stream<CommitRecord> stream() {
       return getCommitRecords().stream();
     }
   }
@@ -552,14 +551,14 @@ public class CommitHistory implements Iterable<CommitRecord> {
     private final T key;
 
     @Override
-    public int compareTo(@NonNull GroupByKey<T> that) {
+    public int compareTo(GroupByKey<T> that) {
       return this.getKey().compareTo(that.getKey());
     }
   }
 
   public static class YearMonthGroupByKey extends GroupByKey<YearMonth> {
 
-    public static @NonNull YearMonthGroupByKey from(@NonNull CommitRecord commitRecord) {
+    public static YearMonthGroupByKey from(CommitRecord commitRecord) {
 
       Assert.notNull(commitRecord, "CommitRecord is required");
 
@@ -576,7 +575,7 @@ public class CommitHistory implements Iterable<CommitRecord> {
 
   public static class YearGroupByKey extends GroupByKey<Year> {
 
-    public static @NonNull YearGroupByKey from(@NonNull CommitRecord commitRecord) {
+    public static YearGroupByKey from(CommitRecord commitRecord) {
 
       Assert.notNull(commitRecord, "CommitRecord is required");
 

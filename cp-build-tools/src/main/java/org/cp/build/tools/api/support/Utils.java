@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
@@ -71,19 +69,19 @@ public abstract class Utils {
     "          ",
   };
 
-  public static @NonNull LocalDateTime atEpoch() {
+  public static LocalDateTime atEpoch() {
     return LocalDateTime.of(1970, 1, 1 , 0, 0, 0);
   }
 
-  public static <T> T get(@Nullable T value, @NonNull Supplier<T> defaultValue) {
+  public static <T> T get( T value, Supplier<T> defaultValue) {
     return value != null ? value : defaultValue.get();
   }
 
-  public static int getInt(int value, @NonNull Supplier<Integer> intSupplier) {
+  public static int getInt(int value, Supplier<Integer> intSupplier) {
     return value != 0 ? value : intSupplier.get();
   }
 
-  public static String getString(String value, @NonNull Supplier<String> stringSupplier) {
+  public static String getString(String value, Supplier<String> stringSupplier) {
     return StringUtils.hasText(value) ? value : stringSupplier.get();
   }
 
@@ -122,48 +120,48 @@ public abstract class Utils {
     return Integer.compare(0, compareResult);
   }
 
-  public static @NonNull String newLine() {
+  public static String newLine() {
     return LINE_SEPARATOR;
   }
 
-  public static @NonNull String newLineAfter(@Nullable String text) {
+  public static String newLineAfter( String text) {
     return nullSafeTrimmedString(text).concat(newLine());
   }
 
-  public static @NonNull String newLineBefore(@Nullable String text) {
+  public static String newLineBefore( String text) {
     return newLine().concat(nullSafeTrimmedString(text));
   }
 
-  public static @NonNull String newLineBeforeAfter(@Nullable String text) {
+  public static String newLineBeforeAfter( String text) {
     return newLine().concat(newLineAfter(text));
   }
 
-  public static boolean nullSafeIsDirectory(@Nullable Object target) {
+  public static boolean nullSafeIsDirectory( Object target) {
     return (target instanceof File file) && file.isDirectory();
   }
 
-  public static boolean nullSafeIsFile(@Nullable Object target) {
+  public static boolean nullSafeIsFile( Object target) {
     return (target instanceof File file) && file.isFile();
   }
 
-  public static @NonNull File[] nullSafeFileArray(@Nullable File[] fileArray) {
+  public static File[] nullSafeFileArray( File[] fileArray) {
     return fileArray != null ? fileArray : EMPTY_FILE_ARRAY;
   }
 
-  public static @NonNull <T> Iterable<T> nullSafeIterable(@Nullable Iterable<T> iterable) {
+  public static <T> Iterable<T> nullSafeIterable( Iterable<T> iterable) {
     return iterable != null ? iterable : Collections::emptyIterator;
   }
 
-  public static @NonNull <T> Predicate<T> nullSafeMatchingPredicate(@Nullable Predicate<T> predicate) {
+  public static <T> Predicate<T> nullSafeMatchingPredicate( Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> true;
   }
 
-  public static @NonNull <T> Predicate<T> nullSafeNonMatchingPredicate(@Nullable Predicate<T> predicate) {
+  public static <T> Predicate<T> nullSafeNonMatchingPredicate( Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> false;
   }
 
   @SuppressWarnings("all")
-  public static @NonNull String nullSafeFormatString(@Nullable String target, int length) {
+  public static String nullSafeFormatString( String target, int length) {
 
     String nonNullString = nullSafeTrimmedString(target);
 
@@ -176,11 +174,11 @@ public abstract class Utils {
     return nonNullString.substring(0, Math.min(nonNullString.length(), length));
   }
 
-  public static @NonNull String nullSafeToString(@Nullable Object target) {
+  public static String nullSafeToString( Object target) {
     return target != null ? target.toString() : EMPTY_STRING;
   }
 
-  public static @NonNull String nullSafeTrimmedString(@Nullable String target) {
+  public static String nullSafeTrimmedString( String target) {
     return target != null ? target.trim() : EMPTY_STRING;
   }
 
@@ -190,11 +188,11 @@ public abstract class Utils {
     return paddedValue.substring(0, Math.min(paddedValue.length(), totalLength));
   }
 
-  public static @NonNull <T> T requireObject(T object, String message, Object... arguments) {
+  public static <T> T requireObject(T object, String message, Object... arguments) {
     return requireObject(object, toSupplier(message.formatted(arguments)));
   }
 
-  public static @NonNull <T> T requireObject(T object, Supplier<String> message) {
+  public static <T> T requireObject(T object, Supplier<String> message) {
 
     if (object == null) {
       throw new IllegalArgumentException(message.get());
@@ -203,11 +201,11 @@ public abstract class Utils {
     return object;
   }
 
-  public static @NonNull <T> T requireState(T object, String message, Object... arguments) {
+  public static <T> T requireState(T object, String message, Object... arguments) {
     return requireState(object, toSupplier(message.formatted(arguments)));
   }
 
-  public static @NonNull <T> T requireState(T object, Supplier<String> message) {
+  public static <T> T requireState(T object, Supplier<String> message) {
 
     if (object == null) {
       throw new IllegalStateException(message.get());
@@ -216,19 +214,19 @@ public abstract class Utils {
     return object;
   }
 
-  public static @NonNull <T> Stream<T> stream(@Nullable Iterable<T> iterable) {
+  public static <T> Stream<T> stream( Iterable<T> iterable) {
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false);
   }
 
-  public static @NonNull LocalDateTime today() {
+  public static LocalDateTime today() {
     return LocalDateTime.now();
   }
 
-  public static @NonNull LocalDateTime tomorrow() {
+  public static LocalDateTime tomorrow() {
     return LocalDateTime.now().plusDays(1L);
   }
 
-  public static @NonNull <T> Supplier<T> toSupplier(@Nullable T target) {
+  public static <T> Supplier<T> toSupplier( T target) {
     return () -> target;
   }
 }

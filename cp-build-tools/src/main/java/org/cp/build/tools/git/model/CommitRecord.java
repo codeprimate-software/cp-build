@@ -29,8 +29,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -74,19 +72,19 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     return Optional.ofNullable(this.commitHistory);
   }
 
-  public @NonNull LocalDate getDate() {
+  public LocalDate getDate() {
     return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalDate();
   }
 
-  public @NonNull String getShortHash() {
+  public String getShortHash() {
     return getHash().substring(0, SHORT_HASH_LENGTH);
   }
 
-  public @NonNull LocalTime getTime() {
+  public LocalTime getTime() {
     return Utils.requireObject(getDateTime(), "Commit date/time not set").toLocalTime();
   }
 
-  public @NonNull CommitRecord add(File... sourceFiles) {
+  public CommitRecord add(File... sourceFiles) {
 
     Arrays.stream(Utils.nullSafeFileArray(sourceFiles))
       .filter(Objects::nonNull)
@@ -95,31 +93,31 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     return this;
   }
 
-  public boolean contains(@Nullable File sourceFile) {
+  public boolean contains( File sourceFile) {
     return sourceFile != null && getSourceFiles().contains(sourceFile);
   }
 
   @Override
-  public @NonNull Iterator<File> iterator() {
+  public Iterator<File> iterator() {
     return Collections.unmodifiableSet(getSourceFiles()).stream().sorted().iterator();
   }
 
-  public @NonNull Stream<File> stream() {
+  public Stream<File> stream() {
     return Utils.stream(this);
   }
 
-  public @NonNull CommitRecord from(@Nullable CommitHistory commitHistory) {
+  public CommitRecord from( CommitHistory commitHistory) {
     setCommitHistory(commitHistory);
     return this;
   }
 
-  public @NonNull CommitRecord withMessage(String message) {
+  public CommitRecord withMessage(String message) {
     setMessage(message);
     return this;
   }
 
   @Override
-  public int compareTo(@NonNull CommitRecord that) {
+  public int compareTo(CommitRecord that) {
     return that.getDateTime().compareTo(this.getDateTime());
   }
 
@@ -133,7 +131,7 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
   @RequiredArgsConstructor(staticName = "as")
   public static class Author implements Comparable<Author> {
 
-    public static Author parse(@NonNull String authorString) {
+    public static Author parse(String authorString) {
 
       String[] authorComponents = authorString.split(Utils.SINGLE_SPACE);
 
@@ -151,11 +149,11 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     private String emailAddress;
 
     @Override
-    public int compareTo(@NonNull CommitRecord.Author that) {
+    public int compareTo(CommitRecord.Author that) {
       return this.getName().compareTo(that.getName());
     }
 
-    public @NonNull Author withEmailAddress(@Nullable String email) {
+    public Author withEmailAddress( String email) {
       setEmailAddress(email);
       return this;
     }

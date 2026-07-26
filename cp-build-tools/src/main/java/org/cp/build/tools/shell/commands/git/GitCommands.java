@@ -49,8 +49,6 @@ import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStringBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.shell.core.command.annotation.Command;
 import org.springframework.shell.core.command.annotation.CommandGroup;
 import org.springframework.shell.core.command.annotation.Option;
@@ -129,7 +127,7 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public @NonNull String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
+  public String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
       @Option(longName = "by-day", defaultValue = "false") boolean groupedByDay,
       @Option(longName = "by-month", defaultValue = "false") boolean groupedByMonth,
       @Option(longName = "by-year", defaultValue = "false") boolean groupedByYear,
@@ -175,7 +173,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Logs all commits",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String commitLog(@Option(description = "Commit with hash; options not applicable") String hash,
+  public String commitLog(@Option(description = "Commit with hash; options not applicable") String hash,
       @Option(longName = "author") String author,
       @Option(longName = "after-hash", shortName = 'a', description = "[--until, --exclude-dates]") String afterHash,
       @Option(longName = "before-hash", shortName = 'b', description = "[--since, --exclude-dates]") String beforeHash,
@@ -250,7 +248,7 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   @SuppressWarnings("all")
-  public @NonNull String commitsAfterHours(@Option(description = "Commits by author") String author,
+  public String commitsAfterHours(@Option(description = "Commits by author") String author,
       @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
       @Option(longName = "during", shortName = 'd') String duringDates,
       @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
@@ -287,7 +285,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits by author (committer)",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String commitsBy(@Option(required = true) String committer,
+  public String commitsBy(@Option(required = true) String committer,
       @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
       @Option(longName = "during", shortName = 'd') String duringDates,
       @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
@@ -320,7 +318,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits during work hours (on-the-clock)",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String commitsOnTheClock(@Option(description = "Commits by author") String author,
+  public String commitsOnTheClock(@Option(description = "Commits by author") String author,
       @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
       @Option(longName = "during", shortName = 'd') String duringDates,
       @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
@@ -358,7 +356,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits to a source file or path",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String commitsTo(@Option(required = true) String sourceFilePath,
+  public String commitsTo(@Option(required = true) String sourceFilePath,
       @Option(longName = "author", description = "By author") String author,
       @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
       @Option(longName = "during", shortName = 'd') String duringDates,
@@ -383,7 +381,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits with message",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String commitsWith(@Option(required = true) String message,
+  public String commitsWith(@Option(required = true) String message,
       @Option(longName = "author", description = "By author") String author,
       @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
       @Option(longName = "during", shortName = 'd') String duringDates,
@@ -411,7 +409,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds the first commit since a given date",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String firstCommit(@Option(description = "By author") String author,
+  public String firstCommit(@Option(description = "By author") String author,
       @Option(longName = "source") String sourceFilePath,
       @Option(longName = "since", shortName = 's') String sinceDate,
       @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
@@ -439,7 +437,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds the last commit before a given date",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String lastCommit(@Option(description = "By author") String author,
+  public String lastCommit(@Option(description = "By author") String author,
       @Option(longName = "until", shortName = 'u') String untilDate,
       @Option(longName = "source") String sourceFilePath,
       @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
@@ -468,7 +466,7 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   @SuppressWarnings("all")
-  public @NonNull String loadCommitHistory() {
+  public String loadCommitHistory() {
 
     return currentProject()
       .map(project -> {
@@ -489,7 +487,7 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   @SuppressWarnings("all")
-  public @NonNull String reloadCommitHistory() {
+  public String reloadCommitHistory() {
 
     return currentProject()
       .map(project -> {
@@ -504,7 +502,7 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all source files with commit message like",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public @NonNull String sourceFilesWithCommitMessage(
+  public String sourceFilesWithCommitMessage(
       @Option(description = "Commit message like; use '|' to (OR) multiple commit messages") String commitMessage,
       @Option(longName = "exclude-filter") String excludeFilter,
       @Option(longName = "include-filter") String includeFilter,
@@ -641,30 +639,30 @@ public class GitCommands extends AbstractCommandsSupport {
     return output.toAnsi();
   }
 
-  protected @NonNull CommitHistory queryCommitHistory() {
+  protected CommitHistory queryCommitHistory() {
     return queryCommitHistory(ALL_COMMITS_PREDICATE);
   }
 
-  protected @NonNull CommitHistory queryCommitHistory(@NonNull Predicate<CommitRecord> queryPredicate) {
+  protected CommitHistory queryCommitHistory(Predicate<CommitRecord> queryPredicate) {
 
     return currentProject()
       .map(project -> queryCommitHistory(project, Utils.nullSafeNonMatchingPredicate(queryPredicate)))
       .orElseGet(CommitHistory::empty);
   }
 
-  protected @NonNull CommitHistory queryCommitHistory(@NonNull Project project,
-      @NonNull Predicate<CommitRecord> queryPredicate) {
+  protected CommitHistory queryCommitHistory(Project project,
+      Predicate<CommitRecord> queryPredicate) {
 
     return queryCommitHistory(resolveCommitHistory(project), queryPredicate);
   }
 
-  protected @NonNull CommitHistory queryCommitHistory(@NonNull CommitHistory commitHistory,
-      @NonNull Predicate<CommitRecord> queryPredicate) {
+  protected CommitHistory queryCommitHistory(CommitHistory commitHistory,
+      Predicate<CommitRecord> queryPredicate) {
 
     return commitHistory.findBy(queryPredicate);
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsByAuthorQueryPredicate(@Nullable String authorCommitter) {
+  private static Predicate<CommitRecord> commitsByAuthorQueryPredicate( String authorCommitter) {
 
     return Utils.isNotSet(authorCommitter) ? ALL_COMMITS_PREDICATE
       : commitRecord -> {
@@ -678,8 +676,8 @@ public class GitCommands extends AbstractCommandsSupport {
     };
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsByTimeQueryPredicate(@Nullable String sinceDate,
-      @Nullable String untilDate, @Nullable String excludingDates, @Nullable String duringDates) {
+  private static Predicate<CommitRecord> commitsByTimeQueryPredicate( String sinceDate,
+       String untilDate,  String excludingDates,  String duringDates) {
 
     return commitsSinceDateQueryPredicate(sinceDate)
       .and(commitsUntilDateQueryPredicate(untilDate))
@@ -687,21 +685,21 @@ public class GitCommands extends AbstractCommandsSupport {
       .and(commitsDuringDatesQueryPredicate(duringDates));
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsDuringDatesQueryPredicate(@Nullable String duringDates) {
+  private static Predicate<CommitRecord> commitsDuringDatesQueryPredicate( String duringDates) {
 
     return StringUtils.hasText(duringDates)
       ? commitRecord -> TimePeriods.parse(duringDates).asPredicate().test(commitRecord.getDate())
       : ALL_COMMITS_PREDICATE;
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsExcludingDatesQueryPredicate(@Nullable String excludingDates) {
+  private static Predicate<CommitRecord> commitsExcludingDatesQueryPredicate( String excludingDates) {
 
     return StringUtils.hasText(excludingDates)
       ? commitRecord -> !TimePeriods.parse(excludingDates).asPredicate().test(commitRecord.getDate())
       : ALL_COMMITS_PREDICATE;
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsSinceDateQueryPredicate(@Nullable String sinceDate) {
+  private static Predicate<CommitRecord> commitsSinceDateQueryPredicate( String sinceDate) {
 
     return commitRecord -> {
 
@@ -716,14 +714,14 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @SuppressWarnings("all")
-  private static @NonNull Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate(@Nullable String sourceFilePath) {
+  private static Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate( String sourceFilePath) {
 
     return Utils.isSet(sourceFilePath) ? commitRecord -> commitRecord.stream().anyMatch(sourceFile ->
         sourceFile.getAbsolutePath().contains(sourceFilePath))
       : ALL_COMMITS_PREDICATE;
   }
 
-  private static @NonNull Predicate<CommitRecord> commitsUntilDateQueryPredicate(@Nullable String untilDate) {
+  private static Predicate<CommitRecord> commitsUntilDateQueryPredicate( String untilDate) {
 
     return commitRecord -> {
 
@@ -737,27 +735,27 @@ public class GitCommands extends AbstractCommandsSupport {
     };
   }
 
-  protected @NonNull CommitHistory resolveCommitHistory(@NonNull Project project) {
+  protected CommitHistory resolveCommitHistory(Project project) {
     return Utils.get(Utils.get(project.getCommitHistory(), () -> loadCommitHistory(project)), CommitHistory::empty);
   }
 
-  private @NonNull CommitHistory loadCommitHistory(@NonNull Project project) {
+  private CommitHistory loadCommitHistory(Project project) {
     return project.withCommitHistory(getGitTemplate().getCommitHistory()).getCommitHistory();
   }
 
-  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits) {
+  protected StringBuilder showCommitHistory(CommitHistory commits) {
     return showCommitHistory(commits, commits.size(), DEFAULT_SHOW_FILES);
   }
 
-  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, int limit) {
+  protected StringBuilder showCommitHistory(CommitHistory commits, int limit) {
     return showCommitHistory(commits, limit, DEFAULT_SHOW_FILES);
   }
 
-  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, boolean showFiles) {
+  protected StringBuilder showCommitHistory(CommitHistory commits, boolean showFiles) {
     return showCommitHistory(commits, commits.size(), showFiles);
   }
 
-  protected @NonNull StringBuilder showCommitHistory(@NonNull CommitHistory commits, int limit, boolean showFiles) {
+  protected StringBuilder showCommitHistory(CommitHistory commits, int limit, boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
 
@@ -767,7 +765,7 @@ public class GitCommands extends AbstractCommandsSupport {
     return output;
   }
 
-  protected @NonNull Function<CommitHistory, String> showCommitHistoryFunction(
+  protected Function<CommitHistory, String> showCommitHistoryFunction(
       boolean count, int limit, boolean showFiles) {
 
     return commitHistory -> count
@@ -775,11 +773,11 @@ public class GitCommands extends AbstractCommandsSupport {
       : showCommitHistory(commitHistory, limit, showFiles).toString();
   }
 
-  protected @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord) {
+  protected StringBuilder showCommitRecord(CommitRecord commitRecord) {
     return showCommitRecord(commitRecord, DEFAULT_SHOW_FILES);
   }
 
-  protected @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord, boolean showFiles) {
+  protected StringBuilder showCommitRecord(CommitRecord commitRecord, boolean showFiles) {
 
     StringBuilder output = new StringBuilder();
 
@@ -788,12 +786,12 @@ public class GitCommands extends AbstractCommandsSupport {
     return output;
   }
 
-  private @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord, @NonNull StringBuilder output) {
+  private StringBuilder showCommitRecord(CommitRecord commitRecord, StringBuilder output) {
     return showCommitRecord(commitRecord, DEFAULT_SHOW_FILES, output);
   }
 
-  private @NonNull StringBuilder showCommitRecord(@NonNull CommitRecord commitRecord, boolean showFiles,
-      @NonNull StringBuilder output) {
+  private StringBuilder showCommitRecord(CommitRecord commitRecord, boolean showFiles,
+      StringBuilder output) {
 
     output.append("Author: ").append(toCommitAuthorString(commitRecord.getAuthor())).append(Utils.newLine());
     output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
@@ -837,7 +835,7 @@ public class GitCommands extends AbstractCommandsSupport {
     return source.getAbsolutePath();
   }
 
-  @NonNull @Bean
+  @Bean
   AvailabilityProvider gitCommandsAvailability() {
 
     return isProjectSet() ? Availability::available

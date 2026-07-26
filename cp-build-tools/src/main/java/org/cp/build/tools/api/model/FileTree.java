@@ -30,8 +30,6 @@ import java.util.stream.Stream;
 
 import org.cp.build.tools.api.model.FileTree.FileNode;
 import org.cp.build.tools.api.support.Utils;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
@@ -58,7 +56,7 @@ public class FileTree implements Iterable<FileNode> {
   protected static final String DIRECTORY_PREFIX = "|--";
   protected static final String FILE_PREFIX = "-";
 
-  public static FileTree scan(@NonNull File location) {
+  public static FileTree scan(File location) {
 
     Assert.notNull(location, "Location is required");
     Assert.isTrue(location.exists(), () -> "Location [%s] must exist".formatted(location));
@@ -71,7 +69,7 @@ public class FileTree implements Iterable<FileNode> {
     return new FileTree(buildTree(directoryNode));
   }
 
-  private static @NonNull DirectoryNode buildTree(@NonNull DirectoryNode directoryNode) {
+  private static DirectoryNode buildTree(DirectoryNode directoryNode) {
 
     File[] files = Utils.nullSafeFileArray(directoryNode.getFile().listFiles());
 
@@ -94,7 +92,7 @@ public class FileTree implements Iterable<FileNode> {
 
   private final DirectoryNode root;
 
-  protected FileTree(@NonNull DirectoryNode directory) {
+  protected FileTree(DirectoryNode directory) {
     this.root = Utils.requireObject(directory, "Directory is required");
   }
 
@@ -102,15 +100,15 @@ public class FileTree implements Iterable<FileNode> {
     return size() < 1;
   }
 
-  public boolean contains(@NonNull File file) {
+  public boolean contains(File file) {
     return !findBy(fileNode -> fileNode.getFile().equals(file)).isEmpty();
   }
 
-  public int countBy(@NonNull Predicate<FileNode> queryPredicate) {
+  public int countBy(Predicate<FileNode> queryPredicate) {
     return findBy(queryPredicate).size();
   }
 
-  public List<FileNode> findBy(@NonNull Predicate<FileNode> queryPredicate) {
+  public List<FileNode> findBy(Predicate<FileNode> queryPredicate) {
 
     Assert.notNull(queryPredicate, "Query Predicate is required");
 
@@ -149,12 +147,12 @@ public class FileTree implements Iterable<FileNode> {
     return Utils.stream(this);
   }
 
-  public @NonNull String render() {
+  public String render() {
     return render(getRoot(), new StringWriter(), DIRECTORY_PREFIX).toString();
   }
 
-  protected @NonNull StringWriter render(@NonNull DirectoryNode directoryNode,
-      @NonNull StringWriter writer, @NonNull String prefix) {
+  protected StringWriter render(DirectoryNode directoryNode,
+      StringWriter writer, String prefix) {
 
     writer.append(Utils.newLineBefore(prefix)).append(directoryNode.getName());
 
@@ -185,7 +183,7 @@ public class FileTree implements Iterable<FileNode> {
   @Getter
   public static class DirectoryNode extends FileNode implements Iterable<FileNode> {
 
-    public static DirectoryNode from(@NonNull File directory) {
+    public static DirectoryNode from(File directory) {
 
       Assert.notNull(directory, "Directory is required");
       Assert.isTrue(directory.isDirectory(), () -> "File [%s] must be a directory".formatted(directory));
@@ -274,7 +272,7 @@ public class FileTree implements Iterable<FileNode> {
       return getFile().getParentFile().getAbsolutePath();
     }
 
-    public FileNode in(@Nullable DirectoryNode directory) {
+    public FileNode in( DirectoryNode directory) {
       setDirectory(directory);
       return this;
     }

@@ -46,8 +46,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
@@ -77,7 +75,6 @@ public class GitTemplate {
     return new GitTemplate(gitSupplier);
   }
 
-  @NonNull
   private final Supplier<Git> git;
 
   @Setter(AccessLevel.PROTECTED)
@@ -257,7 +254,7 @@ public class GitTemplate {
   @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
   static class CommitterIdentity {
 
-    static CommitterIdentity of(@Nullable PersonIdent authorIdentity, @Nullable PersonIdent committerIdentity) {
+    static CommitterIdentity of( PersonIdent authorIdentity,  PersonIdent committerIdentity) {
 
       Assert.isTrue(authorIdentity != null || committerIdentity != null,
         () -> "Either Author Identity [%s] or Committer Identity [%s] is required"
@@ -306,14 +303,14 @@ public class GitTemplate {
         .orElseThrow();
     }
 
-    private LocalDateTime nullSafeIdentityTime(@Nullable PersonIdent personIdentity) {
+    private LocalDateTime nullSafeIdentityTime( PersonIdent personIdentity) {
 
       return personIdentity != null
         ? toLocalDateTime(personIdentity.getWhenAsInstant())
         : LocalDateTime.now();
     }
 
-    private LocalDateTime toLocalDateTime(@Nullable Instant instant) {
+    private LocalDateTime toLocalDateTime( Instant instant) {
 
       return instant != null
         ? toLocalDateTime(instant.getEpochSecond())
