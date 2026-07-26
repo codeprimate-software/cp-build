@@ -80,8 +80,11 @@
       <id>jxblum</id>
       <name>John J. Blum</name>
       <email>john dot blum at codeprimate dot org</email>
+      <roles>
+        <role>Software Engineer</role>
+      </roles>
       <organization>Codeprimate, LLC</organization>
-      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+      <organizationUrl>https://www.codeprimate.org</organizationUrl>
     </developer>
   </developers>
 
