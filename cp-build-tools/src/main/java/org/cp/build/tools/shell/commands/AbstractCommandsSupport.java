@@ -23,8 +23,6 @@ import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.shell.jline.Colors;
 import org.jline.utils.AttributedStyle;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.shell.core.command.annotation.Command;
 
 /**
@@ -39,7 +37,7 @@ public abstract class AbstractCommandsSupport {
 
   protected abstract ProjectManager getProjectManager();
 
-  protected boolean isCurrentProject(@Nullable Project project) {
+  protected boolean isCurrentProject( Project project) {
 
     return currentProject()
       .filter(currentProject -> currentProject.equals(project))
@@ -62,11 +60,11 @@ public abstract class AbstractCommandsSupport {
     return getProjectManager().recent();
   }
 
-  protected @NonNull Project requireProject() {
+  protected Project requireProject() {
     return currentProject().orElseThrow(() -> new IllegalStateException("Project not set"));
   }
 
-  protected @NonNull String indent(@NonNull String content) {
+  protected String indent(String content) {
 
     String[] lines = content.split(Utils.NEW_LINE_REGEX);
 

@@ -31,7 +31,6 @@ import org.cp.build.tools.api.service.ProjectManager;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.shell.commands.AbstractCommandsSupport;
 import org.springframework.context.annotation.Bean;
-import org.springframework.lang.NonNull;
 import org.springframework.shell.core.command.annotation.Command;
 import org.springframework.shell.core.command.annotation.CommandGroup;
 import org.springframework.shell.core.command.annotation.Option;
@@ -177,7 +176,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     description = "List all source files at location",
     availabilityProvider = "sourceCommandsAvailability"
   )
-  public @NonNull String list(@Option(longName = "location", shortName = 'l') String location) {
+  public String list(@Option(longName = "location", shortName = 'l') String location) {
 
     String sourceDirectoryName = SOURCE_DIRECTORY_NAME;
 
@@ -212,7 +211,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     description = "Renders all source files at location using a tree structure",
     availabilityProvider = "sourceCommandsAvailability"
   )
-  public @NonNull String tree(
+  public String tree(
       @Option(longName = "location", shortName = 'l') String location,
       @Option(longName = "main") boolean main,
       @Option(longName = "test") boolean test) {
@@ -237,7 +236,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     return fileTree.render();
   }
 
-  @NonNull @Bean
+  @Bean
   AvailabilityProvider sourceCommandsAvailability() {
 
     return isProjectSet() ? Availability::available

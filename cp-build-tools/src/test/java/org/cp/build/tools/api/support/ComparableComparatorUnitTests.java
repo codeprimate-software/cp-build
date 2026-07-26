@@ -79,7 +79,7 @@ public class ComparableComparatorUnitTests {
     private final String name;
 
     @Override
-    public int compareTo(@NonNull User user) {
+    public int compareTo(User user) {
       return this.getName().compareTo(user.getName());
     }
 

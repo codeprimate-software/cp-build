@@ -29,8 +29,6 @@ import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,15 +44,15 @@ import lombok.Getter;
 @SuppressWarnings("unused")
 public class SourceFileSet implements Iterable<SourceFile> {
 
-  public static @NonNull SourceFileSet empty() {
+  public static SourceFileSet empty() {
     return of();
   }
 
-  public static @NonNull SourceFileSet of(SourceFile... array) {
+  public static SourceFileSet of(SourceFile... array) {
     return of(Arrays.asList(array));
   }
 
-  public static @NonNull SourceFileSet of(Iterable<SourceFile> sourceFiles) {
+  public static SourceFileSet of(Iterable<SourceFile> sourceFiles) {
 
     SourceFileSet collection = new SourceFileSet();
 
@@ -69,39 +67,39 @@ public class SourceFileSet implements Iterable<SourceFile> {
   private final Set<SourceFile> sourceFiles = new TreeSet<>();
 
   @SuppressWarnings("all")
-  public boolean add(@NonNull SourceFile sourceFile) {
+  public boolean add(SourceFile sourceFile) {
     return sourceFile != null && this.sourceFiles.add(sourceFile);
   }
 
-  public boolean contains(@Nullable File file) {
+  public boolean contains( File file) {
     return file != null && stream().anyMatch(sourceFile -> sourceFile.getFile().equals(file));
   }
 
-  public @NonNull SourceFileSet findBy(@NonNull Predicate<SourceFile> sourceFilePredicate) {
+  public SourceFileSet findBy(Predicate<SourceFile> sourceFilePredicate) {
 
     return SourceFileSet.of(stream()
       .filter(Utils.nullSafeNonMatchingPredicate(sourceFilePredicate))
       .collect(Collectors.toSet()));
   }
 
-  public @NonNull SourceFileSet findByAuthor(@NonNull SourceFile.Author author) {
+  public SourceFileSet findByAuthor(SourceFile.Author author) {
     return findBy(sourceFile -> sourceFile.wasModifiedBy(author));
   }
 
   // Find (Query) by Author name or email address
-  public @NonNull SourceFileSet findByAuthor(@NonNull String author) {
+  public SourceFileSet findByAuthor(String author) {
     return findBy(sourceFile -> sourceFile.wasModifiedBy(author));
   }
 
-  public @NonNull Optional<SourceFile> findByFile(@NonNull File file) {
+  public Optional<SourceFile> findByFile(File file) {
     return stream().filter(sourceFile -> sourceFile.getFile().equals(file)).findAny();
   }
 
-  public @NonNull SourceFileSet findByRevisionId(@NonNull String revisionId) {
+  public SourceFileSet findByRevisionId(String revisionId) {
     return findBy(sourceFile -> sourceFile.getRevisionIds().contains(revisionId));
   }
 
-  public @NonNull SourceFileSet findDuring(@NonNull TimePeriods timePeriods) {
+  public SourceFileSet findDuring(TimePeriods timePeriods) {
     return findBy(sourceFile -> sourceFile.wasModifiedDuring(timePeriods));
   }
 
@@ -114,7 +112,7 @@ public class SourceFileSet implements Iterable<SourceFile> {
     return Collections.unmodifiableSet(getSourceFiles()).iterator();
   }
 
-  public @NonNull SourceFile resolve(@NonNull File file) {
+  public SourceFile resolve(File file) {
 
     return findByFile(file)
       .orElseGet(() -> {

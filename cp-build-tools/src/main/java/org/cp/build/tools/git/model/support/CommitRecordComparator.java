@@ -18,7 +18,6 @@ package org.cp.build.tools.git.model.support;
 import java.util.Comparator;
 
 import org.cp.build.tools.git.model.CommitRecord;
-import org.springframework.lang.NonNull;
 
 /**
  * Java {@link Comparator} implementation used to compare {@link CommitRecord CommitRecords}.
@@ -33,7 +32,7 @@ public class CommitRecordComparator implements Comparator<CommitRecord> {
   public static final CommitRecordComparator INSTANCE = new CommitRecordComparator();
 
   @Override
-  public int compare(@NonNull CommitRecord one, @NonNull CommitRecord two) {
+  public int compare(CommitRecord one, CommitRecord two) {
     return one.getDateTime().compareTo(two.getDateTime());
   }
 }

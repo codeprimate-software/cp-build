@@ -30,8 +30,6 @@ import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods.DateRange;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -52,18 +50,18 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("unused")
 public class TimePeriods implements Iterable<DateRange> {
 
-  public static @NonNull TimePeriods empty() {
+  public static TimePeriods empty() {
     return new TimePeriods();
   }
 
-  public static @NonNull TimePeriods of(DateRange... dateRanges) {
+  public static TimePeriods of(DateRange... dateRanges) {
 
     return of(Arrays.stream(dateRanges)
       .filter(Objects::nonNull)
       .collect(Collectors.toList()));
   }
 
-  public static @NonNull TimePeriods of(@NonNull Iterable<DateRange> dateRanges) {
+  public static TimePeriods of(Iterable<DateRange> dateRanges) {
 
     TimePeriods timePeriods = new TimePeriods();
 
@@ -75,7 +73,7 @@ public class TimePeriods implements Iterable<DateRange> {
   }
 
   // Useful for Holidays (for example: Thanksgiving, Christmas, etc)
-  public static @NonNull TimePeriods ofSingleDates(LocalDate... dates) {
+  public static TimePeriods ofSingleDates(LocalDate... dates) {
 
     TimePeriods timePeriods = new TimePeriods();
 
@@ -87,7 +85,7 @@ public class TimePeriods implements Iterable<DateRange> {
     return timePeriods;
   }
 
-  public static @NonNull TimePeriods parse(@NonNull String dates) {
+  public static TimePeriods parse(String dates) {
 
     String[] splitDates = Utils.nullSafeTrimmedString(dates).split(Utils.COMMA);
 
@@ -100,39 +98,40 @@ public class TimePeriods implements Iterable<DateRange> {
   private final Set<DateRange> dateRanges = new HashSet<>();
 
   @SuppressWarnings("all")
-  public boolean isDuring(@NonNull LocalDate date) {
+  public boolean isDuring(LocalDate date) {
     return date != null && stream().anyMatch(dateRange -> dateRange.isDuring(date));
   }
 
-  public @NonNull Predicate<LocalDate> asPredicate() {
+  public Predicate<LocalDate> asPredicate() {
     return this::isDuring;
   }
 
   @Override
-  public @NonNull Iterator<DateRange> iterator() {
+  @SuppressWarnings("all")
+  public Iterator<DateRange> iterator() {
     return Collections.unmodifiableSet(getDateRanges()).iterator();
   }
 
-  public @NonNull Stream<DateRange> stream() {
+  public Stream<DateRange> stream() {
     return Utils.stream(this);
   }
 
   @Getter
-  protected static class DateRange {
+  public static class DateRange {
 
     protected static final String DATE_PATTERN = "yyyy-MM-dd";
 
     protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
-    protected static @NonNull DateRange.Builder from(@NonNull LocalDate start) {
+    protected static DateRange.Builder from(LocalDate start) {
       return new DateRange.Builder(start);
     }
 
-    protected static @NonNull DateRange forSingleDate(@NonNull LocalDate localDate) {
+    protected static DateRange forSingleDate(LocalDate localDate) {
       return from(localDate).build();
     }
 
-    protected static @NonNull DateRange parse(@NonNull String date) {
+    protected static DateRange parse(String date) {
 
       String nonNullTrimmedDate = Utils.nullSafeTrimmedString(date);
 
@@ -155,7 +154,7 @@ public class TimePeriods implements Iterable<DateRange> {
     private final LocalDate start;
     private final LocalDate end;
 
-    protected DateRange(@NonNull LocalDate start, @NonNull LocalDate end) {
+    protected DateRange(LocalDate start, LocalDate end) {
 
       Assert.notNull(start, "Start of DateRange is required");
       Assert.notNull(end, "End of DateRange is required");
@@ -168,7 +167,7 @@ public class TimePeriods implements Iterable<DateRange> {
     }
 
     @SuppressWarnings("all")
-    protected boolean isDuring(@NonNull LocalDate date) {
+    protected boolean isDuring(LocalDate date) {
       return date != null && !(date.isBefore(getStart()) || date.isAfter(getEnd()));
     }
 
@@ -179,16 +178,16 @@ public class TimePeriods implements Iterable<DateRange> {
 
       private LocalDate end;
 
-      protected Builder(@NonNull LocalDate start) {
+      protected Builder(LocalDate start) {
         this.start = start;
       }
 
-      protected Builder to(@Nullable LocalDate end) {
+      protected Builder to(LocalDate end) {
         this.end = end;
         return this;
       }
 
-      protected @NonNull DateRange build() {
+      protected DateRange build() {
 
         LocalDate start = getStart();
         LocalDate end = getEnd();

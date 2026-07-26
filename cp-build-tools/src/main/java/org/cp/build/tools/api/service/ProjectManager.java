@@ -37,7 +37,6 @@ import org.cp.build.tools.api.model.Session;
 import org.cp.build.tools.api.support.Utils;
 import org.slf4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -83,7 +82,7 @@ public class ProjectManager implements Iterable<Project> {
    * @throws IllegalArgumentException if the given {@link Session} is {@literal null}.
    * @see org.cp.build.tools.api.model.Session
    */
-  public ProjectManager(@NonNull Session session) {
+  public ProjectManager(Session session) {
     this.session = Utils.requireObject(session, "Session is required");
   }
 
@@ -157,7 +156,7 @@ public class ProjectManager implements Iterable<Project> {
     }
   }
 
-  private @NonNull BufferedReader newBufferedFileReader(@NonNull File file) throws FileNotFoundException {
+  private BufferedReader newBufferedFileReader(File file) throws FileNotFoundException {
     return new BufferedReader(new FileReader(file));
   }
 
@@ -196,7 +195,7 @@ public class ProjectManager implements Iterable<Project> {
       () -> "Directory [%s] not found".formatted(CODEPRIMATE_BUILD_TOOLS_DIRECTORY));
   }
 
-  private @NonNull BufferedWriter newBufferedFileWriter(@NonNull File file) throws IOException {
+  private BufferedWriter newBufferedFileWriter(File file) throws IOException {
     return new BufferedWriter(new FileWriter(file, Charset.defaultCharset(), false));
   }
 
@@ -222,7 +221,7 @@ public class ProjectManager implements Iterable<Project> {
    * @see #getSession()
    */
   @SuppressWarnings("all")
-  public @NonNull Project setCurrentProject(@NonNull Project project) {
+  public Project setCurrentProject(Project project) {
 
     return getSession()
       .setProject(Utils.requireObject(project, "Project to activate is required"))
@@ -306,7 +305,7 @@ public class ProjectManager implements Iterable<Project> {
    * @see java.io.File
    */
   @Cacheable(cacheNames = "projects", keyGenerator = "projectCacheKeyGenerator", sync = true)
-  public @NonNull Project resolveByLocation(File location) {
+  public Project resolveByLocation(File location) {
 
     Project project = Project.from(location);
 
@@ -331,7 +330,7 @@ public class ProjectManager implements Iterable<Project> {
   @Getter
   public static class CacheKey implements Comparable<CacheKey> {
 
-    public static @NonNull CacheKey of(@NonNull File location) {
+    public static CacheKey of(File location) {
       return new CacheKey(null, Utils.requireObject(location, "Project location is required"));
     }
 
@@ -391,7 +390,7 @@ public class ProjectManager implements Iterable<Project> {
   @RequiredArgsConstructor(staticName = "of")
   public static class RecentProject implements Comparable<RecentProject> {
 
-    public static @NonNull RecentProject from(@NonNull Project project) {
+    public static RecentProject from(Project project) {
 
       Assert.notNull(project, "Project is required");
 
@@ -402,7 +401,7 @@ public class ProjectManager implements Iterable<Project> {
     private final File location;
 
     @Override
-    public int compareTo(@NonNull RecentProject that) {
+    public int compareTo(RecentProject that) {
       return this.getName().compareTo(that.getName());
     }
 

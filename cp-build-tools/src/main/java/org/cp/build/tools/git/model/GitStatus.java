@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
-import org.springframework.lang.NonNull;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,7 +39,7 @@ import lombok.Setter;
 @SuppressWarnings("unused")
 public class GitStatus {
 
-  public static @NonNull GitStatus create() {
+  public static GitStatus create() {
     return new GitStatus();
   }
 
@@ -151,7 +150,7 @@ public class GitStatus {
     return stringArray;
   }
 
-  protected @NonNull GitStatus with(Consumer<String> consumer, String... values) {
+  protected GitStatus with(Consumer<String> consumer, String... values) {
 
     Arrays.stream(values)
       .filter(Utils::isSet)
@@ -160,72 +159,72 @@ public class GitStatus {
     return this;
   }
 
-  public @NonNull GitStatus withAdded(String... added) {
+  public GitStatus withAdded(String... added) {
     return with(getAdded()::add, added);
   }
 
-  public @NonNull GitStatus withAdded(Iterable<String> added) {
+  public GitStatus withAdded(Iterable<String> added) {
     return withAdded(toArray(added));
   }
 
-  public @NonNull GitStatus withChangedModified(String... changedModified) {
+  public GitStatus withChangedModified(String... changedModified) {
     return with(getChangedModified()::add, changedModified);
   }
 
-  public @NonNull GitStatus withChangedModified(Iterable<String> changedModified) {
+  public GitStatus withChangedModified(Iterable<String> changedModified) {
     return withChangedModified(toArray(changedModified));
   }
 
-  public @NonNull GitStatus withClean(boolean clean) {
+  public GitStatus withClean(boolean clean) {
     setClean(clean);
     return this;
   }
 
-  public @NonNull GitStatus withConflicts(String... conflicts) {
+  public GitStatus withConflicts(String... conflicts) {
     return with(getConflicts()::add, conflicts);
   }
 
-  public @NonNull GitStatus withConflicts(Iterable<String> conflicts) {
+  public GitStatus withConflicts(Iterable<String> conflicts) {
     return withConflicts(toArray(conflicts));
   }
 
-  public @NonNull GitStatus withIgnored(String... ignored) {
+  public GitStatus withIgnored(String... ignored) {
     return with(getIgnored()::add, ignored);
   }
 
-  public @NonNull GitStatus withIgnored(Iterable<String> ignored) {
+  public GitStatus withIgnored(Iterable<String> ignored) {
     return withIgnored(toArray(ignored));
   }
 
-  public @NonNull GitStatus withMissing(String... missing) {
+  public GitStatus withMissing(String... missing) {
     return with(getMissing()::add, missing);
   }
 
-  public @NonNull GitStatus withMissing(Iterable<String> missing) {
+  public GitStatus withMissing(Iterable<String> missing) {
     return withMissing(toArray(missing));
   }
 
-  public @NonNull GitStatus withRemoved(String... removed) {
+  public GitStatus withRemoved(String... removed) {
     return with(getRemoved()::add, removed);
   }
 
-  public @NonNull GitStatus withRemoved(Iterable<String> removed) {
+  public GitStatus withRemoved(Iterable<String> removed) {
     return withRemoved(toArray(removed));
   }
 
-  public @NonNull GitStatus withUncommitted(String... uncommitted) {
+  public GitStatus withUncommitted(String... uncommitted) {
     return with(getUncommitted()::add, uncommitted);
   }
 
-  public @NonNull GitStatus withUncommitted(Iterable<String> uncommitted) {
+  public GitStatus withUncommitted(Iterable<String> uncommitted) {
     return withUncommitted(toArray(uncommitted));
   }
 
-  public @NonNull GitStatus withUntracked(String... untracked) {
+  public GitStatus withUntracked(String... untracked) {
     return with(getUntracked()::add, untracked);
   }
 
-  public @NonNull GitStatus withUntracked(Iterable<String> untracked) {
+  public GitStatus withUntracked(Iterable<String> untracked) {
     return withUntracked(toArray(untracked));
   }
 }

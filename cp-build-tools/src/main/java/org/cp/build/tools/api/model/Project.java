@@ -29,8 +29,6 @@ import org.cp.build.tools.api.support.ComparableComparator;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.git.model.CommitHistory;
 import org.cp.build.tools.maven.model.MavenProject;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -161,7 +159,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.api.model.Project.Artifact
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T buildsArtifact(@Nullable Artifact artifact) {
+  public <T extends Project> T buildsArtifact( Artifact artifact) {
     setArtifact(artifact);
     return (T) this;
   }
@@ -176,7 +174,7 @@ public class Project implements Comparable<Project> {
    * @throws IllegalArgumentException if the {@link String description} is {@literal null} or {@literal blank}.
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T describedAs(@NonNull String description) {
+  public <T extends Project> T describedAs(String description) {
     Assert.hasText(description, () -> "Description for Project [%s] is required".formatted(getName()));
     setDescription(description);
     return (T) this;
@@ -192,7 +190,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.api.model.Project.Developer
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T developedBy(@NonNull Developer developer) {
+  public <T extends Project> T developedBy(Developer developer) {
     getDevelopers().add(developer);
     return (T) this;
   }
@@ -210,7 +208,7 @@ public class Project implements Comparable<Project> {
    * @see java.io.File
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T inDirectory(@NonNull File directory) {
+  public <T extends Project> T inDirectory(File directory) {
     Assert.isTrue(Utils.nullSafeIsDirectory(directory), "[%s] must be an existing, valid directory");
     setDirectory(directory);
     return (T) this;
@@ -226,7 +224,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.git.model.CommitHistory
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T withCommitHistory(@Nullable CommitHistory commitHistory) {
+  public <T extends Project> T withCommitHistory( CommitHistory commitHistory) {
     setCommitHistory(commitHistory);
     return (T) this;
   }
@@ -241,7 +239,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.api.model.Project.License
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T withLicense(@NonNull License license) {
+  public <T extends Project> T withLicense(License license) {
     getLicenses().add(license);
     return (T) this;
   }
@@ -255,7 +253,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.api.model.Project.Organization
    */
   @SuppressWarnings("unchecked")
-  public @NonNull <T extends Project> T withOrganization(@Nullable Organization organization) {
+  public <T extends Project> T withOrganization( Organization organization) {
     setOrganization(organization);
     return (T) this;
   }
@@ -269,7 +267,7 @@ public class Project implements Comparable<Project> {
    * @see #name
    */
   @Override
-  public int compareTo(@NonNull Project project) {
+  public int compareTo(Project project) {
     return getName().compareTo(project.getName());
   }
 
@@ -323,11 +321,11 @@ public class Project implements Comparable<Project> {
       return getVersion() != null;
     }
 
-    public @Nullable Version getVersion() {
+    public  Version getVersion() {
       return getProject().getVersion();
     }
 
-    public Artifact withGroupId(@Nullable String groupId) {
+    public Artifact withGroupId( String groupId) {
       setGroupId(groupId);
       return this;
     }
@@ -390,7 +388,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public License withUri(@Nullable URI uri) {
+    public License withUri( URI uri) {
       setUri(uri);
       return this;
     }
@@ -424,7 +422,7 @@ public class Project implements Comparable<Project> {
       return license != null && getLicenses().add(license);
     }
 
-    public boolean contains(@Nullable License license) {
+    public boolean contains( License license) {
       return license != null && getLicenses().contains(license);
     }
 
@@ -465,22 +463,22 @@ public class Project implements Comparable<Project> {
 
     private URI uri;
 
-    public Developer identifiedBy(@Nullable String id) {
+    public Developer identifiedBy( String id) {
       setId(id);
       return this;
     }
 
-    public Developer withEmailAddress(@Nullable String emailAddress) {
+    public Developer withEmailAddress( String emailAddress) {
       setEmailAddress(emailAddress);
       return this;
     }
 
-    public Developer withOrganization(@Nullable Organization organization) {
+    public Developer withOrganization( Organization organization) {
       setOrganization(organization);
       return this;
     }
 
-    public Developer withUri(@Nullable URI uri) {
+    public Developer withUri( URI uri) {
       setUri(uri);
       return this;
     }
@@ -509,11 +507,11 @@ public class Project implements Comparable<Project> {
     private final Set<Developer> developers = new HashSet<>();
 
     @SuppressWarnings("all")
-    public boolean add(@NonNull Developer developer) {
+    public boolean add(Developer developer) {
       return developer != null && getDevelopers().add(developer);
     }
 
-    public boolean contains(@Nullable Developer developer) {
+    public boolean contains( Developer developer) {
       return developer != null && getDevelopers().contains(developer);
     }
 
@@ -550,7 +548,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public Organization withUri(@Nullable URI uri) {
+    public Organization withUri( URI uri) {
       setUri(uri);
       return this;
     }
@@ -670,7 +668,7 @@ public class Project implements Comparable<Project> {
       return SNAPSHOT.equalsIgnoreCase(getQualifier());
     }
 
-    public @NonNull Version withQualifier(@Nullable String qualifier) {
+    public Version withQualifier( String qualifier) {
       setQualifier(qualifier);
       return this;
     }
@@ -691,11 +689,11 @@ public class Project implements Comparable<Project> {
       return Utils.negate(result);
     }
 
-    private int quantifyQualifier(@NonNull Version version) {
+    private int quantifyQualifier(Version version) {
       return quantifyQualifier(version.getQualifier());
     }
 
-    private int quantifyQualifier(@Nullable String qualifier) {
+    private int quantifyQualifier( String qualifier) {
 
       String nonNullQualifier = Utils.nullSafeTrimmedString(qualifier);
 

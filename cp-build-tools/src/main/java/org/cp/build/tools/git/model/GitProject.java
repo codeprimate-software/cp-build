@@ -94,7 +94,7 @@ public class GitProject {
     return new Git(gitRepository);
   }
 
-  private static @Nullable File findGitDirectory(@Nullable File directory) {
+  private static  File findGitDirectory( File directory) {
 
     if (Utils.nullSafeIsDirectory(directory)) {
       File gitDirectory = new File(directory, GIT_DIRECTORY_NAME);

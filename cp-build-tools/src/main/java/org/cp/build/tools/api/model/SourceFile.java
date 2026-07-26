@@ -39,8 +39,6 @@ import java.util.stream.Stream;
 
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.api.time.TimePeriods;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
@@ -74,7 +72,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return new SourceFile(file);
   }
 
-  public static SourceFile from(File file, @Nullable Project project) {
+  public static SourceFile from(File file,  Project project) {
     return new SourceFile(file, project);
   }
 
@@ -93,7 +91,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     this(file, null);
   }
 
-  public SourceFile(File file, @Nullable Project project) {
+  public SourceFile(File file,  Project project) {
 
     Assert.notNull(file, "File is required");
     Assert.isTrue(file.isFile(), () -> "File [%s] must exist".formatted(file));
@@ -338,13 +336,13 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     @Setter(AccessLevel.PROTECTED)
     private String emailAddress;
 
-    public Author withEmailAddress(@Nullable String emailAddress) {
+    public Author withEmailAddress( String emailAddress) {
       setEmailAddress(emailAddress);
       return this;
     }
 
     @Override
-    public int compareTo(@NonNull Author that) {
+    public int compareTo(Author that) {
       return this.getName().compareTo(that.getName());
     }
 
@@ -371,16 +369,16 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
 
     private final String id;
 
-    public @NonNull LocalDate getDate() {
+    public LocalDate getDate() {
       return getDateTime().toLocalDate();
     }
 
-    public @NonNull LocalTime getTime() {
+    public LocalTime getTime() {
       return getDateTime().toLocalTime();
     }
 
     @Override
-    public int compareTo(@NonNull Revision that) {
+    public int compareTo(Revision that) {
       return this.getDateTime().compareTo(that.getDateTime());
     }
 
