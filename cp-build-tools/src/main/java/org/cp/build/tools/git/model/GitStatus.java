@@ -115,23 +115,23 @@ public class GitStatus {
   }
 
   public Stream<String> streamIgnored() {
-    return  Collections.unmodifiableSet(getIgnored()).stream();
+    return Collections.unmodifiableSet(getIgnored()).stream();
   }
 
   public Stream<String> streamMissing() {
-    return  Collections.unmodifiableSet(getMissing()).stream();
+    return Collections.unmodifiableSet(getMissing()).stream();
   }
 
   public Stream<String> streamRemoved() {
-    return  Collections.unmodifiableSet(getRemoved()).stream();
+    return Collections.unmodifiableSet(getRemoved()).stream();
   }
 
   public Stream<String> streamUncommitted() {
-    return  Collections.unmodifiableSet(getUncommitted()).stream();
+    return Collections.unmodifiableSet(getUncommitted()).stream();
   }
 
   public Stream<String> streamUntracked() {
-    return  Collections.unmodifiableSet(getUntracked()).stream();
+    return Collections.unmodifiableSet(getUntracked()).stream();
   }
 
   protected String[] toArray(Iterable<String> iterable) {

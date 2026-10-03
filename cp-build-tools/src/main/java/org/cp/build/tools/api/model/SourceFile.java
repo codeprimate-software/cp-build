@@ -51,9 +51,9 @@ import lombok.Setter;
  * Abstract Data Type (ADT) modeling a {@link File source file} under source control, such as {@literal git}.
  *
  * @author John Blum
- * @see java.io.File
- * @see java.lang.Comparable
- * @see java.lang.Iterable
+ * @see Comparable
+ * @see File
+ * @see Iterable
  * @since 0.1.0
  */
 @Getter
@@ -72,7 +72,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     return new SourceFile(file);
   }
 
-  public static SourceFile from(File file,  Project project) {
+  public static SourceFile from(File file, Project project) {
     return new SourceFile(file, project);
   }
 
@@ -91,7 +91,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     this(file, null);
   }
 
-  public SourceFile(File file,  Project project) {
+  public SourceFile(File file, Project project) {
 
     Assert.notNull(file, "File is required");
     Assert.isTrue(file.isFile(), () -> "File [%s] must exist".formatted(file));
@@ -336,7 +336,7 @@ public class SourceFile implements Comparable<SourceFile>, Iterable<SourceFile.R
     @Setter(AccessLevel.PROTECTED)
     private String emailAddress;
 
-    public Author withEmailAddress( String emailAddress) {
+    public Author withEmailAddress(String emailAddress) {
       setEmailAddress(emailAddress);
       return this;
     }

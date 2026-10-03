@@ -70,10 +70,10 @@ public abstract class Utils {
   };
 
   public static LocalDateTime atEpoch() {
-    return LocalDateTime.of(1970, 1, 1 , 0, 0, 0);
+    return LocalDateTime.of(1970, 1, 1, 0, 0, 0);
   }
 
-  public static <T> T get( T value, Supplier<T> defaultValue) {
+  public static <T> T get(T value, Supplier<T> defaultValue) {
     return value != null ? value : defaultValue.get();
   }
 
@@ -124,44 +124,44 @@ public abstract class Utils {
     return LINE_SEPARATOR;
   }
 
-  public static String newLineAfter( String text) {
+  public static String newLineAfter(String text) {
     return nullSafeTrimmedString(text).concat(newLine());
   }
 
-  public static String newLineBefore( String text) {
+  public static String newLineBefore(String text) {
     return newLine().concat(nullSafeTrimmedString(text));
   }
 
-  public static String newLineBeforeAfter( String text) {
+  public static String newLineBeforeAfter(String text) {
     return newLine().concat(newLineAfter(text));
   }
 
-  public static boolean nullSafeIsDirectory( Object target) {
+  public static boolean nullSafeIsDirectory(Object target) {
     return (target instanceof File file) && file.isDirectory();
   }
 
-  public static boolean nullSafeIsFile( Object target) {
+  public static boolean nullSafeIsFile(Object target) {
     return (target instanceof File file) && file.isFile();
   }
 
-  public static File[] nullSafeFileArray( File[] fileArray) {
+  public static File[] nullSafeFileArray(File[] fileArray) {
     return fileArray != null ? fileArray : EMPTY_FILE_ARRAY;
   }
 
-  public static <T> Iterable<T> nullSafeIterable( Iterable<T> iterable) {
+  public static <T> Iterable<T> nullSafeIterable(Iterable<T> iterable) {
     return iterable != null ? iterable : Collections::emptyIterator;
   }
 
-  public static <T> Predicate<T> nullSafeMatchingPredicate( Predicate<T> predicate) {
+  public static <T> Predicate<T> nullSafeMatchingPredicate(Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> true;
   }
 
-  public static <T> Predicate<T> nullSafeNonMatchingPredicate( Predicate<T> predicate) {
+  public static <T> Predicate<T> nullSafeNonMatchingPredicate(Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> false;
   }
 
   @SuppressWarnings("all")
-  public static String nullSafeFormatString( String target, int length) {
+  public static String nullSafeFormatString(String target, int length) {
 
     String nonNullString = nullSafeTrimmedString(target);
 
@@ -174,11 +174,11 @@ public abstract class Utils {
     return nonNullString.substring(0, Math.min(nonNullString.length(), length));
   }
 
-  public static String nullSafeToString( Object target) {
+  public static String nullSafeToString(Object target) {
     return target != null ? target.toString() : EMPTY_STRING;
   }
 
-  public static String nullSafeTrimmedString( String target) {
+  public static String nullSafeTrimmedString(String target) {
     return target != null ? target.trim() : EMPTY_STRING;
   }
 
@@ -214,7 +214,7 @@ public abstract class Utils {
     return object;
   }
 
-  public static <T> Stream<T> stream( Iterable<T> iterable) {
+  public static <T> Stream<T> stream(Iterable<T> iterable) {
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false);
   }
 
@@ -226,7 +226,7 @@ public abstract class Utils {
     return LocalDateTime.now().plusDays(1L);
   }
 
-  public static <T> Supplier<T> toSupplier( T target) {
+  public static <T> Supplier<T> toSupplier(T target) {
     return () -> target;
   }
 }

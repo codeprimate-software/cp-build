@@ -38,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("unused")
 public class Session {
 
-
   private volatile Project project;
 
   @PostConstruct
@@ -58,7 +57,7 @@ public class Session {
    * returns {@literal null} if no {@link Project} has been set.
    * @see org.cp.build.tools.api.model.Project
    */
-  public  Project getProject() {
+  public Project getProject() {
     return this.project;
   }
 
@@ -70,7 +69,7 @@ public class Session {
     return Utils.requireState(getProject(), "Project has not be set");
   }
 
-  public Session setProject( Project project) {
+  public Session setProject(Project project) {
     this.project = project;
     return this;
   }

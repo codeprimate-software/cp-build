@@ -26,7 +26,6 @@ import org.cp.build.tools.git.support.GitException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import lombok.AccessLevel;
@@ -94,7 +93,7 @@ public class GitProject {
     return new Git(gitRepository);
   }
 
-  private static  File findGitDirectory( File directory) {
+  private static File findGitDirectory(File directory) {
 
     if (Utils.nullSafeIsDirectory(directory)) {
       File gitDirectory = new File(directory, GIT_DIRECTORY_NAME);

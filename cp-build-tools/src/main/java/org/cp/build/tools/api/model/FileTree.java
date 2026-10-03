@@ -151,8 +151,7 @@ public class FileTree implements Iterable<FileNode> {
     return render(getRoot(), new StringWriter(), DIRECTORY_PREFIX).toString();
   }
 
-  protected StringWriter render(DirectoryNode directoryNode,
-      StringWriter writer, String prefix) {
+  protected StringWriter render(DirectoryNode directoryNode, StringWriter writer, String prefix) {
 
     writer.append(Utils.newLineBefore(prefix)).append(directoryNode.getName());
 
@@ -272,7 +271,7 @@ public class FileTree implements Iterable<FileNode> {
       return getFile().getParentFile().getAbsolutePath();
     }
 
-    public FileNode in( DirectoryNode directory) {
+    public FileNode in(DirectoryNode directory) {
       setDirectory(directory);
       return this;
     }

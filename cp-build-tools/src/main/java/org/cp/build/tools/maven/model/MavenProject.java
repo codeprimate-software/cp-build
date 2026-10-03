@@ -31,7 +31,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.cp.build.tools.api.model.Project;
 import org.cp.build.tools.api.support.Utils;
 import org.cp.build.tools.maven.support.MavenPomNotFoundException;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import lombok.AccessLevel;
@@ -89,7 +88,7 @@ public class MavenProject extends Project {
    * @see #isPomXml(File)
    * @see java.io.File
    */
-  public static boolean isMavenPom( File pom) {
+  public static boolean isMavenPom(File pom) {
     return isPomXml(pom);
   }
 
@@ -104,19 +103,18 @@ public class MavenProject extends Project {
    * @see #isPomXml(File)
    * @see java.io.File
    */
-  public static boolean isMavenPomPresent( File location) {
+  public static boolean isMavenPomPresent(File location) {
     return containsPomXml(location) || isPomXml(location);
   }
 
-  private static boolean containsPomXml( File location) {
-
+  private static boolean containsPomXml(File location) {
     return Utils.nullSafeIsDirectory(location)
       && Arrays.stream(Utils.nullSafeFileArray(location.listFiles(POM_XML_FILE_FILTER)))
-        .findFirst()
-        .isPresent();
+      .findFirst()
+      .isPresent();
   }
 
-  private static boolean isPomXml( File file) {
+  private static boolean isPomXml(File file) {
     return POM_XML_FILE_FILTER.accept(file);
   }
 
@@ -189,7 +187,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public  String getDescription() {
+  public String getDescription() {
     return getMavenProject().getDescription();
   }
 
@@ -216,7 +214,7 @@ public class MavenProject extends Project {
     return developers;
   }
 
-  private  Organization buildDeveloperOrganization(org.apache.maven.model.Developer developer) {
+  private Organization buildDeveloperOrganization(org.apache.maven.model.Developer developer) {
 
     String developerOrganization = developer.getOrganization();
 
@@ -226,8 +224,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public  URI getIssueTracker() {
-
+  public URI getIssueTracker() {
     return Optional.ofNullable(getMavenProject())
       .map(org.apache.maven.project.MavenProject::getIssueManagement)
       .map(IssueManagement::getUrl)
@@ -256,12 +253,12 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public  Organization getOrganization() {
+  public Organization getOrganization() {
     return this.organizationReference.updateAndGet(organization -> organization != null ? organization
       : buildOrganization());
   }
 
-  private  Organization buildOrganization() {
+  private Organization buildOrganization() {
 
     org.apache.maven.project.MavenProject mavenProject = getMavenProject();
 
@@ -272,7 +269,7 @@ public class MavenProject extends Project {
   }
 
   @Override
-  public  URI getSourceRepository() {
+  public URI getSourceRepository() {
 
     return Optional.ofNullable(getMavenProject())
       .map(org.apache.maven.project.MavenProject::getScm)
@@ -286,7 +283,7 @@ public class MavenProject extends Project {
     return Version.parse(getMavenProject().getVersion());
   }
 
-  private  URI nullSafeUriCreate( String url) {
+  private URI nullSafeUriCreate(String url) {
     return StringUtils.hasText(url) ? URI.create(url) : null;
   }
 }

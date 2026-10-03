@@ -71,7 +71,7 @@ public class SourceFileSet implements Iterable<SourceFile> {
     return sourceFile != null && this.sourceFiles.add(sourceFile);
   }
 
-  public boolean contains( File file) {
+  public boolean contains(File file) {
     return file != null && stream().anyMatch(sourceFile -> sourceFile.getFile().equals(file));
   }
 

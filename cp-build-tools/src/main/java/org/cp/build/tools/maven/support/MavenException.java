@@ -25,7 +25,9 @@ package org.cp.build.tools.maven.support;
 @SuppressWarnings("unused")
 public class MavenException extends RuntimeException {
 
-  public MavenException() { }
+  public MavenException() {
+
+  }
 
   public MavenException(String message) {
     super(message);

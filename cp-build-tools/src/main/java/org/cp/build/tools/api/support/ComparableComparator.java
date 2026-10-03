@@ -26,7 +26,7 @@ import java.util.Comparator;
  * @since 2.0.0
  */
 @SuppressWarnings("rawtypes")
-public class ComparableComparator implements Comparator<Comparable>  {
+public class ComparableComparator implements Comparator<Comparable> {
 
   public static ComparableComparator INSTANCE = new ComparableComparator();
 

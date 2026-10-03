@@ -27,7 +27,9 @@ import org.apache.maven.Maven;
 @SuppressWarnings("unused")
 public class MavenPomNotFoundException extends MavenException {
 
-  public MavenPomNotFoundException() { }
+  public MavenPomNotFoundException() {
+
+  }
 
   public MavenPomNotFoundException(String message) {
     super(message);

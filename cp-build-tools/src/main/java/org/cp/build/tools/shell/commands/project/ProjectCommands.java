@@ -138,7 +138,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
           .style(toBoldItalicText(labelColor)).append("Issue Tracker: ")
           .style(toPlainText(textColor)).append(Utils.newLineAfter(project.getIssueTracker().toString()));
 
-          return output.toAnsi();
+        return output.toAnsi();
 
       })
       .orElseThrow(() -> new IllegalStateException("Project was not set"));
@@ -146,7 +146,7 @@ public class ProjectCommands extends AbstractCommandsSupport {
 
   @Command(
     name = "development",
-    description="Details the project's development effort and activity",
+    description = "Details the project's development effort and activity",
     availabilityProvider = "projectCommandsAvailabilityProvider"
   )
   public String development(@Option(longName = "hourly-rate", defaultValue = "100.0") BigDecimal hourlyRate) {
@@ -283,9 +283,10 @@ public class ProjectCommands extends AbstractCommandsSupport {
   @Command(name = "release-dates", description = "Lists all project release dates and version")
   @SuppressWarnings("all")
   public String releaseDates(
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     return currentProject()
       .map(project -> {
@@ -387,8 +388,11 @@ public class ProjectCommands extends AbstractCommandsSupport {
     };
   }
 
-  private static Predicate<CommitRecord> commitDateQueryPredicate( String targetDateString,
-      Supplier<LocalDate> defaultTargetDate, BiPredicate<LocalDate, LocalDate> commitDatePredicate) {
+  private static Predicate<CommitRecord> commitDateQueryPredicate(
+    String targetDateString,
+    Supplier<LocalDate> defaultTargetDate,
+    BiPredicate<LocalDate, LocalDate> commitDatePredicate
+  ) {
 
     return commitRecord -> {
 

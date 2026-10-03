@@ -86,7 +86,7 @@ public class GitTemplate {
 
   public CommitHistory getCommitHistory() {
 
-    try (Git git = git()){
+    try (Git git = git()) {
 
       LogCommand logCommand = git.log().all();
 
@@ -183,8 +183,11 @@ public class GitTemplate {
     //return commit.getShortMessage();
   }
 
-  private CommitRecord resolveCommittedSourceFiles(Repository repository, RevCommit commit, CommitRecord commitRecord)
-      throws Exception {
+  private CommitRecord resolveCommittedSourceFiles(
+    Repository repository,
+    RevCommit commit,
+    CommitRecord commitRecord
+  ) throws Exception {
 
     List<File> sourceFiles = resolveCommittedSourceFilesUsingDiffFormatter(repository, commit);
 
@@ -194,8 +197,10 @@ public class GitTemplate {
   }
 
   // @see https://www.eclipse.org/forums/index.php/t/213979/
-  private List<File> resolveCommittedSourceFilesUsingDiffFormatter(Repository repository, RevCommit commit)
-      throws Exception {
+  private List<File> resolveCommittedSourceFilesUsingDiffFormatter(
+    Repository repository,
+    RevCommit commit
+  ) throws Exception {
 
     DiffFormatter diffFormatter = newDiffFormatter(repository);
 
@@ -254,7 +259,7 @@ public class GitTemplate {
   @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
   static class CommitterIdentity {
 
-    static CommitterIdentity of( PersonIdent authorIdentity,  PersonIdent committerIdentity) {
+    static CommitterIdentity of(PersonIdent authorIdentity, PersonIdent committerIdentity) {
 
       Assert.isTrue(authorIdentity != null || committerIdentity != null,
         () -> "Either Author Identity [%s] or Committer Identity [%s] is required"
@@ -303,14 +308,14 @@ public class GitTemplate {
         .orElseThrow();
     }
 
-    private LocalDateTime nullSafeIdentityTime( PersonIdent personIdentity) {
+    private LocalDateTime nullSafeIdentityTime(PersonIdent personIdentity) {
 
       return personIdentity != null
         ? toLocalDateTime(personIdentity.getWhenAsInstant())
         : LocalDateTime.now();
     }
 
-    private LocalDateTime toLocalDateTime( Instant instant) {
+    private LocalDateTime toLocalDateTime(Instant instant) {
 
       return instant != null
         ? toLocalDateTime(instant.getEpochSecond())

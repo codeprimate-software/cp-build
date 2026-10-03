@@ -37,8 +37,7 @@ public abstract class AbstractCommandsSupport {
 
   protected abstract ProjectManager getProjectManager();
 
-  protected boolean isCurrentProject( Project project) {
-
+  protected boolean isCurrentProject(Project project) {
     return currentProject()
       .filter(currentProject -> currentProject.equals(project))
       .isPresent();

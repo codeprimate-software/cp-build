@@ -29,7 +29,9 @@ import org.cp.build.tools.api.model.Session;
 @SuppressWarnings("unused")
 public class SessionInvalidException extends RuntimeException {
 
-  public SessionInvalidException() { }
+  public SessionInvalidException() {
+
+  }
 
   public SessionInvalidException(String message) {
     super(message);

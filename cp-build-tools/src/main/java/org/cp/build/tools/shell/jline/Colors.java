@@ -19,9 +19,9 @@ package org.cp.build.tools.shell.jline;
  * Java {@link Enum Enumeration} of colors supported by {@literal JLine}.
  *
  * @author John Blum
- * @since 2.0.0
  * @see <a href="https://github.com/jline/jline3/blob/master/terminal/src/main/java/org/jline/utils/Colors.java">JLine Colors.java</a>
  * @see <a href="https://github.com/jline/jline3/blob/master/terminal/src/main/resources/org/jline/utils/colors.txt">JLine colors.txt</a>
+ * @since 2.0.0
  */
 @SuppressWarnings("unused")
 public enum Colors {

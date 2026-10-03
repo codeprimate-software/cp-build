@@ -108,11 +108,13 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Counts all commits",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public int commitCount(@Option(description = "Commit count by author") String author,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public int commitCount(
+    @Option(description = "Commit count by author") String author,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
@@ -127,14 +129,16 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public String commitCountGroupedBy(@Option(description = "Commit count by author") String author,
-      @Option(longName = "by-day", defaultValue = "false") boolean groupedByDay,
-      @Option(longName = "by-month", defaultValue = "false") boolean groupedByMonth,
-      @Option(longName = "by-year", defaultValue = "false") boolean groupedByYear,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_COUNT_GROUP_BY_LIMIT_OPTION) int limit,
-      @Option(longName = "order-by-date", shortName = 'o', defaultValue = "false") boolean orderByDate,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitCountGroupedBy(
+    @Option(description = "Commit count by author") String author,
+    @Option(longName = "by-day", defaultValue = "false") boolean groupedByDay,
+    @Option(longName = "by-month", defaultValue = "false") boolean groupedByMonth,
+    @Option(longName = "by-year", defaultValue = "false") boolean groupedByYear,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_COUNT_GROUP_BY_LIMIT_OPTION) int limit,
+    @Option(longName = "order-by-date", shortName = 'o', defaultValue = "false") boolean orderByDate,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, null, null)
@@ -144,8 +148,8 @@ public class GitCommands extends AbstractCommandsSupport {
 
     Set<CommitHistory.Group> groupedCommitRecords =
       groupedByYear ? commitRecords.groupByYear()
-      : groupedByMonth ? commitRecords.groupByMonth()
-      : commitRecords.groupByDay();
+        : groupedByMonth ? commitRecords.groupByMonth()
+        : commitRecords.groupByDay();
 
     Comparator<CommitHistory.Group> groupComparator = orderByDate
       ? (groupOne, groupTwo) -> ((Comparable) groupOne.getGroupedBy()).compareTo(groupTwo.getGroupedBy())
@@ -173,17 +177,19 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Logs all commits",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String commitLog(@Option(description = "Commit with hash; options not applicable") String hash,
-      @Option(longName = "author") String author,
-      @Option(longName = "after-hash", shortName = 'a', description = "[--until, --exclude-dates]") String afterHash,
-      @Option(longName = "before-hash", shortName = 'b', description = "[--since, --exclude-dates]") String beforeHash,
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitLog(
+    @Option(description = "Commit with hash; options not applicable") String hash,
+    @Option(longName = "author") String author,
+    @Option(longName = "after-hash", shortName = 'a', description = "[--until, --exclude-dates]") String afterHash,
+    @Option(longName = "before-hash", shortName = 'b', description = "[--since, --exclude-dates]") String beforeHash,
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     if (Utils.isSet(hash)) {
 
@@ -205,9 +211,9 @@ public class GitCommands extends AbstractCommandsSupport {
 
       // Query commits
       CommitHistory commits = currentProject()
-          .map(this::resolveCommitHistory)
-          .map(hashFunction)
-          .orElseGet(CommitHistory::empty);
+        .map(this::resolveCommitHistory)
+        .map(hashFunction)
+        .orElseGet(CommitHistory::empty);
 
       // Filter commits by time (date)
       Predicate<CommitRecord> queryPredicate = commitsByAuthorQueryPredicate(author)
@@ -248,14 +254,16 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   @SuppressWarnings("all")
-  public String commitsAfterHours(@Option(description = "Commits by author") String author,
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitsAfterHours(
+    @Option(description = "Commits by author") String author,
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> commitsAfterHoursQueryPredicate = commitRecord -> {
 
@@ -285,14 +293,16 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits by author (committer)",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String commitsBy(@Option(required = true) String committer,
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitsBy(
+    @Option(required = true) String committer,
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> commitsByCommitterQueryPredicate = commitRecord -> {
 
@@ -318,14 +328,16 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits during work hours (on-the-clock)",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String commitsOnTheClock(@Option(description = "Commits by author") String author,
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitsOnTheClock(
+    @Option(description = "Commits by author") String author,
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> commitsDuringWorkHoursQueryPredicate = commitRecord -> {
 
@@ -356,15 +368,17 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits to a source file or path",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String commitsTo(@Option(required = true) String sourceFilePath,
-      @Option(longName = "author", description = "By author") String author,
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitsTo(
+    @Option(required = true) String sourceFilePath,
+    @Option(longName = "author", description = "By author") String author,
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, untilDate, excludingDates, duringDates)
@@ -381,15 +395,17 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds all commits with message",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String commitsWith(@Option(required = true) String message,
-      @Option(longName = "author", description = "By author") String author,
-      @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
-      @Option(longName = "during", shortName = 'd') String duringDates,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
-      @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+  public String commitsWith(
+    @Option(required = true) String message,
+    @Option(longName = "author", description = "By author") String author,
+    @Option(longName = "count", shortName = 'c', defaultValue = "false") boolean count,
+    @Option(longName = "during", shortName = 'd') String duringDates,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates,
+    @Option(longName = "limit", shortName = 'l', defaultValue = DEFAULT_COMMIT_LOG_LIMIT_OPTION) int limit,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> commitsWithMessageQueryPredicate = commitRecord ->
       commitRecord.getMessage().toLowerCase().contains(String.valueOf(message).toLowerCase());
@@ -409,11 +425,13 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds the first commit since a given date",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String firstCommit(@Option(description = "By author") String author,
-      @Option(longName = "source") String sourceFilePath,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates ) {
+  public String firstCommit(
+    @Option(description = "By author") String author,
+    @Option(longName = "source") String sourceFilePath,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates
+  ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(sinceDate, null, excludingDates, null)
@@ -437,11 +455,13 @@ public class GitCommands extends AbstractCommandsSupport {
     description = "Finds the last commit before a given date",
     availabilityProvider = "gitCommandsAvailability"
   )
-  public String lastCommit(@Option(description = "By author") String author,
-      @Option(longName = "until", shortName = 'u') String untilDate,
-      @Option(longName = "source") String sourceFilePath,
-      @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
-      @Option(longName = "exclude-dates", shortName = 'e') String excludingDates ) {
+  public String lastCommit(
+    @Option(description = "By author") String author,
+    @Option(longName = "until", shortName = 'u') String untilDate,
+    @Option(longName = "source") String sourceFilePath,
+    @Option(longName = "show-files", shortName = 'f', defaultValue = DEFAULT_SHOW_FILES_OPTION) boolean showFiles,
+    @Option(longName = "exclude-dates", shortName = 'e') String excludingDates
+  ) {
 
     Predicate<CommitRecord> queryPredicate =
       commitsByTimeQueryPredicate(null, untilDate, excludingDates, null)
@@ -503,12 +523,13 @@ public class GitCommands extends AbstractCommandsSupport {
     availabilityProvider = "gitCommandsAvailability"
   )
   public String sourceFilesWithCommitMessage(
-      @Option(description = "Commit message like; use '|' to (OR) multiple commit messages") String commitMessage,
-      @Option(longName = "exclude-filter") String excludeFilter,
-      @Option(longName = "include-filter") String includeFilter,
-      @Option(longName = "since", shortName = 's') String sinceDate,
-      @Option(longName = "strict", defaultValue = "false") boolean strict,
-      @Option(longName = "until", shortName = 'u') String untilDate) {
+    @Option(description = "Commit message like; use '|' to (OR) multiple commit messages") String commitMessage,
+    @Option(longName = "exclude-filter") String excludeFilter,
+    @Option(longName = "include-filter") String includeFilter,
+    @Option(longName = "since", shortName = 's') String sinceDate,
+    @Option(longName = "strict", defaultValue = "false") boolean strict,
+    @Option(longName = "until", shortName = 'u') String untilDate
+  ) {
 
     Predicate<CommitRecord> commitsWithMessageQueryPredicate = commitRecord -> {
 
@@ -544,17 +565,17 @@ public class GitCommands extends AbstractCommandsSupport {
 
       Predicate<SourceFile> sourceFileTimePredicate = sourceFile -> {
 
-         boolean result = !StringUtils.hasText(sinceDate) || sourceFile.getFirstRevisionDateTime()
-           .map(LocalDateTime::toLocalDate)
-           .filter(date -> !date.isBefore(LocalDate.parse(sinceDate, INPUT_DATE_FORMATTER)))
-           .isPresent();
+        boolean result = !StringUtils.hasText(sinceDate) || sourceFile.getFirstRevisionDateTime()
+          .map(LocalDateTime::toLocalDate)
+          .filter(date -> !date.isBefore(LocalDate.parse(sinceDate, INPUT_DATE_FORMATTER)))
+          .isPresent();
 
-         result &= !StringUtils.hasText(untilDate) || sourceFile.getLastRevisionDateTime()
-           .map(LocalDateTime::toLocalDate)
-           .filter(date -> !date.isAfter(LocalDate.parse(untilDate, INPUT_DATE_FORMATTER)))
-           .isPresent();
+        result &= !StringUtils.hasText(untilDate) || sourceFile.getLastRevisionDateTime()
+          .map(LocalDateTime::toLocalDate)
+          .filter(date -> !date.isAfter(LocalDate.parse(untilDate, INPUT_DATE_FORMATTER)))
+          .isPresent();
 
-         return result;
+        return result;
       };
 
       sourceFilePredicate = sourceFilePredicate.and(sourceFileTimePredicate);
@@ -569,7 +590,8 @@ public class GitCommands extends AbstractCommandsSupport {
       output.append(Utils.newLineBefore(sourceFile.getFile().getAbsolutePath()));
     }
 
-    output.append(Utils.newLineBefore("Count: "))
+    output
+      .append(Utils.newLineBefore("Count: "))
       .append(Utils.newLineAfter(String.valueOf(sourceFileSet.size())));
 
     return output.toString();
@@ -650,34 +672,35 @@ public class GitCommands extends AbstractCommandsSupport {
       .orElseGet(CommitHistory::empty);
   }
 
-  protected CommitHistory queryCommitHistory(Project project,
-      Predicate<CommitRecord> queryPredicate) {
+  protected CommitHistory queryCommitHistory(Project project, Predicate<CommitRecord> queryPredicate) {
 
     return queryCommitHistory(resolveCommitHistory(project), queryPredicate);
   }
 
-  protected CommitHistory queryCommitHistory(CommitHistory commitHistory,
-      Predicate<CommitRecord> queryPredicate) {
+  protected CommitHistory queryCommitHistory(CommitHistory commitHistory, Predicate<CommitRecord> queryPredicate) {
 
     return commitHistory.findBy(queryPredicate);
   }
 
-  private static Predicate<CommitRecord> commitsByAuthorQueryPredicate( String authorCommitter) {
+  private static Predicate<CommitRecord> commitsByAuthorQueryPredicate(String authorCommitter) {
 
-    return Utils.isNotSet(authorCommitter) ? ALL_COMMITS_PREDICATE
-      : commitRecord -> {
+    return Utils.isNotSet(authorCommitter) ? ALL_COMMITS_PREDICATE : commitRecord -> {
 
-        String resolvedAuthorCommitter = Utils.nullSafeTrimmedString(authorCommitter).toLowerCase();
+      String resolvedAuthorCommitter = Utils.nullSafeTrimmedString(authorCommitter).toLowerCase();
 
-        Author commitAuthor = commitRecord.getAuthor();
+      Author commitAuthor = commitRecord.getAuthor();
 
-        return commitAuthor.getName().toLowerCase().contains(resolvedAuthorCommitter)
-          || commitAuthor.getEmailAddress().contains(resolvedAuthorCommitter);
+      return commitAuthor.getName().toLowerCase().contains(resolvedAuthorCommitter)
+        || commitAuthor.getEmailAddress().contains(resolvedAuthorCommitter);
     };
   }
 
-  private static Predicate<CommitRecord> commitsByTimeQueryPredicate( String sinceDate,
-       String untilDate,  String excludingDates,  String duringDates) {
+  private static Predicate<CommitRecord> commitsByTimeQueryPredicate(
+    String sinceDate,
+    String untilDate,
+    String excludingDates,
+    String duringDates
+  ) {
 
     return commitsSinceDateQueryPredicate(sinceDate)
       .and(commitsUntilDateQueryPredicate(untilDate))
@@ -685,21 +708,21 @@ public class GitCommands extends AbstractCommandsSupport {
       .and(commitsDuringDatesQueryPredicate(duringDates));
   }
 
-  private static Predicate<CommitRecord> commitsDuringDatesQueryPredicate( String duringDates) {
+  private static Predicate<CommitRecord> commitsDuringDatesQueryPredicate(String duringDates) {
 
     return StringUtils.hasText(duringDates)
       ? commitRecord -> TimePeriods.parse(duringDates).asPredicate().test(commitRecord.getDate())
       : ALL_COMMITS_PREDICATE;
   }
 
-  private static Predicate<CommitRecord> commitsExcludingDatesQueryPredicate( String excludingDates) {
+  private static Predicate<CommitRecord> commitsExcludingDatesQueryPredicate(String excludingDates) {
 
     return StringUtils.hasText(excludingDates)
       ? commitRecord -> !TimePeriods.parse(excludingDates).asPredicate().test(commitRecord.getDate())
       : ALL_COMMITS_PREDICATE;
   }
 
-  private static Predicate<CommitRecord> commitsSinceDateQueryPredicate( String sinceDate) {
+  private static Predicate<CommitRecord> commitsSinceDateQueryPredicate(String sinceDate) {
 
     return commitRecord -> {
 
@@ -714,14 +737,17 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   @SuppressWarnings("all")
-  private static Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate( String sourceFilePath) {
+  private static Predicate<CommitRecord> commitsToSourceFilePathQueryPredicate(String sourceFilePath) {
 
-    return Utils.isSet(sourceFilePath) ? commitRecord -> commitRecord.stream().anyMatch(sourceFile ->
-        sourceFile.getAbsolutePath().contains(sourceFilePath))
+    Predicate<File> commitRecordSourceFilePredicate = sourceFile ->
+      sourceFile.getAbsolutePath().contains(sourceFilePath);
+
+    return Utils.isSet(sourceFilePath)
+      ? commitRecord -> commitRecord.stream().anyMatch(commitRecordSourceFilePredicate)
       : ALL_COMMITS_PREDICATE;
   }
 
-  private static Predicate<CommitRecord> commitsUntilDateQueryPredicate( String untilDate) {
+  private static Predicate<CommitRecord> commitsUntilDateQueryPredicate(String untilDate) {
 
     return commitRecord -> {
 
@@ -765,9 +791,7 @@ public class GitCommands extends AbstractCommandsSupport {
     return output;
   }
 
-  protected Function<CommitHistory, String> showCommitHistoryFunction(
-      boolean count, int limit, boolean showFiles) {
-
+  protected Function<CommitHistory, String> showCommitHistoryFunction(boolean count, int limit, boolean showFiles) {
     return commitHistory -> count
       ? String.valueOf(commitHistory.size())
       : showCommitHistory(commitHistory, limit, showFiles).toString();
@@ -778,11 +802,8 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   protected StringBuilder showCommitRecord(CommitRecord commitRecord, boolean showFiles) {
-
     StringBuilder output = new StringBuilder();
-
     showCommitRecord(commitRecord, showFiles, output);
-
     return output;
   }
 
@@ -791,7 +812,7 @@ public class GitCommands extends AbstractCommandsSupport {
   }
 
   private StringBuilder showCommitRecord(CommitRecord commitRecord, boolean showFiles,
-      StringBuilder output) {
+    StringBuilder output) {
 
     output.append("Author: ").append(toCommitAuthorString(commitRecord.getAuthor())).append(Utils.newLine());
     output.append("Commit: ").append(commitRecord.getHash()).append(Utils.newLine());
@@ -838,8 +859,8 @@ public class GitCommands extends AbstractCommandsSupport {
   @Bean
   AvailabilityProvider gitCommandsAvailability() {
 
-    return isProjectSet() ? Availability::available
-      : () -> Availability.unavailable("The current project is not set;"
+    return isProjectSet() ? Availability::available : () ->
+      Availability.unavailable("The current project is not set;"
         + " please call 'project load <location>' or 'project use <name>'");
   }
 }

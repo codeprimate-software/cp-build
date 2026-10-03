@@ -39,10 +39,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
- * Abstract Data Type (ADT) used to model a [Codeprimate] software project.
+ * Abstract Data Type (ADT) modeling a Codeprimate software project.
  *
  * @author John Blum
- * @see java.lang.Comparable
+ * @see Comparable
  * @since 2.0.0
  */
 @Getter
@@ -82,9 +82,7 @@ public class Project implements Comparable<Project> {
    * @throws IllegalArgumentException if the given {@link String name} is {@literal null} or {@literal empty}.
    */
   public static Project from(String name) {
-
     Assert.hasText(name, () -> "Name [%s] for project is required".formatted(name));
-
     return new Project(name);
   }
 
@@ -159,7 +157,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.api.model.Project.Artifact
    */
   @SuppressWarnings("unchecked")
-  public <T extends Project> T buildsArtifact( Artifact artifact) {
+  public <T extends Project> T buildsArtifact(Artifact artifact) {
     setArtifact(artifact);
     return (T) this;
   }
@@ -224,7 +222,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.git.model.CommitHistory
    */
   @SuppressWarnings("unchecked")
-  public <T extends Project> T withCommitHistory( CommitHistory commitHistory) {
+  public <T extends Project> T withCommitHistory(CommitHistory commitHistory) {
     setCommitHistory(commitHistory);
     return (T) this;
   }
@@ -253,7 +251,7 @@ public class Project implements Comparable<Project> {
    * @see org.cp.build.tools.api.model.Project.Organization
    */
   @SuppressWarnings("unchecked")
-  public <T extends Project> T withOrganization( Organization organization) {
+  public <T extends Project> T withOrganization(Organization organization) {
     setOrganization(organization);
     return (T) this;
   }
@@ -321,11 +319,11 @@ public class Project implements Comparable<Project> {
       return getVersion() != null;
     }
 
-    public  Version getVersion() {
+    public Version getVersion() {
       return getProject().getVersion();
     }
 
-    public Artifact withGroupId( String groupId) {
+    public Artifact withGroupId(String groupId) {
       setGroupId(groupId);
       return this;
     }
@@ -388,7 +386,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public License withUri( URI uri) {
+    public License withUri(URI uri) {
       setUri(uri);
       return this;
     }
@@ -422,7 +420,7 @@ public class Project implements Comparable<Project> {
       return license != null && getLicenses().add(license);
     }
 
-    public boolean contains( License license) {
+    public boolean contains(License license) {
       return license != null && getLicenses().contains(license);
     }
 
@@ -446,7 +444,7 @@ public class Project implements Comparable<Project> {
    * Abstract Data Type (ADT) modeling a {@literal software developer}.
    *
    * @author John Blum
-   * @see java.lang.Comparable
+   * @see Comparable
    */
   @Getter
   @Setter(AccessLevel.PROTECTED)
@@ -463,22 +461,22 @@ public class Project implements Comparable<Project> {
 
     private URI uri;
 
-    public Developer identifiedBy( String id) {
+    public Developer identifiedBy(String id) {
       setId(id);
       return this;
     }
 
-    public Developer withEmailAddress( String emailAddress) {
+    public Developer withEmailAddress(String emailAddress) {
       setEmailAddress(emailAddress);
       return this;
     }
 
-    public Developer withOrganization( Organization organization) {
+    public Developer withOrganization(Organization organization) {
       setOrganization(organization);
       return this;
     }
 
-    public Developer withUri( URI uri) {
+    public Developer withUri(URI uri) {
       setUri(uri);
       return this;
     }
@@ -495,11 +493,11 @@ public class Project implements Comparable<Project> {
   }
 
   /**
-   * Abstract Data Type (ADT) modeling a collection of {@literal software developers}.
+   * Abstract Data Type (ADT) modeling a {@link Iterable collection} of {@literal software developers}.
    *
    * @author John Blum
-   * @see java.lang.Iterable
    * @see Developer
+   * @see Iterable
    */
   @Getter(AccessLevel.PROTECTED)
   public static class Developers implements Iterable<Developer> {
@@ -511,7 +509,7 @@ public class Project implements Comparable<Project> {
       return developer != null && getDevelopers().add(developer);
     }
 
-    public boolean contains( Developer developer) {
+    public boolean contains(Developer developer) {
       return developer != null && getDevelopers().contains(developer);
     }
 
@@ -536,7 +534,7 @@ public class Project implements Comparable<Project> {
    * Abstract Data Type (ADT) modeling a {@literal software orgnization}.
    *
    * @author John Blum
-   * @see java.lang.Comparable
+   * @see Comparable
    */
   @Getter
   @EqualsAndHashCode(of = "name")
@@ -548,7 +546,7 @@ public class Project implements Comparable<Project> {
     @Setter(AccessLevel.PROTECTED)
     private URI uri;
 
-    public Organization withUri( URI uri) {
+    public Organization withUri(URI uri) {
       setUri(uri);
       return this;
     }
@@ -574,7 +572,7 @@ public class Project implements Comparable<Project> {
    * Abstract Data Type (ADT) modeling a {@literal software version}.
    *
    * @author John Blum
-   * @see java.lang.Comparable
+   * @see Comparable
    */
   @Getter
   public static class Version implements Comparable<Version> {
@@ -668,7 +666,7 @@ public class Project implements Comparable<Project> {
       return SNAPSHOT.equalsIgnoreCase(getQualifier());
     }
 
-    public Version withQualifier( String qualifier) {
+    public Version withQualifier(String qualifier) {
       setQualifier(qualifier);
       return this;
     }
@@ -693,7 +691,7 @@ public class Project implements Comparable<Project> {
       return quantifyQualifier(version.getQualifier());
     }
 
-    private int quantifyQualifier( String qualifier) {
+    private int quantifyQualifier(String qualifier) {
 
       String nonNullQualifier = Utils.nullSafeTrimmedString(qualifier);
 

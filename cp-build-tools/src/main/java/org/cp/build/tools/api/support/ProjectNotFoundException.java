@@ -28,7 +28,9 @@ import org.cp.build.tools.api.model.Project;
 @SuppressWarnings("unused")
 public class ProjectNotFoundException extends RuntimeException {
 
-  public ProjectNotFoundException() { }
+  public ProjectNotFoundException() {
+
+  }
 
   public ProjectNotFoundException(String message) {
     super(message);

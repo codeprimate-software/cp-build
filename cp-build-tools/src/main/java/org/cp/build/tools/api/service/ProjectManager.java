@@ -251,7 +251,7 @@ public class ProjectManager implements Iterable<Project> {
   /**
    * Searches for a {@link RecentProject} by the given {@link String name}.
    *
-   * @param projectName  {@link String name} of the requested {@link Project}.
+   * @param projectName {@link String name} of the requested {@link Project}.
    * @return an {@link Optional} {@link RecentProject} with the given {@link String name} if recently used.
    * @see org.cp.build.tools.api.service.ProjectManager.RecentProject
    * @see java.util.Optional

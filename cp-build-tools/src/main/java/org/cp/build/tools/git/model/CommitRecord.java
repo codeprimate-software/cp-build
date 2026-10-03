@@ -93,7 +93,7 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     return this;
   }
 
-  public boolean contains( File sourceFile) {
+  public boolean contains(File sourceFile) {
     return sourceFile != null && getSourceFiles().contains(sourceFile);
   }
 
@@ -106,7 +106,7 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
     return Utils.stream(this);
   }
 
-  public CommitRecord from( CommitHistory commitHistory) {
+  public CommitRecord from(CommitHistory commitHistory) {
     setCommitHistory(commitHistory);
     return this;
   }
@@ -153,7 +153,7 @@ public class CommitRecord implements Comparable<CommitRecord>, Iterable<File> {
       return this.getName().compareTo(that.getName());
     }
 
-    public Author withEmailAddress( String email) {
+    public Author withEmailAddress(String email) {
       setEmailAddress(email);
       return this;
     }

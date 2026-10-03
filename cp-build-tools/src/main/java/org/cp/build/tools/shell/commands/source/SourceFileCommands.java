@@ -73,13 +73,14 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     availabilityProvider = "sourceCommandsAvailability"
   )
   public int count(
-      @Option(longName = "exclude-filter") String excludeFilter,
-      @Option(longName = "include-filter") String includeFilter,
-      @Option(longName = "location", shortName = 'l') String location,
-      @Option(longName = "main") boolean main,
-      @Option(longName = "test") boolean test) {
+    @Option(longName = "exclude-filter") String excludeFilter,
+    @Option(longName = "include-filter") String includeFilter,
+    @Option(longName = "location", shortName = 'l') String location,
+    @Option(longName = "main") boolean main,
+    @Option(longName = "test") boolean test
+  ) {
 
-    String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
+    String sourceDirectoryName = main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
       : test ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("test")
       : SOURCE_DIRECTORY_NAME;
 
@@ -117,16 +118,17 @@ public class SourceFileCommands extends AbstractCommandsSupport {
   )
   @SuppressWarnings("all")
   public String lineCount(
-      @Option(longName = "count", shortName = 'c') boolean count,
-      @Option(longName = "gt", defaultValue = "0") long minimumLineCount,
-      @Option(longName = "list", shortName = 'l') boolean list,
-      @Option(longName = "main", shortName = 'm') boolean main,
-      @Option(longName = "skip-blank-lines", shortName = 's') boolean skipBlankLines,
-      @Option(longName = "test", shortName = 't') boolean test) {
+    @Option(longName = "count", shortName = 'c') boolean count,
+    @Option(longName = "gt", defaultValue = "0") long minimumLineCount,
+    @Option(longName = "list", shortName = 'l') boolean list,
+    @Option(longName = "main", shortName = 'm') boolean main,
+    @Option(longName = "skip-blank-lines", shortName = 's') boolean skipBlankLines,
+    @Option(longName = "test", shortName = 't') boolean test
+  ) {
 
     Project project = requireProject();
 
-    String sourceDirectoryName =  main ? String.join(File.separator, SOURCE_DIRECTORY_NAME, "main")
+    String sourceDirectoryName = main ? String.join(File.separator, SOURCE_DIRECTORY_NAME, "main")
       : test ? String.join(File.separator, SOURCE_DIRECTORY_NAME, "test")
       : SOURCE_DIRECTORY_NAME;
 
@@ -150,7 +152,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
         .map(sourceFile -> "%d: %s".formatted(sourceFile.lineCount(skipBlankLines), sourceFile.getRelativePath()))
         .toList();
 
-        return String.join(NEW_LINE, sourceFilesPlusLineCount.toArray(String[]::new));
+      return String.join(NEW_LINE, sourceFilesPlusLineCount.toArray(String[]::new));
     }
     else if (count) {
       long fileCount = sourceFiles.parallelStream()
@@ -160,7 +162,7 @@ public class SourceFileCommands extends AbstractCommandsSupport {
 
       return String.valueOf(fileCount);
     }
-    else  {
+    else {
       long lineCount = sourceFiles.parallelStream()
         .map(sourceFile -> sourceFile.lineCount(skipBlankLines))
         .filter(sourceFileLineCount -> sourceFileLineCount > minimumLineCount)
@@ -212,11 +214,12 @@ public class SourceFileCommands extends AbstractCommandsSupport {
     availabilityProvider = "sourceCommandsAvailability"
   )
   public String tree(
-      @Option(longName = "location", shortName = 'l') String location,
-      @Option(longName = "main") boolean main,
-      @Option(longName = "test") boolean test) {
+    @Option(longName = "location", shortName = 'l') String location,
+    @Option(longName = "main") boolean main,
+    @Option(longName = "test") boolean test
+  ) {
 
-    String sourceDirectoryName =  main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
+    String sourceDirectoryName = main ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("main")
       : test ? SOURCE_DIRECTORY_NAME.concat(File.separator).concat("test")
       : SOURCE_DIRECTORY_NAME;
 
@@ -238,9 +241,9 @@ public class SourceFileCommands extends AbstractCommandsSupport {
 
   @Bean
   AvailabilityProvider sourceCommandsAvailability() {
-
-    return isProjectSet() ? Availability::available
+    return isProjectSet()
+      ? Availability::available
       : () -> Availability.unavailable("The current project is not set;"
-      + " please call 'project load <location>' or 'project use <name>'");
+        + " please call 'project load <location>' or 'project use <name>'");
   }
 }
