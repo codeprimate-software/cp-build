@@ -1,6 +1,6 @@
 [[codprimate-maven-build]]
 = Codeprimate Maven Build
-:version: 3.0.1-SNAPSHOT
+:version: 3.0.1
 
 The Codeprimate Maven Build is the Maven parent project for all Codeprimate software projects using Apache Maven to build and release Codeprimate software.
 
