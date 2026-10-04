@@ -138,7 +138,7 @@
     <maven-toolchains-plugin.version>3.2.0</maven-toolchains-plugin.version>
     <maven-wrapper-plugin.version>3.3.4</maven-wrapper-plugin.version>
     <mockito.version>5.24.0</mockito.version>
-    <mockito-kotlin.version>6.3.0</mockito-kotlin.version>
+    <mockito-kotlin.version>6.4.0</mockito-kotlin.version>
     <mockk.version>1.14.11</mockk.version>
     <multithreadedtc.version>1.01</multithreadedtc.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
