@@ -110,7 +110,7 @@
     <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <maven.version>3.9.16</maven.version>
-    <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+    <maven-deploy-plugin.version>3.2.0</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
