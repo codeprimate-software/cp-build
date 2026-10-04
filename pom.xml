@@ -175,8 +175,10 @@
                   <flattenMode>oss</flattenMode>
                   <updatePomFile>true</updatePomFile>
                   <pomElements>
+                    <dependencyManagement>keep</dependencyManagement>
                     <parent>expand</parent>
                     <profiles>keep</profiles>
+                    <properties>keep</properties>
                     <repositories>remove</repositories>
                   </pomElements>
                 </configuration>
