@@ -1,14 +1,14 @@
 [[codprimate-maven-build]]
 = Codeprimate Maven Build
-:version: 3.0.0
+:version: 4.0.0-SNAPSHOT
 
 The Codeprimate Maven Build is the Maven parent project for all Codeprimate software projects using Apache Maven to build and release Codeprimate software.
 
 [[codprimate-maven-build-features]]
 == Maven Build Features
 
-* Based on Java (JDK/JRE) `21`
-* Based on Kotlin `2.4.0`
+* Based on Java (JDK/JRE) `25`
+* Based on Kotlin `2.4.20`
 * Dependency Management provided by Codeprimate Maven Build, Kotlin BOM, Spring Boot, Spring Cloud and Testcontainers BOM
 * Performs code analysis using Checkstyle, Jacoco, PMD and SpotBugs
 * Generates Project Source and Javadoc JAR files
