@@ -107,6 +107,7 @@
     <java.version>25</java.version>
     <java-next.version>26</java-next.version>
     <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
+    <central-publishing-skip>false</central-publishing-skip>
     <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
     <gpg.keyname>Codeprimate Software</gpg.keyname>
     <maven.version>3.9.16</maven.version>
@@ -209,8 +210,9 @@
             <version>${central-publishing-maven-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-              <publishingServerId>central</publishingServerId>
               <autoPublish>false</autoPublish>
+              <publishingServerId>central</publishingServerId>
+              <skipPublishing>${central-publishing-skip}</skipPublishing>
             </configuration>
           </plugin>
         </plugins>
